@@ -9,7 +9,7 @@ part '_theme_extensions.dart';
 // part '_dimension_themes.dart';
 
 final lightTheme = ThemeData(
-  fontFamily: 'Montserrat',
+  fontFamily: 'Sofia Pro',
   extensions: [
     // Dimensions(
     //   spaces: _spaceDimensions,

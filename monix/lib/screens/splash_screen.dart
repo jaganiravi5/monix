@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(
       time,
       () {
-        context.go(AppRoutesPath.dashboardScreen);
+        context.go(AppRoutesPath.onboardScreen);
       },
     );
   }

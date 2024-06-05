@@ -1,14 +1,12 @@
-/*
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:common/common.dart';
+import 'package:common/widget/mobile_widget/intro_slider%202/intro_page.dart';
+import 'package:common/widget/mobile_widget/intro_slider%202/introslider_indicator.dart';
 
-import 'package:common/src/widget/intro_slider/intro_page.dart';
-import 'package:common/src/widget/intro_slider/introslider_indicator.dart';
 import 'package:dimensions_theme/dimensions_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:my_profams_assets/my_profams_assets.dart';
-import 'package:translations/translations.dart';
+import 'package:monix_assets/monix_assets.dart';
 
 class IntroSlider extends StatefulWidget {
   final VoidCallback onComplete;
@@ -30,32 +28,24 @@ class _IntroSliderState extends State<IntroSlider> {
   Widget build(BuildContext context) {
     List<Widget> introPages = [
       IntroPage(
-        title: context.l10n.onboard_view_tasks,
-        desc: '',
-        image: MyProfamsAssets.images.onBoarding1.svg(
-          fit: BoxFit.fill,
-        ),
+        title: StringManager.onboard1Title,
+        desc: StringManager.onboard1Desc,
+        image: images.onboard1Png.image(
+            // fit: BoxFit.fill,
+            ),
         descBody: '',
       ),
       IntroPage(
-        title: context.l10n.onboard_complete_tasks,
-        desc: '',
-        image: MyProfamsAssets.images.onBoarding3.svg(
-          fit: BoxFit.fill,
-        ),
+        title: StringManager.onboard2Title,
+        desc: StringManager.onboard2Desc,
+        image: images.onboard2.image(
+            // fit: BoxFit.fill,
+            ),
         descBody: '',
-      ),
-      IntroPage(
-        title: context.l10n.onboard_safety_instructions,
-        desc: context.l10n.onboard_safety_desc_title,
-        image: MyProfamsAssets.images.onBoarding2.svg(
-          fit: BoxFit.fill,
-        ),
-        descBody: context.l10n.onboard_safety_desc_body_text,
       ),
     ];
     final theme = Theme.of(context);
-    final padding = EdgeInsetsOf(context);
+
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Container(
@@ -78,7 +68,7 @@ class _IntroSliderState extends State<IntroSlider> {
               ),
             ),
             Positioned(
-              bottom: 25.h,
+              bottom: 283.h,
               left: 0,
               right: 0,
               child: IntroSliderIndicator(
@@ -97,11 +87,11 @@ class _IntroSliderState extends State<IntroSlider> {
                   //Navigator to Login Screen
                   widget.onComplete();
                 },
-                child: Text(context.l10n.onboard_skip,
+                child: Text('skip',
                     style: theme.textTheme.bodyLarge?.copyWith(
                       fontSize: 15.sp,
                       fontWeight: FontWeight.w500,
-                      color: theme.myProfamsColors.primary,
+                      color: theme.monixColors.primary,
                     )),
               ),
             )
@@ -111,4 +101,3 @@ class _IntroSliderState extends State<IntroSlider> {
     );
   }
 }
-*/

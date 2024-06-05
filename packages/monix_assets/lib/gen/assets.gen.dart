@@ -41,8 +41,21 @@ class $AssetsImagesGen {
   AssetGenImage get imagePlaceholder =>
       const AssetGenImage('assets/images/image_placeholder.jpeg');
 
+  /// File path: assets/images/onboard1.jpg
+  AssetGenImage get onboard1Jpg =>
+      const AssetGenImage('assets/images/onboard1.jpg');
+
+  /// File path: assets/images/onboard1.png
+  AssetGenImage get onboard1Png =>
+      const AssetGenImage('assets/images/onboard1.png');
+
+  /// File path: assets/images/onboard2.png
+  AssetGenImage get onboard2 =>
+      const AssetGenImage('assets/images/onboard2.png');
+
   /// List of all assets
-  List<AssetGenImage> get values => [imagePlaceholder];
+  List<AssetGenImage> get values =>
+      [imagePlaceholder, onboard1Jpg, onboard1Png, onboard2];
 }
 
 class MonixAssets {

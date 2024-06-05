@@ -2,7 +2,7 @@ part of 'theme.dart';
 
 @immutable
 class MonixColors extends ThemeExtension<MonixColors> {
-  const MonixColors( {
+  const MonixColors({
     required this.primary,
     required this.onPrimary,
     required this.secondary,
@@ -10,6 +10,9 @@ class MonixColors extends ThemeExtension<MonixColors> {
     required this.black,
     required this.white,
     required this.bgColor,
+    required this.grey500,
+    required this.secondary1,
+    required this.secondary2,
   });
 
   final Color primary;
@@ -19,6 +22,9 @@ class MonixColors extends ThemeExtension<MonixColors> {
   final Color black;
   final Color white;
   final Color bgColor;
+  final Color grey500;
+  final Color secondary1;
+  final Color secondary2;
 
   @override
   MonixColors copyWith() {
@@ -45,7 +51,11 @@ MonixColors myColorsExtension = const MonixColors(
   secondary: Color(0xffECFCFE),
   onSecondary: Color(0xff000000),
   black: Color(0xff000000),
-  white: Color(0xffffffff), bgColor: Color(0xff160D27),
+  white: Color(0xffffffff),
+  bgColor: Color(0xff160D27),
+  grey500: Color(0xffADB5BD),
+  secondary1: Color(0xFFEC202A),
+  secondary2: Color(0xffD74011),
 );
 
 extension MonixColorsExtensions on ThemeData {
