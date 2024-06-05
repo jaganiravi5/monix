@@ -68,7 +68,7 @@ class _IntroSliderState extends State<IntroSlider> {
               ),
             ),
             Positioned(
-              bottom: 283.h,
+              bottom: 268.h,
               left: 0,
               right: 0,
               child: IntroSliderIndicator(

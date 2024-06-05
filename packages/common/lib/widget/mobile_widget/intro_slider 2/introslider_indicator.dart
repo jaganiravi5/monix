@@ -22,105 +22,28 @@ class IntroSliderIndicator extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        // (currentPage == 0)
-        //     ? SizedBox(
-        //         width: 50.h,
-        //       )
-        //     : SizedBox(
-        //         child: InkWell(
-        //           onTap: () => carouselController.previousPage(
-        //             duration: Duration(milliseconds: 300),
-        //             curve: Curves.linear,
-        //           ),
-        //           child: Row(
-        //             //mainAxisAlignment: MainAxisAlignment.start,
-        //             children: [
-        //               Icon(
-        //                 Icons.arrow_back_ios_new,
-        //                 size: 16.sp,
-        //                 color: theme.monixColors.primary,
-        //               ),
-        //               Text(
-        //                 'Hell2',
-        //                 style: theme.textTheme.bodyLarge?.copyWith(
-        //                   color: theme.monixColors.primary,
-        //                   fontWeight: FontWeight.w500,
-        //                   fontSize: 15.sp,
-        //                 ),
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-        //       ),
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: introPages.asMap().entries.map((entry) {
               return GestureDetector(
-                onTap: () =>
-                      carouselController.animateToPage(entry.key),
+                onTap: () => carouselController.animateToPage(entry.key),
                 child: Container(
-                  width: entry.key == currentPage?30.w:10.w,
-                  height: 10.h,
+                  width: entry.key == currentPage ? 23.w : 6.w,
+                  height: 6.h,
                   margin: const EdgeInsets.symmetric(
-                    horizontal: 3.0,
+                    horizontal: 4.0,
                   ),
                   decoration: BoxDecoration(
-                    border: Border.all(color: theme.monixColors.onSecondary),
+                    // border: Border.all(color: theme.monixColors.onSecondary),
                     borderRadius: BorderRadius.circular(20.r),
-                    color: Colors.white,
+                    color: entry.key == currentPage ? theme.monixColors.secondary1 : theme.monixColors.white,
                   ),
                 ),
               );
             }).toList(),
           ),
         ),
-        // (currentPage == 2)
-        //     ? SizedBox(
-        //         child: InkWell(
-        //           //Navigator to Login Screen
-        //           onTap: () => onLastTap(),
-        //           child: Row(
-        //             children: [
-        //               Text(
-        //                 "Next",
-        //                 style: theme.textTheme.bodyLarge?.copyWith(
-        //                   color: theme.monixColors.primary,
-        //                   fontWeight: FontWeight.w500,
-        //                   fontSize: 15.sp,
-        //                 ),
-        //               ),
-        //               Icon(
-        //                 Icons.arrow_forward_ios,
-        //                 size: 16.sp,
-        //                 color: theme.monixColors.primary,
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-        //       )
-        //     : SizedBox(
-        //         child: InkWell(
-        //           onTap: () => carouselController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.linear),
-        //           child: Row(
-        //             children: [
-        //               Text(
-        //                 'Next',
-        //                 style: theme.textTheme.bodyLarge?.copyWith(
-        //                   color: theme.monixColors.primary,
-        //                   fontWeight: FontWeight.w500,
-        //                   fontSize: 15.sp,
-        //                 ),
-        //               ),
-        //               Icon(
-        //                 Icons.arrow_forward_ios,
-        //                 size: 16.sp,
-        //                 color: theme.monixColors.primary,
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-        //       ),
       ],
     );
   }
