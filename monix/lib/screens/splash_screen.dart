@@ -47,16 +47,25 @@ class _SplashScreenState extends State<SplashScreen> {
     final color = Theme.of(context).monixColors;
 
     return Scaffold(
-      backgroundColor: color.black,
+      backgroundColor: color.bgColor,
       body: Center(
-        // Text - Adviser Copilot
-        child: Text(
-          "sjd",
-          style: TextStyle(
-            color: color.white,
-            fontSize: 25.sp,
-            fontWeight: FontWeight.w600,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // showLoadingDialog(context, true),
+            Text(
+              StringManager.splashDesc,
+              style: TextStyle(
+                color: color.grey500,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            SizedBox(
+              height: 25.w,
+            ),
+          ],
         ),
       ),
     );

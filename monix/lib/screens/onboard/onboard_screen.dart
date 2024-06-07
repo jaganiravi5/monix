@@ -2,6 +2,7 @@ import 'package:common/common.dart';
 import 'package:common/widget/mobile_widget/intro_slider%202/intro_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:monix/router/routes_name.dart';
 
 import '../../router/custom_page_transition.dart';
 
@@ -17,8 +18,12 @@ class OnboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).monixColors.bgColor,
-      body: IntroSlider(
+      body:
+      IntroSlider(
         onComplete: () {},
+        onGetStartedClick: () => context.go(AppRoutesPath.dashboardScreen),
+        onNextClick: () => context.go(AppRoutesPath.dashboardScreen),
+        onSkipClick: () => context.go(AppRoutesPath.dashboardScreen),
       ),
     );
   }

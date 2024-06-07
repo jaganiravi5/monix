@@ -18,24 +18,49 @@ class $AssetsIconsGen {
   /// File path: assets/icons/camera.svg
   SvgGenImage get camera => const SvgGenImage('assets/icons/camera.svg');
 
+  /// File path: assets/icons/home.svg
+  SvgGenImage get home => const SvgGenImage('assets/icons/home.svg');
+
   /// File path: assets/icons/microphone.png
   AssetGenImage get microphone =>
       const AssetGenImage('assets/icons/microphone.png');
 
+  /// File path: assets/icons/monixAi.svg
+  SvgGenImage get monixAi => const SvgGenImage('assets/icons/monixAi.svg');
+
   /// File path: assets/icons/recordings.svg
   SvgGenImage get recordings =>
       const SvgGenImage('assets/icons/recordings.svg');
+
+  /// File path: assets/icons/saved.svg
+  SvgGenImage get saved => const SvgGenImage('assets/icons/saved.svg');
+
+  /// File path: assets/icons/search.svg
+  SvgGenImage get search => const SvgGenImage('assets/icons/search.svg');
 
   /// File path: assets/icons/stop_recording.png
   AssetGenImage get stopRecording =>
       const AssetGenImage('assets/icons/stop_recording.png');
 
   /// List of all assets
-  List<dynamic> get values => [camera, microphone, recordings, stopRecording];
+  List<dynamic> get values => [
+        camera,
+        home,
+        microphone,
+        monixAi,
+        recordings,
+        saved,
+        search,
+        stopRecording
+      ];
 }
 
 class $AssetsImagesGen {
   const $AssetsImagesGen();
+
+  /// File path: assets/images/buttonBG.png
+  AssetGenImage get buttonBG =>
+      const AssetGenImage('assets/images/buttonBG.png');
 
   /// File path: assets/images/image_placeholder.jpeg
   AssetGenImage get imagePlaceholder =>
@@ -55,7 +80,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values =>
-      [imagePlaceholder, onboard1Jpg, onboard1Png, onboard2];
+      [buttonBG, imagePlaceholder, onboard1Jpg, onboard1Png, onboard2];
 }
 
 class MonixAssets {

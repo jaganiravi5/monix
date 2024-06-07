@@ -4,16 +4,24 @@ import 'package:common/widget/mobile_widget/intro_slider%202/intro_page.dart';
 import 'package:common/widget/mobile_widget/intro_slider%202/introslider_indicator.dart';
 
 import 'package:dimensions_theme/dimensions_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:monix_assets/monix_assets.dart';
 
 class IntroSlider extends StatefulWidget {
   final VoidCallback onComplete;
+  final void Function() onSkipClick;
+  final void Function() onNextClick;
+  final void Function() onGetStartedClick;
 
   const IntroSlider({
     Key? key,
     required this.onComplete,
+    required this.onSkipClick,
+    required this.onNextClick,
+    required this.onGetStartedClick,
   }) : super(key: key);
 
   @override
@@ -68,7 +76,7 @@ class _IntroSliderState extends State<IntroSlider> {
               ),
             ),
             Positioned(
-              bottom: 268.h,
+              bottom: 282.h,
               left: 0,
               right: 0,
               child: IntroSliderIndicator(
@@ -81,20 +89,47 @@ class _IntroSliderState extends State<IntroSlider> {
               ),
             ),
             Positioned(
-              right: 0,
-              child: InkWell(
-                onTap: () {
-                  //Navigator to Login Screen
-                  widget.onComplete();
-                },
-                child: Text('skip',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w500,
-                      color: theme.monixColors.primary,
-                    )),
-              ),
-            )
+              bottom: 23.h,
+              left: 20,
+              right: 20,
+              child: currentPage == 0
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: CommonSolidButton(
+                            title: StringManager.skip,
+                            onButtonClick: () => widget.onSkipClick(),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 31.w,
+                        ),
+                        Expanded(
+                          child: CommonButton(
+                            title: StringManager.next,
+                            onButtonClick: () => widget.onNextClick(),
+                          ),
+                        )
+                      ],
+                    )
+                  : CommonButton(title: StringManager.getStarted, onButtonClick: () => widget.onGetStartedClick()),
+            ),
+
+            // Positioned(
+            //   right: 0,
+            //   child: InkWell(
+            //     onTap: () {
+            //       //Navigator to Login Screen
+            //       widget.onComplete();
+            //     },
+            //     child: Text('skip',
+            //         style: theme.textTheme.bodyLarge?.copyWith(
+            //           fontSize: 15.sp,
+            //           fontWeight: FontWeight.w500,
+            //           color: theme.monixColors.primary,
+            //         )),
+            //   ),
+            // )
           ],
         ),
       ),

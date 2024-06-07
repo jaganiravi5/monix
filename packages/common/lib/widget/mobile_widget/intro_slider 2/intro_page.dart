@@ -1,10 +1,16 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:common/common.dart';
 import 'package:dimensions_theme/dimensions_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monix_assets/monix_assets.dart';
 
 import '../common_utills/common_utills.dart';
 
@@ -25,90 +31,156 @@ class IntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).monixColors;
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 42.w),
-      child: Stack(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 70.h,
-              ),
-              image,
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 420.w,
-              // color: Colors.yellow,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [theme.bgColor.withOpacity(0.3), theme.bgColor, theme.bgColor],
-                    stops: [0.15, 0.35, 1.0],
-                    // Color transitions at 0%, 50%, and 100% of the gradient
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    tileMode: TileMode.mirror // Mirror the gradient if container size exceeds its dimensions
-                    ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 25.sp,
-                      fontWeight: FontWeight.w600,
-                      color: theme.white,
-                    ),
+    return Stack(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 70.h,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 42.w),
+              child: image,
+            ),
+          ],
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            height: 420.h,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Colors.transparent, theme.bgColor, theme.bgColor],
+                  stops: [0.0, 0.3, 0.4],
+                  // Color transitions at 0%, 50%, and 100% of the gradient
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  tileMode: TileMode.mirror // Mirror the gradient if container size exceeds its dimensions
                   ),
-                  SizedBox(
-                    height: 14.sp,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 38.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 25.sp,
+                          fontWeight: FontWeight.w600,
+                          color: theme.white,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 14.sp,
+                      ),
+                      Text(
+                        desc,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w300,
+                          color: theme.grey500,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30.w,
+                      ),
+                    ],
                   ),
-                  Text(
-                    desc,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w300,
-                      color: theme.grey500,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 30.w,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.symmetric(vertical: 16.w),
-                    decoration: BoxDecoration(
-                      // color: theme.white,
-                      borderRadius: BorderRadius.circular(14.w),
-                      gradient: CommonUtills.getGradient(context: context),
-                      boxShadow: [
-                        BoxShadow(
-                            color: theme.bgColor,
-                            blurRadius: 48.r, // Adjust blur radius for shadow softness
-                            // spreadRadius: 0.0,
-                            offset: Offset(0, 16) // Negative spread to create inner shadow
-                            ),
-                      ],
-                    ),
-                    child: Center(child: Text('Click Here')),
-                  ),
-                  SizedBox(
-                    height: 24.w,
-                  )
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 54,
+                ),
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: 20.w),
+                //   child: CommonButton(
+                //     title: StringManager.getStarted,
+                //     onButtonClick: () {},
+                //   ),
+                // ),
+
+                // Stack(
+                //   children: [
+                //     Container(
+                //       width: MediaQuery.of(context).size.width,
+                //       height: 52.w,
+                //       padding: EdgeInsets.symmetric(vertical: 16.w),
+                //       decoration: BoxDecoration(
+                //         //     borderRadius: BorderRadius.circular(12),
+                //         // color: theme.white,
+                //         borderRadius: BorderRadius.circular(14.w),
+                //         gradient: CommonUtills.getGradient(context: context),
+                //
+                //         boxShadow: [
+                //           BoxShadow(
+                //             color: Colors.black.withOpacity(0.5),
+                //             spreadRadius: 5,
+                //             blurRadius: 7,
+                //             offset: Offset(0, 3),
+                //           ),
+                //         ],
+                //       ),
+                //       child: Center(
+                //           child: Text(
+                //         StringManager.getStarted,
+                //         style: TextStyle(
+                //           color: theme.white,
+                //           fontSize: 20,
+                //           fontWeight: FontWeight.w600
+                //         ),
+                //       )),
+                //     ),
+                //     Container(
+                //       width: MediaQuery.of(context).size.width,
+                //       padding: EdgeInsets.symmetric(horizontal: 2.w),
+                //       child: ClipRRect(
+                //         borderRadius: BorderRadius.only(
+                //           topLeft: Radius.circular(14.w),
+                //           topRight: Radius.circular(14.w),
+                //         ),
+                //         clipBehavior: Clip.hardEdge,
+                //         child: Container(
+                //           width: MediaQuery.of(context).size.width,
+                //           height: 10.w,
+                //           decoration: BoxDecoration(
+                //             boxShadow: [
+                //               BoxShadow(
+                //                 color: Colors.white.withOpacity(0.01),
+                //                 blurRadius: 4,
+                //                 offset: const Offset(0, 0),
+                //               ),
+                //               BoxShadow(
+                //                 color: Colors.white.withOpacity(0.09),
+                //                 blurRadius: 4,
+                //                 offset: const Offset(0, -4),
+                //               ),
+                //               BoxShadow(
+                //                 color: Colors.white.withOpacity(0.2),
+                //                 blurRadius: 4,
+                //                 offset: const Offset(0, -7),
+                //               ),
+                //             ],
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                SizedBox(
+                  height: 24.w,
+                )
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

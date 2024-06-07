@@ -18,4 +18,20 @@ final routes = [
     path: AppRoutesPath.dashboardScreen,
     pageBuilder: DashboardScreen.builder,
   ),
+  GoRoute(
+    path: AppRoutesPath.homeScreen,
+    pageBuilder: DashboardScreen.builder,
+  ),
+  GoRoute(
+    path: AppRoutesPath.monixAiScreen,
+    pageBuilder: DashboardScreen.builder,
+  ),
+  GoRoute(
+    path: AppRoutesPath.searchScreen,
+    pageBuilder: DashboardScreen.builder,
+  ),
+  GoRoute(
+    path: AppRoutesPath.savedScreen,
+    pageBuilder: DashboardScreen.builder,
+  ),
 ];
