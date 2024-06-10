@@ -4,15 +4,20 @@ import 'package:go_router/go_router.dart';
 import 'package:monix/monix.dart';
 import 'package:monix/router/custom_page_transition.dart';
 
-class ImageListScreen extends StatelessWidget {
+class ImageListScreen extends StatefulWidget {
   const ImageListScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
-      AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
         page: const ImageListScreen(),
         state: state,
       );
 
+  @override
+  State<ImageListScreen> createState() => _ImageListScreenState();
+}
+
+class _ImageListScreenState extends State<ImageListScreen> {
+  bool isPortraitSelected = true;
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
@@ -20,22 +25,44 @@ class ImageListScreen extends StatelessWidget {
       appBar: CommonAppBar(
         color: color,
         title: StringManager.allImages,
-        icon: Icon(
-          Icons.arrow_back_rounded,
-          color: color.white,
-          size: 28.h,
+        leadingWidth: 40.w,
+        icon: InkWell(
+          onTap: () => context.pop(),
+          child: Icon(
+            Icons.arrow_back_rounded,
+            color: color.white,
+            size: 28.h,
+          ),
         ),
       ),
       backgroundColor: color.bgColor,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            
-              SizedBox(height: 20.w,),
+            SizedBox(
+              height: 20.w,
+            ),
             imageSizeWidget(
               isTitle: false,
-            ),SizedBox(height: 20.w,),
-            AllImagesWidget(isTitle: false,)
+              portraitSelected: isPortraitSelected,
+              onPortraitClick: () {
+                isPortraitSelected = !isPortraitSelected;
+                setState(() {});
+              },
+              onSquareClick: () {
+                isPortraitSelected = !isPortraitSelected;
+                setState(() {
+
+                });
+              },
+            ),
+            SizedBox(
+              height: 20.w,
+            ),
+            AllImagesWidget(
+              isTitle: false,
+              portraitSel: isPortraitSelected,
+            )
           ],
         ),
       ),

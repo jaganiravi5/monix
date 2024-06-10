@@ -35,7 +35,10 @@ class StringManager {
   static const String lowQuatilyWatermark = 'Low Quality + Watermark';
   static const String noWatermark = 'No Watermark + HD';
   static const String watchAd = 'Watch Ad';
-  
+
+  static const String generatingTool = 'Generating AI Tool...';
+  static const String generatingToolDesc = 'working on the Generating Monix AI Tool a cutting-edge solution poised to revolutionize your creative process.';
+static const String privacyPolicy = 'Privacy Policy';
   
 
 }

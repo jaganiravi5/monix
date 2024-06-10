@@ -22,7 +22,7 @@ class OnboardScreen extends StatelessWidget {
       IntroSlider(
         onComplete: () {},
         onGetStartedClick: () => context.go(AppRoutesPath.dashboardScreen),
-        onNextClick: () => context.go(AppRoutesPath.dashboardScreen),
+        onNextClick: () => context.go(AppRoutesPath.onboardScreen),
         onSkipClick: () => context.go(AppRoutesPath.dashboardScreen),
       ),
     );

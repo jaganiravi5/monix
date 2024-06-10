@@ -1,18 +1,7 @@
-import 'dart:io';
-import 'dart:ui';
 
 import 'package:common/common.dart';
-import 'package:dimensions_theme/dimensions_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:monix_assets/monix_assets.dart';
 
-import '../common_utills/common_utills.dart';
 
 class IntroPage extends StatelessWidget {
   const IntroPage({

@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:monix/router/routes_name.dart';
 
 class AllImagesWidget extends StatelessWidget {
-  const AllImagesWidget({super.key, required this.isTitle});
+  const AllImagesWidget({super.key, required this.isTitle, required this.portraitSel});
+
   final bool isTitle;
+  final bool portraitSel;
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +36,11 @@ class AllImagesWidget extends StatelessWidget {
                 )
               : SizedBox.shrink(),
           GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 4,
               mainAxisSpacing: 4,
+              childAspectRatio: portraitSel ? 9 / 14 : 1,
             ),
             itemCount: 20,
             padding: EdgeInsets.only(bottom: 90.h),
@@ -46,6 +49,7 @@ class AllImagesWidget extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return Card(
                 color: color.white,
+                elevation: 3,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
@@ -57,7 +61,6 @@ class AllImagesWidget extends StatelessWidget {
                       splashColor: Colors.transparent,
                       child: Center(child: Text('data'))),
                 ),
-                elevation: 3,
               );
             },
           ),

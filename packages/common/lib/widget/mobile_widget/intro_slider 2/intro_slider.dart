@@ -3,11 +3,7 @@ import 'package:common/common.dart';
 import 'package:common/widget/mobile_widget/intro_slider%202/intro_page.dart';
 import 'package:common/widget/mobile_widget/intro_slider%202/introslider_indicator.dart';
 
-import 'package:dimensions_theme/dimensions_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:monix_assets/monix_assets.dart';
 
 class IntroSlider extends StatefulWidget {
@@ -38,7 +34,7 @@ class _IntroSliderState extends State<IntroSlider> {
       IntroPage(
         title: StringManager.onboard1Title,
         desc: StringManager.onboard1Desc,
-        image: images.onboard1Png.image(
+        image: images.onboard1.image(
             // fit: BoxFit.fill,
             ),
         descBody: '',
@@ -108,7 +104,12 @@ class _IntroSliderState extends State<IntroSlider> {
                         Expanded(
                           child: CommonButton(
                             title: StringManager.next,
-                            onButtonClick: () => widget.onNextClick(),
+                            onButtonClick: () {
+                              currentPage=1;
+                              setState(() {
+
+                              });
+                            },
                           ),
                         )
                       ],

@@ -22,10 +22,14 @@ class AllCategoryScreen extends StatelessWidget {
       appBar: CommonAppBar(
         color: color,
         title: StringManager.allCategory,
-        icon: Icon(
-          Icons.arrow_back_rounded,
-          color: color.white,
-          size: 28.h,
+        leadingWidth:44.w,
+        icon: InkWell(
+          onTap: () => context.pop(),
+          child: Icon(
+            Icons.arrow_back_rounded,
+            color: color.white,
+            size: 28.h,
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -33,7 +37,7 @@ class AllCategoryScreen extends StatelessWidget {
           children: [
           
             AllCategoryWIdget(
-              onTap: () => context.go(AppRoutesPath.imageListScreen),
+              onTap: () => context.push(AppRoutesPath.imageListScreen),
             ),
           ],
         ),

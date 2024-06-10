@@ -32,58 +32,7 @@ class ImagePreviewScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height,
             color: color.bgColor.withOpacity(0.8),
           ),
-          Positioned(
-            left: 18.w,
-            top: 50.w,
-            right: 18.w,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.arrow_back_rounded,
-                      color: color.white,
-                      size: 24.w,
-                    ),
-                    SizedBox(
-                      width: 16.w,
-                    ),
-                    Text(
-                      'Hanuman',
-                      style: TextStyle(
-                        color: color.white,
-                        fontSize: 21.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  width: 108.w,
-                  child: CommonSolidButton(
-                    title: "share",
-                    onButtonClick: () {},
-                    isBorder: true,
-                    borderRadius: BorderRadius.circular(40.r),
-                    borderColor: color.white.withOpacity(0.18),
-                    borderWidth: 1.w,
-                    fillColor: color.white.withOpacity(0.2),
-                    icon: Icon(
-                      Icons.share,
-                      color: color.white,
-                    ),
-                    textStyle: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                        color: color.white),
-                    padding: EdgeInsets.symmetric(vertical: 9.w),
-                  ),
-                )
-              ],
-            ),
-          ),
+          ImagePreviewAppBar(color: color),
           Positioned(
             top: 240.w,
             bottom: 240.w,
@@ -123,6 +72,74 @@ class ImagePreviewScreen extends StatelessWidget {
                NoWatermarkBtn()
               ],
             )
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class ImagePreviewAppBar extends StatelessWidget {
+  const ImagePreviewAppBar({
+    super.key,
+    required this.color,
+  });
+
+  final MonixColors color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: 18.w,
+      top: 50.w,
+      right: 18.w,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: () => context.pop(),
+                child: Icon(
+                  Icons.arrow_back_rounded,
+                  color: color.white,
+                  size: 24.w,
+                ),
+              ),
+              SizedBox(
+                width: 16.w,
+              ),
+              Text(
+                'Hanuman',
+                style: TextStyle(
+                  color: color.white,
+                  fontSize: 21.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            width: 108.w,
+            child: CommonSolidButton(
+              title: "share",
+              onButtonClick: () {},
+              isBorder: true,
+              borderRadius: BorderRadius.circular(40.r),
+              borderColor: color.white.withOpacity(0.18),
+              borderWidth: 1.w,
+              fillColor: color.white.withOpacity(0.2),
+              icon: Icon(
+                Icons.share,
+                color: color.white,
+              ),
+              textStyle: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: color.white),
+              padding: EdgeInsets.symmetric(vertical: 9.w),
+            ),
           )
         ],
       ),

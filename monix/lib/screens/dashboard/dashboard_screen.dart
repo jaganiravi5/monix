@@ -26,8 +26,9 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late final List<Widget> _screens = [
     HomeScreen(),
-    MonixAiScreen(),
+
     SearchScreen(),
+    MonixAiScreen(),
     SavedScreen(),
   ];
   int selectedIndex = 0;

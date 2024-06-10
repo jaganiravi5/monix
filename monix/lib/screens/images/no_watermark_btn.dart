@@ -13,8 +13,9 @@ class NoWatermarkBtn extends StatelessWidget {
       child: Stack(
         children: [
           Container(
+            // height: 52.w,
             // width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(vertical: 16.w,horizontal: 12.w),
+            padding: EdgeInsets.symmetric(vertical: 10.w,horizontal: 12.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14.w),
               gradient: CommonUtills.getGradient(context: context),

@@ -41,7 +41,7 @@ class NewImagesWidget extends StatelessWidget {
           height: 10.h,
         ),
         SizedBox(
-          height: 100,
+          height: 120.w,
           child: ListView.separated(
             itemCount: 10,
             scrollDirection: Axis.horizontal,
@@ -53,7 +53,7 @@ class NewImagesWidget extends StatelessWidget {
             ),
             separatorBuilder: (context, index) {
               return SizedBox(
-                width: 12,
+                width: 12.w,
               );
             },
             itemBuilder: (context, index) {

@@ -21,6 +21,10 @@ class $AssetsIconsGen {
   /// File path: assets/icons/home.svg
   SvgGenImage get home => const SvgGenImage('assets/icons/home.svg');
 
+  /// File path: assets/icons/home_unfill.svg
+  SvgGenImage get homeUnfill =>
+      const SvgGenImage('assets/icons/home_unfill.svg');
+
   /// File path: assets/icons/idea.svg
   SvgGenImage get idea => const SvgGenImage('assets/icons/idea.svg');
 
@@ -72,6 +76,7 @@ class $AssetsIconsGen {
   List<dynamic> get values => [
         camera,
         home,
+        homeUnfill,
         idea,
         menu,
         microphone,
