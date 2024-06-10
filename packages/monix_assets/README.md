@@ -21,7 +21,8 @@ For assets generation :
 ```console
 dart pub global activate flutter_gen
 
-export PATH="$PATH":"$HOME/.pub-cache/bin
+export PATH="$PATH":"$HOME/.pub-cache/bin"
+export PATH="$PATH":"%LOCALAPPDATA%\Pub\Cache\bin"
 ```
 
 **step 2.** Put the assets which you need to access all over the app inside (packages/medica_assets/assets/)

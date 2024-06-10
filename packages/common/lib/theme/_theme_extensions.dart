@@ -14,6 +14,7 @@ class MonixColors extends ThemeExtension<MonixColors> {
     required this.secondary1,
     required this.secondary2,
     required this.bgSolidColor,
+    required this.borderColor,
   });
 
   final Color primary;
@@ -27,6 +28,7 @@ class MonixColors extends ThemeExtension<MonixColors> {
   final Color secondary1;
   final Color secondary2;
   final Color bgSolidColor;
+  final Color borderColor;
 
   @override
   MonixColors copyWith() {
@@ -59,6 +61,7 @@ MonixColors myColorsExtension = const MonixColors(
   secondary1: Color(0xFFEC202A),
   secondary2: Color(0xffD74011),
   bgSolidColor: Color(0xff261C39),
+  borderColor: Color(0xFF4F3D73)
 );
 
 extension MonixColorsExtensions on ThemeData {

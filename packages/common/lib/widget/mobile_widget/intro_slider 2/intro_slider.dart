@@ -98,6 +98,7 @@ class _IntroSliderState extends State<IntroSlider> {
                         Expanded(
                           child: CommonSolidButton(
                             title: StringManager.skip,
+                            isBorder: false,
                             onButtonClick: () => widget.onSkipClick(),
                           ),
                         ),
@@ -112,7 +113,9 @@ class _IntroSliderState extends State<IntroSlider> {
                         )
                       ],
                     )
-                  : CommonButton(title: StringManager.getStarted, onButtonClick: () => widget.onGetStartedClick()),
+                  : CommonButton(
+                      title: StringManager.getStarted,
+                      onButtonClick: () => widget.onGetStartedClick()),
             ),
 
             // Positioned(

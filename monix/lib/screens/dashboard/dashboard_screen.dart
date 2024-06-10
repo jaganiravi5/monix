@@ -13,7 +13,8 @@ import 'package:monix/screens/search/search_screen.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: const DashboardScreen(),
         state: state,
       );
@@ -60,17 +61,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          // _screens[selectedIndex],
+          _screens[selectedIndex],
           Positioned(
-            bottom: 20.h,
+            bottom: 0,
             left: 0,
             right: 0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(25.r),
-              child: PrimaryBottomNavigation(
-                currentIndex: selectedIndex,
-                onTap: _onBottomNavItemTap,
-              ),
+            child: PrimaryBottomNavigation(
+              currentIndex: selectedIndex,
+              onTap: _onBottomNavItemTap,
             ),
           ),
         ],

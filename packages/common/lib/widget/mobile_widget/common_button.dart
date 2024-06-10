@@ -10,6 +10,8 @@ class CommonButton extends StatelessWidget {
     required this.title,
     required this.onButtonClick,
     this.textStyle,
+    this.borderRadius,
+    this.icon,
     //required this.theme,
   });
 
@@ -17,6 +19,8 @@ class CommonButton extends StatelessWidget {
   final String title;
   final void Function() onButtonClick;
   final TextStyle? textStyle;
+  final BorderRadius? borderRadius;
+  final Widget? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +30,10 @@ class CommonButton extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            width: MediaQuery.of(context).size.width,
+            // width: MediaQuery.of(context).size.width,
             padding: padding ?? EdgeInsets.symmetric(vertical: 16.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14.w),
+              borderRadius: borderRadius ?? BorderRadius.circular(14.w),
               gradient: CommonUtills.getGradient(context: context),
               boxShadow: [
                 BoxShadow(
@@ -41,14 +45,21 @@ class CommonButton extends StatelessWidget {
               ],
             ),
             child: Center(
-              child: Text(
-                title,
-                style: textStyle ??
-                    TextStyle(
-                      color: theme.white,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
-                    ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  icon ?? SizedBox.shrink(),
+                  Text(
+                    title,
+                    style: textStyle ??
+                        TextStyle(
+                          color: theme.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -87,46 +98,68 @@ class CommonSolidButton extends StatelessWidget {
     this.padding,
     required this.title,
     required this.onButtonClick,
+    required this.isBorder,
+    this.borderColor,
     this.textStyle,
-    //required this.theme,
+    this.borderWidth,
+    this.icon,  this.fillColor, this.borderRadius,
   });
 
   final EdgeInsetsGeometry? padding;
   final String title;
+  final bool isBorder;
   final void Function() onButtonClick;
   final TextStyle? textStyle;
+  final Color? borderColor;
+  final double? borderWidth;
+  final Widget? icon;
+  final Color? fillColor;final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).monixColors;
     return InkWell(
+      borderRadius: BorderRadius.circular(14.w),
       onTap: () => onButtonClick(),
       child: Stack(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
             padding: padding ?? EdgeInsets.symmetric(vertical: 16.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14.w),
-              color: theme.bgSolidColor,
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: theme.secondary1.withOpacity(0.17),
-              //     spreadRadius: 5,
-              //     blurRadius: 48,
-              //     offset: const Offset(0, 16),
-              //   ),
-              // ],
-            ),
-            child: Center(
-              child: Text(
-                title,
-                style: textStyle ??
-                    TextStyle(
-                      color: theme.white,
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w600,
+            decoration: isBorder
+                ? BoxDecoration(
+                    borderRadius:borderRadius?? BorderRadius.circular(14.w),
+                    // color: theme.bgSolidColor,
+                    border: Border.all(
+                      color: borderColor ?? Colors.white,
+                      width: borderWidth ?? 1.h,
                     ),
+                    color: fillColor??Colors.transparent
+                  )
+                : BoxDecoration(
+                    borderRadius: borderRadius??BorderRadius.circular(14.w),
+                    color:fillColor?? theme.bgSolidColor,
+                  ),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  icon ?? SizedBox.shrink(),
+                  icon != null
+                      ? SizedBox(
+                          width: 8.h,
+                        )
+                      : SizedBox.shrink(),
+                  Text(
+                    title,
+                    style: textStyle ??
+                        TextStyle(
+                          color: theme.white,
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ],
               ),
             ),
           ),

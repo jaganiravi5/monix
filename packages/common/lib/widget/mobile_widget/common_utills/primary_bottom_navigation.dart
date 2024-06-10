@@ -1,5 +1,6 @@
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:monix_assets/monix_assets.dart';
 
 class PrimaryBottomNavigation extends StatefulWidget {
@@ -13,7 +14,8 @@ class PrimaryBottomNavigation extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<PrimaryBottomNavigation> createState() => _PrimaryBottomNavigationState();
+  State<PrimaryBottomNavigation> createState() =>
+      _PrimaryBottomNavigationState();
 }
 
 class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
@@ -28,10 +30,7 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
         horizontal: 18.w,
       ),
       decoration: BoxDecoration(
-        color: colors.primary,
-        borderRadius: BorderRadius.all(
-          Radius.circular(50.r),
-        ),
+        color: colors.bgColor,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -43,10 +42,14 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
               });
             },
             child: _menuItem(
+              content: context,
+              title: StringManager.home,
               icon: icons.home.svg(
                 width: 30.w,
                 height: 30.w,
-                color: widget.currentIndex == 0 ? colors.primary : colors.secondary,
+                color: widget.currentIndex == 0
+                    ? colors.secondary1
+                    : colors.grey500,
               ),
               isCurrentIndex: widget.currentIndex == 0,
             ),
@@ -58,8 +61,12 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
               });
             },
             child: _menuItem(
+              content: context,
+              title: StringManager.search,
               icon: icons.search.svg(
-                color: widget.currentIndex == 1 ? colors.primary : colors.secondary,
+                color: widget.currentIndex == 1
+                    ? colors.secondary1
+                    : colors.grey500,
               ),
               isCurrentIndex: widget.currentIndex == 1,
             ),
@@ -71,11 +78,15 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
               });
             },
             child: _menuItem(
+              content: context,
+              title: StringManager.monixAi,
               icon: icons.monixAi.svg(
                 width: 24.w,
                 height: 24.w,
                 fit: BoxFit.cover,
-                color: widget.currentIndex == 2 ? colors.primary : colors.secondary,
+                color: widget.currentIndex == 2
+                    ? colors.secondary1
+                    : colors.grey500,
               ),
               isCurrentIndex: widget.currentIndex == 2,
             ),
@@ -90,8 +101,13 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
               });
             },
             child: _menuItem(
+              content: context
+              ,
+              title: StringManager.saved,
               icon: icons.saved.svg(
-                color: widget.currentIndex == 3 ? colors.primary : colors.secondary,
+                color: widget.currentIndex == 3
+                    ? colors.secondary1
+                    : colors.grey500,
               ),
               isCurrentIndex: widget.currentIndex == 3,
             ),
@@ -104,20 +120,32 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
 
   Widget _menuItem({
     required Widget icon,
+    required String title,
     required bool isCurrentIndex,
+    required BuildContext content
   }) {
-    return SizedBox(
-      height: 40.w,
-      width: 40.w,
+    final color = Theme.of(context).monixColors;
+        return SizedBox(
+      // height: 40.w,
+      // width: 40.w,
       child: Container(
-        height: 34.w,
-        width: 34.w,
-        decoration: BoxDecoration(
-          color: isCurrentIndex ? Colors.white : Colors.transparent, // Update background color
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: UnconstrainedBox(
-          child: icon,
+        // height: 34.w,
+        // width: 34.w,
+
+        child: Column(
+          children: [
+            icon,
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+                color: isCurrentIndex
+                    ? color.secondary1
+                    : color.grey500,
+              ),
+            )
+          ],
         ),
       ),
     );

@@ -6,4 +6,7 @@ class AppRoutesPath {
   static const monixAiScreen = '/monixAiScreen';
   static const searchScreen = '/searchScreen';
   static const savedScreen = '/savedScreen';
+  static const allCategoryScreen = '/allCategoryScreen';
+  static const imageListScreen = '/imageListScreen';
+  static const imagePreviewScreen = '/imagePreviewScreen';
 }
