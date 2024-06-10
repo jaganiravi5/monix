@@ -21,12 +21,28 @@ class $AssetsIconsGen {
   /// File path: assets/icons/home.svg
   SvgGenImage get home => const SvgGenImage('assets/icons/home.svg');
 
+  /// File path: assets/icons/idea.svg
+  SvgGenImage get idea => const SvgGenImage('assets/icons/idea.svg');
+
+  /// File path: assets/icons/menu.svg
+  SvgGenImage get menu => const SvgGenImage('assets/icons/menu.svg');
+
   /// File path: assets/icons/microphone.png
   AssetGenImage get microphone =>
       const AssetGenImage('assets/icons/microphone.png');
 
   /// File path: assets/icons/monixAi.svg
   SvgGenImage get monixAi => const SvgGenImage('assets/icons/monixAi.svg');
+
+  /// File path: assets/icons/monix_ai_fill.svg
+  SvgGenImage get monixAiFill =>
+      const SvgGenImage('assets/icons/monix_ai_fill.svg');
+
+  /// File path: assets/icons/no_image.svg
+  SvgGenImage get noImage => const SvgGenImage('assets/icons/no_image.svg');
+
+  /// File path: assets/icons/portrait.svg
+  SvgGenImage get portrait => const SvgGenImage('assets/icons/portrait.svg');
 
   /// File path: assets/icons/recordings.svg
   SvgGenImage get recordings =>
@@ -35,8 +51,18 @@ class $AssetsIconsGen {
   /// File path: assets/icons/saved.svg
   SvgGenImage get saved => const SvgGenImage('assets/icons/saved.svg');
 
+  /// File path: assets/icons/saved_fill.svg
+  SvgGenImage get savedFill => const SvgGenImage('assets/icons/saved_fill.svg');
+
   /// File path: assets/icons/search.svg
   SvgGenImage get search => const SvgGenImage('assets/icons/search.svg');
+
+  /// File path: assets/icons/search_fill.svg
+  SvgGenImage get searchFill =>
+      const SvgGenImage('assets/icons/search_fill.svg');
+
+  /// File path: assets/icons/square.svg
+  SvgGenImage get square => const SvgGenImage('assets/icons/square.svg');
 
   /// File path: assets/icons/stop_recording.png
   AssetGenImage get stopRecording =>
@@ -46,11 +72,19 @@ class $AssetsIconsGen {
   List<dynamic> get values => [
         camera,
         home,
+        idea,
+        menu,
         microphone,
         monixAi,
+        monixAiFill,
+        noImage,
+        portrait,
         recordings,
         saved,
+        savedFill,
         search,
+        searchFill,
+        square,
         stopRecording
       ];
 }
@@ -62,25 +96,28 @@ class $AssetsImagesGen {
   AssetGenImage get buttonBG =>
       const AssetGenImage('assets/images/buttonBG.png');
 
+  /// File path: assets/images/generating_ai.png
+  AssetGenImage get generatingAi =>
+      const AssetGenImage('assets/images/generating_ai.png');
+
   /// File path: assets/images/image_placeholder.jpeg
   AssetGenImage get imagePlaceholder =>
       const AssetGenImage('assets/images/image_placeholder.jpeg');
 
-  /// File path: assets/images/onboard1.jpg
-  AssetGenImage get onboard1Jpg =>
-      const AssetGenImage('assets/images/onboard1.jpg');
-
   /// File path: assets/images/onboard1.png
-  AssetGenImage get onboard1Png =>
+  AssetGenImage get onboard1 =>
       const AssetGenImage('assets/images/onboard1.png');
 
   /// File path: assets/images/onboard2.png
   AssetGenImage get onboard2 =>
       const AssetGenImage('assets/images/onboard2.png');
 
+  /// File path: assets/images/star.png
+  AssetGenImage get star => const AssetGenImage('assets/images/star.png');
+
   /// List of all assets
   List<AssetGenImage> get values =>
-      [buttonBG, imagePlaceholder, onboard1Jpg, onboard1Png, onboard2];
+      [buttonBG, generatingAi, imagePlaceholder, onboard1, onboard2, star];
 }
 
 class MonixAssets {
