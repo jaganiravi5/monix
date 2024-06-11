@@ -9,4 +9,5 @@ class AppRoutesPath {
   static const allCategoryScreen = '/allCategoryScreen';
   static const imageListScreen = '/imageListScreen';
   static const imagePreviewScreen = '/imagePreviewScreen';
+  static const ideaScreen = '/ideaScreen';
 }

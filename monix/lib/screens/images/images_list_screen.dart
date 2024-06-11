@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:monix/monix.dart';
 import 'package:monix/router/custom_page_transition.dart';
 
+import '../../router/routes_name.dart';
+
 class ImageListScreen extends StatefulWidget {
   const ImageListScreen({super.key});
 
@@ -24,6 +26,7 @@ class _ImageListScreenState extends State<ImageListScreen> {
     return Scaffold(
       appBar: CommonAppBar(
         color: color,
+        onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         title: StringManager.allImages,
         leadingWidth: 40.w,
         icon: InkWell(

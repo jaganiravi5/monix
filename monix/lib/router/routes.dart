@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/category/all_category_screen.dart';
 import 'package:monix/screens/dashboard/dashboard_screen.dart';
+import 'package:monix/screens/dashboard/idea_screen.dart';
 import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix/screens/images/images_list_screen.dart';
 import 'package:monix/screens/onboard/onboard_screen.dart';
@@ -45,8 +46,12 @@ final routes = [
     path: AppRoutesPath.imageListScreen,
     pageBuilder: ImageListScreen.builder,
   ),
-   GoRoute(
+  GoRoute(
     path: AppRoutesPath.imagePreviewScreen,
     pageBuilder: ImagePreviewScreen.builder,
+  ),
+  GoRoute(
+    path: AppRoutesPath.ideaScreen,
+    pageBuilder: IdeaScreen.builder,
   ),
 ];

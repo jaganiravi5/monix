@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:monix_assets/monix_assets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../router/custom_page_transition.dart';
+import '../../router/routes_name.dart';
 
 class MonixAiScreen extends StatelessWidget {
   const MonixAiScreen({super.key});
@@ -24,7 +25,9 @@ class MonixAiScreen extends StatelessWidget {
     final color = Theme.of(context).monixColors;
     return Scaffold(
       backgroundColor: color.bgColor,
+
       appBar: CommonAppBar(
+        onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         color: color,
         title: StringManager.monixAi,
         text: Padding(

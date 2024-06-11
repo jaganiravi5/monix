@@ -8,6 +8,8 @@ import 'package:monix/screens/search/search.dart';
 import 'package:monix_assets/monix_assets.dart';
 import 'package:network/network.dart';
 
+import '../../router/routes_name.dart';
+
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -31,6 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
         color: color,
+        onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         title: StringManager.exploreImg,
         text: Padding(
           padding: EdgeInsets.only(left: 20.w),

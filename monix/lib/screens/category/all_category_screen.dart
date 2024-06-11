@@ -8,8 +8,7 @@ import 'package:monix/screens/images/images_list_screen.dart';
 class AllCategoryScreen extends StatelessWidget {
   const AllCategoryScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
-      AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
         page: const AllCategoryScreen(),
         state: state,
       );
@@ -20,9 +19,10 @@ class AllCategoryScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
+        onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         color: color,
         title: StringManager.allCategory,
-        leadingWidth:44.w,
+        leadingWidth: 44.w,
         icon: InkWell(
           onTap: () => context.pop(),
           child: Icon(
@@ -35,7 +35,6 @@ class AllCategoryScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-          
             AllCategoryWIdget(
               onTap: () => context.push(AppRoutesPath.imageListScreen),
             ),
@@ -48,6 +47,7 @@ class AllCategoryScreen extends StatelessWidget {
 
 class AllCategoryWIdget extends StatelessWidget {
   const AllCategoryWIdget({super.key, required this.onTap});
+
   final void Function() onTap;
 
   @override

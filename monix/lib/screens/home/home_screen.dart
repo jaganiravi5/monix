@@ -1,6 +1,7 @@
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/home/all_images_widget.dart';
 import 'package:monix/screens/home/category_widget.dart';
 import 'package:monix/screens/home/new_images_widget.dart';
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
         color: color,
+        onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         title: StringManager.monixAiGods,
         text: Padding(
           padding: EdgeInsets.only(left: 20.w),

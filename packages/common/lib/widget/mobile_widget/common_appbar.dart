@@ -1,6 +1,7 @@
 import 'package:common/common.dart';
 import 'package:common/widget/mobile_widget/common_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:monix_assets/monix_assets.dart';
 
 class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -10,7 +11,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.icon,
     this.leadingWidth,
-    this.text,
+    this.text, required this.onSuffixBtnClick,
   });
 
   final MonixColors color;
@@ -18,6 +19,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? icon;
   final double? leadingWidth;
   final Widget? text;
+  final void Function() onSuffixBtnClick;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +53,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
                 padding: EdgeInsets.symmetric(
                   vertical: 9.h,
                 ),
-                onButtonClick: () {},
+                onButtonClick:() => onSuffixBtnClick(),
               ),
             ),
             SizedBox(

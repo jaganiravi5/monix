@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:monix_assets/monix_assets.dart';
 
 import '../../router/custom_page_transition.dart';
+import '../../router/routes_name.dart';
 
 class SavedScreen extends StatelessWidget {
   const SavedScreen({super.key});
@@ -20,6 +21,7 @@ class SavedScreen extends StatelessWidget {
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
         color: color,
+        onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         title: StringManager.monixAi,
         text: Padding(
           padding: EdgeInsets.only(left: 20.w),

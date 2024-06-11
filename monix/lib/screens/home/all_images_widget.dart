@@ -56,7 +56,7 @@ class AllImagesWidget extends StatelessWidget {
                   ),
                   child: InkWell(
                       onTap: () {
-                        context.push(AppRoutesPath.imagePreviewScreen);
+                          context.push(AppRoutesPath.imagePreviewScreen);
                       },
                       splashColor: Colors.transparent,
                       child: Center(child: Text('data'))),
