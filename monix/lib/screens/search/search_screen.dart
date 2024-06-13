@@ -65,7 +65,7 @@ class _SearchScreenState extends State<SearchScreen> {
             Consumer(builder: (context, ref, child) {
               return SearchBarField(
                 controller: searchController,
-                hintText: 'Searssssch',
+                hintText: StringManager.search,
                 onChanged: (value) async {
                   await _onSearch(value: value, ref: ref);
                 },

@@ -26,7 +26,7 @@ class StringManager {
   static const String allImages = 'All Images';
 
   //@AllCategoryScreen
-  static const String allCategory = 'All Category';
+  static const String allCategory = 'All Categories';
 
   static const String free = 'Free';
 
@@ -44,4 +44,6 @@ class StringManager {
   static const String allDownloadImg = 'All Downloaded images';
   static const String deleteAll = 'Delete all';
   static const String noImg = 'No images';
+
+  static const String downloadImg = 'Download Image';
 }

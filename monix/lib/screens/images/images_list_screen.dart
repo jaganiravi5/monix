@@ -19,7 +19,8 @@ class ImageListScreen extends StatefulWidget {
 }
 
 class _ImageListScreenState extends State<ImageListScreen> {
-  bool isPortraitSelected = true;
+  bool isPortraitSelected = false;
+
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
@@ -42,30 +43,37 @@ class _ImageListScreenState extends State<ImageListScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 20.w,
-            ),
-            imageSizeWidget(
-              isTitle: false,
-              portraitSelected: isPortraitSelected,
-              onPortraitClick: () {
-                isPortraitSelected = !isPortraitSelected;
-                setState(() {});
-              },
-              onSquareClick: () {
-                isPortraitSelected = !isPortraitSelected;
-                setState(() {
-
-                });
-              },
-            ),
+            // SizedBox(
+            //   height: 20.w,
+            // ),
+            // ImageSizeWidget(
+            //   isTitle: false,
+            //   portraitSelected: isPortraitSelected,
+            //   onPortraitClick: () {
+            //     isPortraitSelected = !isPortraitSelected;
+            //     setState(() {});
+            //   },
+            //   onSquareClick: () {
+            //     isPortraitSelected = !isPortraitSelected;
+            //     setState(() {});
+            //   },
+            // ),
             SizedBox(
               height: 20.w,
             ),
             AllImagesWidget(
               isTitle: false,
               portraitSel: isPortraitSelected,
-            )
+              onPortraitTap: () {
+                isPortraitSelected = !isPortraitSelected;
+                setState(() {});
+              },
+              onSquareTap: () {
+                isPortraitSelected = !isPortraitSelected;
+                setState(() {});
+              },
+              onImageTap: () => context.push(AppRoutesPath.imagePreviewScreen, extra: isPortraitSelected),
+            ),
           ],
         ),
       ),

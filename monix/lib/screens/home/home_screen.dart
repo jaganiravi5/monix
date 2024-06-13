@@ -22,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isPortraitSelected = true;
+  bool isPortraitSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -62,29 +62,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CategoryWidget(color: color),
-                  SizedBox(height: 32.h),
-                  imageSizeWidget(
-                    isTitle: true,
-                    onPortraitClick: () {
-                      isPortraitSelected = !isPortraitSelected;
-                      setState(() {});
-                    },
-                    onSquareClick: () {
-                      isPortraitSelected = !isPortraitSelected;
-                      setState(() {});
-                    },
-                    portraitSelected: isPortraitSelected,
-                  ),
+
                   SizedBox(
-                    height: 38.h,
+                    height: 20.w,
                   ),
-                  NewImagesWidget(),
-                  SizedBox(
-                    height: 38.h,
-                  ),
+                  // NewImagesWidget(),
+                  // SizedBox(
+                  //   height: 38.h,
+                  // ),
                   AllImagesWidget(
                     isTitle: true,
                     portraitSel: isPortraitSelected,
+                    onPortraitTap: () {
+                      isPortraitSelected = !isPortraitSelected;
+                      setState(() {});
+                    },
+                    onSquareTap: () {
+                      isPortraitSelected = !isPortraitSelected;
+                      setState(() {});
+                    },
+                    onImageTap: () => context.push(AppRoutesPath.imagePreviewScreen, extra: isPortraitSelected),
                   ),
                 ],
               ),
@@ -96,8 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class imageSizeWidget extends StatelessWidget {
-  const imageSizeWidget({
+class ImageSizeWidget extends StatelessWidget {
+  const ImageSizeWidget({
     super.key,
     required this.isTitle,
     required this.onPortraitClick,
@@ -113,80 +110,77 @@ class imageSizeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
-    return Padding(
-      padding: EdgeInsets.only(
-        right: 20.h,
-        left: 20.h,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          isTitle
-              ? Column(
-                  children: [
-                    Text(
-                      StringManager.imageSize,
-                      style: TextStyle(
-                        color: color.white,
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        isTitle
+            ? Column(
+                children: [
+                  Text(
+                    StringManager.imageSize,
+                    style: TextStyle(
+                      color: color.white,
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.w500,
                     ),
-                    SizedBox(height: 16.h),
-                  ],
-                )
-              : SizedBox.shrink(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: CommonSolidButton(
-                  title: "Portrait",
-                  isBorder: true,
-                  borderWidth: 0.5.h,
-                  borderColor: portraitSelected ? color.secondary1 : color.borderColor,
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  textStyle: TextStyle(
-                    fontSize: 16.sp,
-                    color: color.secondary1,
-                    fontWeight: FontWeight.w600,
                   ),
-                  onButtonClick: onPortraitClick,
-                  icon: icons.portrait.svg(
-                    width: 13.w,
-                    height: 17.w,
-                    fit: BoxFit.cover,
-                  ),
+                  SizedBox(height: 16.h),
+                ],
+              )
+            : SizedBox.shrink(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: CommonSolidButton(
+                title: "Square",
+                isBorder: true,
+                borderWidth: 0.5.h,
+                fillColor: portraitSelected ? Colors.transparent : color.secondary1,
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                borderColor: portraitSelected ? color.borderColor : color.secondary1,
+                textStyle: TextStyle(
+                  fontSize: 16.sp,
+                  color: portraitSelected ? color.secondary1 : color.white,
+                  fontWeight: FontWeight.w600,
                 ),
-              ),
-              SizedBox(
-                width: 14.h,
-              ),
-              Expanded(
-                child: CommonSolidButton(
-                  title: "Square",
-                  isBorder: true,
-                  borderWidth: 0.5.h,
-                  padding: EdgeInsets.symmetric(vertical: 12.h),
-                  borderColor: portraitSelected ? color.borderColor : color.secondary1,
-                  textStyle: TextStyle(
-                    fontSize: 16.sp,
-                    color: color.secondary1,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  onButtonClick: onSquareClick,
-                  icon: icons.square.svg(
+                onButtonClick: onSquareClick,
+                icon: icons.square.svg(
                     width: 13.w,
                     height: 13.w,
                     fit: BoxFit.cover,
-                  ),
+                    color: portraitSelected ? color.secondary1 : color.white),
+              ),
+            ),
+            SizedBox(
+              width: 14.h,
+            ),
+            Expanded(
+              child: CommonSolidButton(
+                title: "Portrait",
+                isBorder: true,
+                borderWidth: 0.5.h,
+                fillColor: portraitSelected ? color.secondary1 : Colors.transparent,
+                borderColor: portraitSelected ? color.secondary1 : color.borderColor,
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                textStyle: TextStyle(
+                  fontSize: 16.sp,
+                  color: portraitSelected ? color.white : color.secondary1,
+                  fontWeight: FontWeight.w600,
+                ),
+                onButtonClick: onPortraitClick,
+                icon: icons.portrait.svg(
+                  width: 13.w,
+                  height: 17.w,
+                  fit: BoxFit.cover,
+                  color: portraitSelected ? color.white : color.secondary1,
                 ),
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

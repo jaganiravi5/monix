@@ -3,7 +3,9 @@ import 'package:common/widget/mobile_widget/common_utills/common_utills.dart';
 import 'package:flutter/material.dart';
 
 class NoWatermarkBtn extends StatelessWidget {
-  const NoWatermarkBtn({super.key});
+  const NoWatermarkBtn({super.key, required this.onBtnTap});
+
+  final void Function() onBtnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,7 @@ class NoWatermarkBtn extends StatelessWidget {
           Container(
             // height: 52.w,
             // width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.symmetric(vertical: 10.w,horizontal: 12.w),
+            padding: EdgeInsets.symmetric(vertical: 10.w, horizontal: 12.w),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(14.w),
               gradient: CommonUtills.getGradient(context: context),
@@ -29,7 +31,7 @@ class NoWatermarkBtn extends StatelessWidget {
               ],
             ),
             child: Row(
-                        mainAxisAlignment:MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   StringManager.noWatermark,
@@ -71,25 +73,28 @@ class NoWatermarkBtn extends StatelessWidget {
               ],
             ),
           ),
-          ClipRRect(
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(14.w),
-              topLeft: Radius.circular(14.w),
-            ),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: 52.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14.w),
-                gradient: LinearGradient(
-                  colors: [
-                    theme.white.withOpacity(0.29),
-                    theme.white.withOpacity(0.1),
-                    Colors.transparent,
-                  ], // Red to orange (adjust as needed)
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: const [0.0, 0.1, 0.2],
+          InkWell(
+            onTap: () => onBtnTap(),
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(14.w),
+                topLeft: Radius.circular(14.w),
+              ),
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 52.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14.w),
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.white.withOpacity(0.29),
+                      theme.white.withOpacity(0.1),
+                      Colors.transparent,
+                    ], // Red to orange (adjust as needed)
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.0, 0.1, 0.2],
+                  ),
                 ),
               ),
             ),

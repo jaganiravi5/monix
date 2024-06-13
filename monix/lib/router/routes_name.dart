@@ -10,4 +10,5 @@ class AppRoutesPath {
   static const imageListScreen = '/imageListScreen';
   static const imagePreviewScreen = '/imagePreviewScreen';
   static const ideaScreen = '/ideaScreen';
+  static const downloadImageScreen = '/downloadImageScreen';
 }

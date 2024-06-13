@@ -45,7 +45,7 @@ class SearchBarField extends StatelessWidget {
           fillColor: color.lightPrimary,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(
-              10.w,
+              14.w,
             ),
             borderSide: BorderSide.none,
           ),

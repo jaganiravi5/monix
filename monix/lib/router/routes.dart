@@ -3,6 +3,7 @@ import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/category/all_category_screen.dart';
 import 'package:monix/screens/dashboard/dashboard_screen.dart';
 import 'package:monix/screens/dashboard/idea_screen.dart';
+import 'package:monix/screens/images/download_image_screen.dart';
 import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix/screens/images/images_list_screen.dart';
 import 'package:monix/screens/onboard/onboard_screen.dart';
@@ -53,5 +54,9 @@ final routes = [
   GoRoute(
     path: AppRoutesPath.ideaScreen,
     pageBuilder: IdeaScreen.builder,
+  ),
+  GoRoute(
+    path: AppRoutesPath.downloadImageScreen,
+    pageBuilder: DownloadImageScreen.builder,
   ),
 ];

@@ -3,11 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/routes_name.dart';
 
+import 'home_screen.dart';
+
 class AllImagesWidget extends StatelessWidget {
-  const AllImagesWidget({super.key, required this.isTitle, required this.portraitSel});
+  const AllImagesWidget({
+    super.key,
+    required this.isTitle,
+    required this.portraitSel,
+    required this.onPortraitTap,
+    required this.onSquareTap, required this.onImageTap,
+  });
 
   final bool isTitle;
   final bool portraitSel;
+  final void Function() onPortraitTap;
+  final void Function() onSquareTap;
+  final void Function() onImageTap;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +46,21 @@ class AllImagesWidget extends StatelessWidget {
                   ],
                 )
               : SizedBox.shrink(),
+          ImageSizeWidget(
+            isTitle: false,
+            onPortraitClick: () => onPortraitTap(),
+            onSquareClick: () => onSquareTap(),
+            portraitSelected: portraitSel,
+          ),
+          SizedBox(
+            height: 24.w,
+          ),
           GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 4,
               mainAxisSpacing: 4,
-              childAspectRatio: portraitSel ? 9 / 14 : 1,
+              childAspectRatio: portraitSel ? 9 / 16 : 1,
             ),
             itemCount: 20,
             padding: EdgeInsets.only(bottom: 90.h),
@@ -55,9 +75,7 @@ class AllImagesWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: InkWell(
-                      onTap: () {
-                          context.push(AppRoutesPath.imagePreviewScreen);
-                      },
+                      onTap: () => onImageTap(),
                       splashColor: Colors.transparent,
                       child: Center(child: Text('data'))),
                 ),

@@ -51,9 +51,9 @@ class CategoryWidget extends StatelessWidget {
           height: 5,
         ),
         SizedBox(
-          height: 100,
+          height: 120.w,
           child: ListView.separated(
-            itemCount: 10,
+            itemCount: 4,
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,
             padding: EdgeInsets.only(
@@ -62,17 +62,30 @@ class CategoryWidget extends StatelessWidget {
             ),
             separatorBuilder: (context, index) {
               return SizedBox(
-                width: 12,
+                width: 16.w,
               );
             },
             itemBuilder: (context, index) {
-              return Container(
-                // height: 20,
-                width: 71,
-                decoration:
-                    BoxDecoration(color: color.white, shape: BoxShape.circle),
+              return Column(
+                children: [
+                  Container(
+                    height: 71.w,
+                    width: 71.w,
+                    decoration: BoxDecoration(color: color.white, shape: BoxShape.circle),
+                  ),
+                  SizedBox(
+                    height: 13.w,
+                  ),
+                  Text(
+                    'Hanuman',
+                    style: TextStyle(
+                      color: color.grey500,
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  )
+                ],
               );
-              ;
             },
           ),
         ),
