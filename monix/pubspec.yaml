@@ -45,6 +45,7 @@ dependencies:
   url_launcher: ^6.3.0
 
   flutter_riverpod: ^2.5.1
+  image_watermark: ^0.1.0
 
 dev_dependencies:
   flutter_test:

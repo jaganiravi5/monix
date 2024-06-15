@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix/router/routes_name.dart';
-import 'package:monix/screens/images/images_list_screen.dart';
 
 class AllCategoryScreen extends StatelessWidget {
   const AllCategoryScreen({super.key});
@@ -106,6 +105,6 @@ class AllCategoryWIdget extends StatelessWidget {
         ],
       ),
     );
-    ;
+    
   }
 }
