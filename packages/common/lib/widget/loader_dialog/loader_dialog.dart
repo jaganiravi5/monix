@@ -9,9 +9,7 @@ showLoadingDialog(BuildContext context, bool status) {
         context: context,
         barrierColor: Colors.transparent,
         builder: (BuildContext context) {
-          return WillPopScope(
-              onWillPop: () => Future.value(false),
-              child: const CustomProgressIndicator());
+          return WillPopScope(onWillPop: () => Future.value(false), child: const CustomProgressIndicator());
         });
   } else if (status == false) {
     Navigator.of(context).pop();
@@ -28,15 +26,15 @@ class CustomProgressIndicator extends StatefulWidget {
 class CustomProgressIndicatorState extends State<CustomProgressIndicator> {
   @override
   Widget build(BuildContext context) {
-    final color =  Theme.of(context).monixColors;
+    final color = Theme.of(context).monixColors;
     return Container(
       color: Colors.transparent,
-      height: 200.0,
-      width: 200.0,
+      height: 200.w,
+      width: 200.w,
       alignment: Alignment.center,
       child: SpinKitCircle(
-        color: color.primary,
-        size: 70.0,
+        color: color.white,
+        size: 70.w,
       ),
     );
   }

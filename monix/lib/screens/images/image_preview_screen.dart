@@ -168,7 +168,7 @@ class ImagePreviewAppBar extends StatelessWidget {
             width: 108.w,
             child: CommonSolidButton(
               title: "share",
-              onButtonClick: () {},
+              onButtonClick: () => onSuffixClick(),
               isBorder: true,
               borderRadius: BorderRadius.circular(40.r),
               borderColor: color.white.withOpacity(0.18),

@@ -1,27 +1,37 @@
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/custom_page_transition.dart';
 
+import '../admob_ads/interstitial_ads.dart';
+import '../admob_ads/native_ads.dart';
 import '../router/routes_name.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
-        page: const SplashScreen(),
+        page: SplashScreen(),
         state: state,
       );
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
+  final InterstitialAds _interstitialAds = InterstitialAds();
+
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _interstitialAds.createInterstitialAd(ref: ref);
+      // _nativeAds.loadNativeAds(ref: ref);
+    });
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -53,6 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            CustomProgressIndicator(),
             // showLoadingDialog(context, true),
             Text(
               StringManager.splashDesc,

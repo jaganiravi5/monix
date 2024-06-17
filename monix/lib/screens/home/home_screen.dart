@@ -1,15 +1,17 @@
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/home/all_images_widget.dart';
 import 'package:monix/screens/home/category_widget.dart';
 import 'package:monix/screens/home/new_images_widget.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:network/category/provider/all_category_provider.dart';
 
 import '../../router/custom_page_transition.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
@@ -18,11 +20,18 @@ class HomeScreen extends StatefulWidget {
       );
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool isPortraitSelected = false;
+
+  void getAllCategory({required WidgetRef ref}) {
+    ref.read(allCategoryDataProvider.notifier).allCategory(
+      queryParams: {},
+      isSearch: false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
         color: color,
-        onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
+        onSuffixBtnClick: () =>
+            // getAllCategory(ref: ref),
+            context.push(AppRoutesPath.ideaScreen),
         title: StringManager.monixAiGods,
         text: Padding(
           padding: EdgeInsets.only(left: 20.w),

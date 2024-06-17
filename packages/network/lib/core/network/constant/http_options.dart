@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:network/core/core.dart';
 
 class HttpOptions {
-  static Map<String, dynamic> getHeaderWithToken() {
+  static Map<String, dynamic> getHeader({String? xAuth}) {
     return {
-      'Authorization': 'Token 13efc27ff423d28c3757ca30657462fb123e8a7a',
+      // "Authorization": "Bearer $xAuth" ?? '',
       'Accept': 'application/json',
       'Connection': 'keep-alive',
     };
@@ -12,14 +15,14 @@ class HttpOptions {
   static Options getOptions(Map<String, dynamic>? header) {
     return Options(
       headers: header ?? {},
-      contentType: 'application/octet-stream',
+      contentType: "application/json",
     );
   }
 
-  static Options getMultipartOptions(Map<String, dynamic>? header) {
+  static Options getMultipartOptions(Map<String, dynamic>? header, var formData) {
     return Options(
       headers: header ?? {},
-      contentType: 'multipart/form-data',
+      contentType: 'multipart/form-data; boundary=${formData.boundary}',
     );
   }
 
