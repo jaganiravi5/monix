@@ -1,5 +1,8 @@
 import 'package:common/common.dart';
+import 'package:common/widget/mobile_widget/primary_simmer_effect.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/routes_name.dart';
@@ -25,6 +28,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool isPortraitSelected = false;
+  DateTime? _lastPressedAt;
 
   void getAllCategory({required WidgetRef ref}) {
     ref.read(allCategoryDataProvider.notifier).allCategory(
@@ -62,45 +66,85 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           fit: BoxFit.contain,
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                top: 22.h,
+      body: DoubleBackToCloseApp(
+        snackBar: const SnackBar(
+          content: Text('Tap back again to leave'),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 22.h,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //PrimaryShimmerEffect(shimmerHeight: 30.h),
+                    CategoryWidget(
+                      color: color,
+                      ref: ref,
+                    ),
+        
+                    SizedBox(
+                      height: 20.w,
+                    ),
+                    // NewImagesWidget(),
+                    // SizedBox(
+                    //   height: 38.h,
+                    // ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: 20.h,
+                        left: 20.h,
+                      ),
+                      child: AllImagesWidget(
+                        isTitle: true,
+                        isLoading: true,
+                        portraitSel: isPortraitSelected,
+                        onPortraitTap: () {
+                          isPortraitSelected = !isPortraitSelected;
+                          setState(() {});
+                        },
+                        onSquareTap: () {
+                          isPortraitSelected = !isPortraitSelected;
+                          setState(() {});
+                        },
+                        onImageTap: () => context.push(AppRoutesPath.imagePreviewScreen, extra: isPortraitSelected),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CategoryWidget(color: color),
-
-                  SizedBox(
-                    height: 20.w,
-                  ),
-                  // NewImagesWidget(),
-                  // SizedBox(
-                  //   height: 38.h,
-                  // ),
-                  AllImagesWidget(
-                    isTitle: true,
-                    portraitSel: isPortraitSelected,
-                    onPortraitTap: () {
-                      isPortraitSelected = !isPortraitSelected;
-                      setState(() {});
-                    },
-                    onSquareTap: () {
-                      isPortraitSelected = !isPortraitSelected;
-                      setState(() {});
-                    },
-                    onImageTap: () => context.push(AppRoutesPath.imagePreviewScreen, extra: isPortraitSelected),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<bool> _onBackPressed() {
+    if (_lastPressedAt == null || DateTime.now().difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+      // Show a toast message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Theme.of(context).monixColors.secondary1,
+          content: Text(
+            "Press back again to exit",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+      );
+      // Update the time of the last back button press
+      _lastPressedAt = DateTime.now();
+      // Don't exit the app yet
+      return Future.value(false);
+    }
+    // Exit the app
+    SystemNavigator.pop();
+    return Future.value(true);
   }
 }
 

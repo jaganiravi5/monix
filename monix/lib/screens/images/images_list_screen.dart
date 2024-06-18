@@ -1,12 +1,14 @@
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/monix.dart';
 import 'package:monix/router/custom_page_transition.dart';
+import 'package:monix/screens/search/search.dart';
 
 import '../../router/routes_name.dart';
 
-class ImageListScreen extends StatefulWidget {
+class ImageListScreen extends ConsumerStatefulWidget {
   const ImageListScreen({super.key});
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
@@ -15,10 +17,10 @@ class ImageListScreen extends StatefulWidget {
       );
 
   @override
-  State<ImageListScreen> createState() => _ImageListScreenState();
+  ConsumerState<ImageListScreen> createState() => _ImageListScreenState();
 }
 
-class _ImageListScreenState extends State<ImageListScreen> {
+class _ImageListScreenState extends ConsumerState<ImageListScreen> {
   bool isPortraitSelected = false;
 
   @override
@@ -61,18 +63,25 @@ class _ImageListScreenState extends State<ImageListScreen> {
             SizedBox(
               height: 20.w,
             ),
-            AllImagesWidget(
-              isTitle: false,
-              portraitSel: isPortraitSelected,
-              onPortraitTap: () {
-                isPortraitSelected = !isPortraitSelected;
-                setState(() {});
-              },
-              onSquareTap: () {
-                isPortraitSelected = !isPortraitSelected;
-                setState(() {});
-              },
-              onImageTap: () => context.push(AppRoutesPath.imagePreviewScreen, extra: isPortraitSelected),
+            Padding(
+              padding: EdgeInsets.only(
+                right: 20.h,
+                left: 20.h,
+              ),
+              child: AllImagesWidget(
+                isTitle: false,
+                isLoading: ref.watch(tempLoadingProvider.notifier).state,
+                portraitSel: isPortraitSelected,
+                onPortraitTap: () {
+                  isPortraitSelected = !isPortraitSelected;
+                  setState(() {});
+                },
+                onSquareTap: () {
+                  isPortraitSelected = !isPortraitSelected;
+                  setState(() {});
+                },
+                onImageTap: () => context.push(AppRoutesPath.imagePreviewScreen, extra: isPortraitSelected),
+              ),
             ),
           ],
         ),

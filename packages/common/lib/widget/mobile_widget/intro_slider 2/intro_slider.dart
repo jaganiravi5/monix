@@ -105,7 +105,9 @@ class _IntroSliderState extends State<IntroSlider> {
                           child: CommonButton(
                             title: StringManager.next,
                             onButtonClick: () {
+                              carouselController.animateToPage(1);
                               currentPage=1;
+                              widget.onNextClick();
                               setState(() {
 
                               });

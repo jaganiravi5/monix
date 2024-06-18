@@ -1,10 +1,12 @@
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix/router/routes_name.dart';
+import 'package:monix/screens/search/search.dart';
 
-class AllCategoryScreen extends StatelessWidget {
+class AllCategoryScreen extends ConsumerStatefulWidget {
   const AllCategoryScreen({super.key});
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
@@ -12,6 +14,11 @@ class AllCategoryScreen extends StatelessWidget {
         state: state,
       );
 
+  @override
+  ConsumerState<AllCategoryScreen> createState() => _AllCategoryScreenState();
+}
+
+class _AllCategoryScreenState extends ConsumerState<AllCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
@@ -34,7 +41,8 @@ class AllCategoryScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            AllCategoryWIdget(
+            AllCategoryWidget(
+              isLoading: ref.watch(tempLoadingProvider.notifier).state,
               onTap: () => context.push(AppRoutesPath.imageListScreen),
             ),
           ],
@@ -44,10 +52,11 @@ class AllCategoryScreen extends StatelessWidget {
   }
 }
 
-class AllCategoryWIdget extends StatelessWidget {
-  const AllCategoryWIdget({super.key, required this.onTap});
+class AllCategoryWidget extends StatelessWidget {
+  const AllCategoryWidget({super.key, required this.onTap, required this.isLoading});
 
   final void Function() onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +84,7 @@ class AllCategoryWIdget extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
                 onTap: () => onTap(),
-                child: Column(
+                child: !isLoading?Column(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(50),
@@ -98,13 +107,15 @@ class AllCategoryWIdget extends StatelessWidget {
                       ),
                     )
                   ],
-                ),
+                ):PrimaryShimmerEffect(shimmerHeight: 30.w,
+                        // borderRad: 100.r,
+
+                      ),
               );
             },
           ),
         ],
       ),
     );
-    
   }
 }

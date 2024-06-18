@@ -26,6 +26,7 @@ class OnboardScreen extends ConsumerStatefulWidget {
 class _OnboardScreenState extends ConsumerState<OnboardScreen> {
   final InterstitialAds _interstitialAds = InterstitialAds();
   final NativeAds _nativeAds = NativeAds();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -43,13 +44,16 @@ class _OnboardScreenState extends ConsumerState<OnboardScreen> {
       body: IntroSlider(
           onComplete: () {},
           onGetStartedClick: () => context.go(AppRoutesPath.dashboardScreen),
-          onNextClick: () => context.go(AppRoutesPath.onboardScreen),
+          onNextClick: () {
+            //  context.go(AppRoutesPath.onboardScreen);
+          },
           onSkipClick: () {
             if (ref.read(interAdsProvider.notifier).state == null) {
               print('Warning: attempt to show interstitial before loaded.');
             } else {
               _interstitialAds.showInterstitialAd(
                 ref: ref,
+                context: context,
                 onAdDismissedFullScreenContent: (p0) {
                   context.go(AppRoutesPath.dashboardScreen);
                 },

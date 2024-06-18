@@ -95,3 +95,5 @@ class SearchBarField extends StatelessWidget {
 }
 
 final searchTextProvider = StateProvider<String>((ref) => "");
+
+final tempLoadingProvider = StateProvider<bool>((ref) => true);

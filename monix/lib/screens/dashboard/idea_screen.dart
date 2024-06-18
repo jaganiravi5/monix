@@ -1,4 +1,5 @@
 import 'package:common/common.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:monix/admob_ads/ad_helper.dart';
 import 'package:monix/admob_ads/native_ads.dart';
 import 'package:monix/router/custom_page_transition.dart';
+import 'package:monix_assets/monix_assets.dart';
 
 import '../../router/routes_name.dart';
 
@@ -24,6 +26,8 @@ class IdeaScreen extends ConsumerStatefulWidget {
 class _IdeaScreenState extends ConsumerState<IdeaScreen> {
   // NativeAd? nativeAd;
   bool _nativeAdIsLoaded = false;
+  final nameController = TextEditingController();
+  final ideaController = TextEditingController();
 
   @override
   void initState() {
@@ -78,9 +82,10 @@ class _IdeaScreenState extends ConsumerState<IdeaScreen> {
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
     return Scaffold(
+        backgroundColor: color.bgColor,
         appBar: CommonAppBar(
           color: color,
-          title: StringManager.idea,
+          title: StringManager.yourSuggestion,
           leadingWidth: 44.w,
           icon: InkWell(
             onTap: () => context.pop(),
@@ -90,21 +95,85 @@ class _IdeaScreenState extends ConsumerState<IdeaScreen> {
               size: 28.h,
             ),
           ),
+          suffixIcon: images.star.image(width: 24.w, height: 24.w, fit: BoxFit.cover),
           onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         ),
-        body: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAdIsLoaded
-            ? ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: 320, // minimum recommended width
-                  minHeight: 90, // minimum recommended height
-                  maxWidth: 400,
-                  maxHeight: 200,
+        body: Padding(
+          padding: EdgeInsets.only(
+            left: 20.w,
+            top: 22.w,
+            right: 20.w,
+            bottom: 22.w,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    StringManager.suggestionDesc,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16.sp,
+                      color: color.grey500.withOpacity(0.9),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30.w,
+                  ),
+                  CommonTextFormField(
+                    color: color,
+                    controller: nameController,
+                    hintText: StringManager.enterName,
+                  ),
+                  SizedBox(
+                    height: 18.w,
+                  ),
+                  CommonTextFormField(
+                    color: color,
+                    hintText: StringManager.yourSuggestionHint,
+                    controller: nameController,
+                    maxLines: 6,
+                  ),
+                ],
+              ),
+
+              CommonButton(
+                title: StringManager.submitSuggestion,
+                // icon: Padding(
+                //   padding: EdgeInsets.only(right: 5.w),
+                //   child: Icon(
+                //     Icons.file_download_outlined,
+                //     color: color.white,
+                //     size: 24.w,
+                //   ),
+                // ),
+                onButtonClick: () async {
+                  // _downloadMedia(bytes: watermarkedImgBytes, url: baseImgUrl);
+                },
+                textStyle: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: color.white,
                 ),
-                child: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAd != null
-                    ? AdWidget(ad: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAd!)
-                    : Text('No Data Found'),
               )
-            : CircularProgressIndicator()
+              // ref.watch(nativeAdNotifierProvider.notifier).state.nativeAdIsLoaded
+              //     ? ConstrainedBox(
+              //         constraints: BoxConstraints(
+              //           minWidth: 180.w, // minimum recommended width
+              //           minHeight: 190.w, // minimum recommended height
+              //           maxWidth: MediaQuery.of(context).size.width / 2,
+              //           maxHeight: 290.w,
+              //         ),
+              //         child: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAd != null
+              //             ? AdWidget(ad: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAd!)
+              //             : Text('No Data Found'),
+              //       )
+              //     : CircularProgressIndicator(),
+            ],
+          ),
+        )
         // ConstrainedBox(
         //   constraints:  BoxConstraints(
         //     minWidth: 320, // minimum recommended width

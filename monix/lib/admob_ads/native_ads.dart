@@ -38,14 +38,18 @@ class NativeAds {
         },
       ),
       request: const AdRequest(),
+      // nativeAdOptions: NativeAdOptions(mediaAspectRatio: MediaAspectRatio.square,),
 
       // Styling
       nativeTemplateStyle: NativeTemplateStyle(
+
         // Required: Choose a template.
         templateType: TemplateType.medium,
         // Optional: Customize the ad's style.
         mainBackgroundColor: Colors.purple,
+
         cornerRadius: 10.0,
+
         callToActionTextStyle: NativeTemplateTextStyle(
             textColor: Colors.cyan, backgroundColor: Colors.red, style: NativeTemplateFontStyle.monospace, size: 16.0),
         primaryTextStyle: NativeTemplateTextStyle(
@@ -56,6 +60,8 @@ class NativeAds {
             textColor: Colors.brown, backgroundColor: Colors.amber, style: NativeTemplateFontStyle.normal, size: 16.0),
       ),
     ).load();
+    ref.read(nativeAdNotifierProvider.notifier).state =
+        ref.read(nativeAdNotifierProvider.notifier).state.copyWith(isLoading: false);
   }
 }
 
@@ -99,6 +105,14 @@ class NativeAdNotifier extends StateNotifier<NativeAdState> {
   //     ),
   //   )..load();
   // }
+
+  void update({NativeAd? nativeAd, bool? isLoading, bool? nativeAdLoaded}) {
+    state = state.copyWith(
+      nativeAd: nativeAd,
+      isLoading: isLoading,
+      nativeAdIsLoaded: nativeAdLoaded,
+    );
+  }
 
   void disposeNativeAd() {
     state.nativeAd?.dispose();

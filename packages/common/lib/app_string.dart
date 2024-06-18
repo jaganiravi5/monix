@@ -46,4 +46,9 @@ class StringManager {
   static const String noImg = 'No images';
 
   static const String downloadImg = 'Download Image';
+  static const String yourSuggestion = 'Your Suggestions';
+  static const String submitSuggestion = 'Submit Suggestion';
+  static const String suggestionDesc = 'Please contact us if you have any new ideas that you would like to develop.';
+  static const String enterName = 'Enter Name';
+  static const String yourSuggestionHint = 'Write a idea...';
 }

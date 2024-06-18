@@ -11,6 +11,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.icon,
     this.leadingWidth,
+    this.suffixIcon,
     this.text, required this.onSuffixBtnClick,
   });
 
@@ -19,6 +20,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? icon;
   final double? leadingWidth;
   final Widget? text;
+  final Widget? suffixIcon;
   final void Function() onSuffixBtnClick;
 
   @override
@@ -32,7 +34,7 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
           leading: icon,
           leadingWidth: leadingWidth ?? 0,
           actions: [
-            SizedBox(
+          suffixIcon??  SizedBox(
               width: 86.h,
               height: 38.h,
               child: CommonButton(

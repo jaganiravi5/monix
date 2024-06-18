@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:common/common.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/custom_page_transition.dart';
@@ -10,8 +13,7 @@ import 'package:monix/screens/search/search_screen.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
-      AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
         page: const DashboardScreen(),
         state: state,
       );
@@ -23,12 +25,12 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late final List<Widget> _screens = [
     HomeScreen(),
-
     SearchScreen(),
     MonixAiScreen(),
     SavedScreen(),
   ];
   int selectedIndex = 0;
+  int _canPopCount = 0;
 
   Future<bool> Function()? onBackPressed({required BuildContext context}) {
     final theme = Theme.of(context).monixColors;
@@ -57,19 +59,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // key: _scaffoldKey,
       // drawer: PrimaryDrawer(scaffoldKey: _scaffoldKey),
       resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          _screens[selectedIndex],
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: PrimaryBottomNavigation(
-              currentIndex: selectedIndex,
-              onTap: _onBottomNavItemTap,
+      body: DoubleBackToCloseApp(
+        snackBar: const SnackBar(
+          content: Text('Tap back again to leave'),
+        ),
+        child: Stack(
+          children: [
+            _screens[selectedIndex],
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: PrimaryBottomNavigation(
+                currentIndex: selectedIndex,
+                onTap: _onBottomNavItemTap,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

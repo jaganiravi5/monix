@@ -1,14 +1,16 @@
 import 'package:common/common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:monix/screens/search/search.dart';
 import 'package:monix_assets/monix_assets.dart';
 
 import '../../router/custom_page_transition.dart';
 import '../../router/routes_name.dart';
 import '../home/home_screen.dart';
 
-class SavedScreen extends StatefulWidget {
+class SavedScreen extends ConsumerStatefulWidget {
   SavedScreen({super.key});
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
@@ -17,10 +19,10 @@ class SavedScreen extends StatefulWidget {
       );
 
   @override
-  State<SavedScreen> createState() => _SavedScreenState();
+  ConsumerState<SavedScreen> createState() => _SavedScreenState();
 }
 
-class _SavedScreenState extends State<SavedScreen> {
+class _SavedScreenState extends ConsumerState<SavedScreen> {
   final List<String> downloadedImage = ['jshs'];
 
   bool isPortraitSel = false;
@@ -57,7 +59,7 @@ class _SavedScreenState extends State<SavedScreen> {
           downloadedImage.isEmpty
               ? NoImageWidget(color: color)
               : SingleChildScrollView(
-                child: Padding(
+                  child: Padding(
                     padding: EdgeInsets.only(
                       top: 70.w,
                       left: 20.w,
@@ -65,6 +67,7 @@ class _SavedScreenState extends State<SavedScreen> {
                     ),
                     child: DownloadedImgWidget(
                       portraitSel: isPortraitSel,
+                      isLoading: ref.watch(tempLoadingProvider.notifier).state,
                       onImgTap: () {},
                       onPortraitTap: () {
                         isPortraitSel = !isPortraitSel;
@@ -76,7 +79,7 @@ class _SavedScreenState extends State<SavedScreen> {
                       },
                     ),
                   ),
-              ),
+                ),
           Positioned(
             left: 0,
             right: 0,
@@ -120,12 +123,14 @@ class DownloadedImgWidget extends StatelessWidget {
     required this.onSquareTap,
     required this.portraitSel,
     required this.onImgTap,
+    required this.isLoading,
   });
 
   final void Function() onPortraitTap;
   final void Function() onSquareTap;
   final void Function() onImgTap;
   final bool portraitSel;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -138,8 +143,11 @@ class DownloadedImgWidget extends StatelessWidget {
           onSquareClick: () => onSquareTap(),
           portraitSelected: portraitSel,
         ),
+        SizedBox(
+          height: 20.w,
+        ),
         GridView.builder(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 4,
@@ -151,19 +159,19 @@ class DownloadedImgWidget extends StatelessWidget {
           primary: false,
           shrinkWrap: true,
           itemBuilder: (BuildContext context, int index) {
-            return Card(
-              color: color.white,
-              elevation: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: InkWell(
-                    onTap: () => onImgTap(),
-                    splashColor: Colors.transparent,
-                    child: Center(child: Text('data'))),
-              ),
-            );
+            return !isLoading
+                ? Card(
+                    color: color.white,
+                    elevation: 3,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: InkWell(
+                          onTap: () => onImgTap(), splashColor: Colors.transparent, child: Center(child: Text('data'))),
+                    ),
+                  )
+                : PrimaryShimmerEffect(shimmerHeight: 40.w);
           },
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:monix/monix.dart';
 import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/category/all_category_screen.dart';
 import 'package:monix/screens/dashboard/dashboard_screen.dart';
@@ -6,7 +7,9 @@ import 'package:monix/screens/dashboard/idea_screen.dart';
 import 'package:monix/screens/images/download_image_screen.dart';
 import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix/screens/images/images_list_screen.dart';
+import 'package:monix/screens/monix_ai/monix_ai_screen.dart';
 import 'package:monix/screens/onboard/onboard_screen.dart';
+import 'package:monix/screens/saved/saved_screen.dart';
 
 import '../screens/splash_screen.dart';
 
@@ -25,11 +28,11 @@ final routes = [
   ),
   GoRoute(
     path: AppRoutesPath.homeScreen,
-    pageBuilder: DashboardScreen.builder,
+    pageBuilder: HomeScreen.builder,
   ),
   GoRoute(
     path: AppRoutesPath.monixAiScreen,
-    pageBuilder: DashboardScreen.builder,
+    pageBuilder: MonixAiScreen.builder,
   ),
   GoRoute(
     path: AppRoutesPath.searchScreen,
@@ -37,7 +40,7 @@ final routes = [
   ),
   GoRoute(
     path: AppRoutesPath.savedScreen,
-    pageBuilder: DashboardScreen.builder,
+    pageBuilder: SavedScreen.builder,
   ),
   GoRoute(
     path: AppRoutesPath.allCategoryScreen,

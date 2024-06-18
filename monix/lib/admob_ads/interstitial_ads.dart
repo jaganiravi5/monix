@@ -1,3 +1,4 @@
+import 'package:common/common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -34,6 +35,7 @@ class InterstitialAds {
 
   void showInterstitialAd({
     required WidgetRef ref,
+    required BuildContext context,
     required Function(InterstitialAd) onAdDismissedFullScreenContent,
     required Function(InterstitialAd, AdError) onAdFailedToShowFullScreenContent,
   }) {
@@ -46,9 +48,13 @@ class InterstitialAds {
       onAdShowedFullScreenContent: (InterstitialAd ad) => print('ad onAdShowedFullScreenContent.'),
       onAdDismissedFullScreenContent: (InterstitialAd ad) {
         print('$ad onAdDismissedFullScreenContent.');
-        ad.dispose();
-        createInterstitialAd(ref: ref);
+        // showLoadingDialog(context, true);
         onAdDismissedFullScreenContent(ad);
+
+        ad.dispose();
+
+        createInterstitialAd(ref: ref);
+        // showLoadingDialog(context, false);
       },
       onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
         print('$ad onAdFailedToShowFullScreenContent: $error');

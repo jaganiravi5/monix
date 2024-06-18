@@ -1,18 +1,23 @@
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/routes_name.dart';
+import 'package:monix/screens/search/search.dart';
 
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget({
     super.key,
     required this.color,
+    required this.ref,
   });
 
   final MonixColors color;
+  final WidgetRef ref;
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(tempLoadingProvider.notifier).state;
     return Column(
       children: [
         Padding(
@@ -52,7 +57,7 @@ class CategoryWidget extends StatelessWidget {
         ),
         SizedBox(
           height: 120.w,
-          child: ListView.separated(
+          child:isLoading?PrimaryShimmerEffect(shimmerHeight: 60.w): ListView.separated(
             itemCount: 4,
             scrollDirection: Axis.horizontal,
             shrinkWrap: true,

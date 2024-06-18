@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:monix/monix.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix/screens/search/search.dart';
 import 'package:monix_assets/monix_assets.dart';
@@ -10,7 +11,7 @@ import 'package:network/network.dart';
 
 import '../../router/routes_name.dart';
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
@@ -19,12 +20,13 @@ class SearchScreen extends StatefulWidget {
       );
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
   Timer? _debounce;
+  bool isPortraitSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,34 +57,70 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: Padding(
         padding: EdgeInsets.only(
-          top: 20.w,
+          //   top: 20.w,
           left: 20.w,
           right: 20.w,
-          bottom: 50.w,
+          // bottom: 50.w,
         ),
-        child: Column(
-          children: [
-            Consumer(builder: (context, ref, child) {
-              return SearchBarField(
-                controller: searchController,
-                hintText: StringManager.search,
-                onChanged: (value) async {
-                  await _onSearch(value: value, ref: ref);
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20.w,
+              ),
+              Consumer(
+                builder: (context, ref, child) {
+                  return SearchBarField(
+                    controller: searchController,
+                    hintText: StringManager.search,
+                    onChanged: (value) async {
+                      await _onSearch(value: value, ref: ref);
+                    },
+                    onSearchTap: () async {
+                      if (searchController.text.isNotEmpty) {
+                        // await _searchClientApiCall();
+                      }
+                    },
+                    onClear: () {
+                      // _searchClientList.clear();
+                      searchController.clear();
+                      setState(() {});
+                      ref.read(searchTextProvider.notifier).state = '';
+                    },
+                  );
                 },
-                onSearchTap: () async {
-                  if (searchController.text.isNotEmpty) {
-                    // await _searchClientApiCall();
-                  }
-                },
-                onClear: () {
-                  // _searchClientList.clear();
-                  searchController.clear();
-                  setState(() {});
-                  ref.read(searchTextProvider.notifier).state = '';
-                },
-              );
-            })
-          ],
+              ),
+              SizedBox(
+                height: 22.w,
+              ),
+              // ImageSizeWidget(
+              //   isTitle: false,
+              //   onPortraitClick: () {
+              //     isPortraitSelected = !isPortraitSelected;
+              //   },
+              //   onSquareClick: () {
+              //     isPortraitSelected = !isPortraitSelected;
+              //   },
+              //   portraitSelected: isPortraitSelected,
+              // ),
+              AllImagesWidget(
+                  isTitle: false,
+                  portraitSel: isPortraitSelected,
+                  onPortraitTap: () {
+                    isPortraitSelected = !isPortraitSelected;
+                    setState(() {});
+                  },
+                  onSquareTap: () {
+                    isPortraitSelected = !isPortraitSelected;
+                    setState(() {});
+                  },
+                  onImageTap: () {},
+                  isLoading: ref.watch(tempLoadingProvider.notifier).state),
+              SizedBox(
+                height: 20.w,
+              ),
+            ],
+          ),
         ),
       ),
     );
