@@ -8,6 +8,9 @@ import 'package:network/network.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
