@@ -50,6 +50,7 @@ dependencies:
   google_mobile_ads: ^5.1.0
   shimmer: ^3.0.0
   double_back_to_close_app: ^2.1.0
+  firebase_core: ^3.1.0
 
 dev_dependencies:
   flutter_test:
