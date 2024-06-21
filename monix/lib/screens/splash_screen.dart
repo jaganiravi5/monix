@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/custom_page_transition.dart';
+import 'package:monix_assets/monix_assets.dart';
 
 import '../admob_ads/interstitial_ads.dart';
 import '../admob_ads/native_ads.dart';
@@ -23,7 +24,6 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
   final InterstitialAds _interstitialAds = InterstitialAds();
-
 
   @override
   void initState() {
@@ -63,6 +63,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            images.splashLogo.image(
+              width: 200.w,
+              height: 200.w,
+              fit: BoxFit.fill,
+            ),
+            SizedBox(
+              height: 100.w,
+            ),
             CustomProgressIndicator(),
             // showLoadingDialog(context, true),
             Text(

@@ -117,12 +117,23 @@ class $AssetsImagesGen {
   AssetGenImage get onboard2 =>
       const AssetGenImage('assets/images/onboard2.png');
 
+  /// File path: assets/images/splash_logo.png
+  AssetGenImage get splashLogo =>
+      const AssetGenImage('assets/images/splash_logo.png');
+
   /// File path: assets/images/star.png
   AssetGenImage get star => const AssetGenImage('assets/images/star.png');
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [buttonBG, generatingAi, imagePlaceholder, onboard1, onboard2, star];
+  List<AssetGenImage> get values => [
+        buttonBG,
+        generatingAi,
+        imagePlaceholder,
+        onboard1,
+        onboard2,
+        splashLogo,
+        star
+      ];
 }
 
 class MonixAssets {

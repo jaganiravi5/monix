@@ -12,6 +12,7 @@ class AllCategoryDataNotifier extends StateNotifier<AllCategoryState> {
   int page = 1;
   int limit = 18;
   List<CategoryDataModel> listAllData = [];
+  List<CategoryDataModel> homePageCategoryData = [];
   bool isPagination = true;
 
   Future<void> allCategory({
@@ -24,26 +25,35 @@ class AllCategoryDataNotifier extends StateNotifier<AllCategoryState> {
 
     await allCategoryRepository
         .allCategoryRepo(
-      // queryParams: isSearch
-      //     ? {
-      //   "pagination[page]": page,
-      //   "pagination[pageSize]": limit,
-      //   "filters[name][\$contains]": searchText,
-      //   "sort[0]": "name:asc",
-      //
-      //
-      // }
-      //     : {
-      //   "pagination[page]": page,
-      //   "pagination[pageSize]": limit,
-      //   "sort[0]": "name:asc",
-      // },
-      // jwtToken: jwtToken,
-    )
+            // queryParams: isSearch
+            //     ? {
+            //   "pagination[page]": page,
+            //   "pagination[pageSize]": limit,
+            //   "filters[name][\$contains]": searchText,
+            //   "sort[0]": "name:asc",
+            //
+            //
+            // }
+            //     : {
+            //   "pagination[page]": page,
+            //   "pagination[pageSize]": limit,
+            //   "sort[0]": "name:asc",
+            // },
+            // jwtToken: jwtToken,
+            )
         .then(
       (data) {
         listAllData.clear();
         listAllData.addAll(data.categories!);
+        homePageCategoryData.clear();
+        listAllData.forEach((element) {
+          if (element.name == 'Hanuman' ||
+              element.name == 'Krishna' ||
+              element.name == 'Mahadev' ||
+              element.name == 'Ganesh') {
+            homePageCategoryData.add(element);
+          }
+        });
         // print('LoadingData $page ${listAllData.length}');
         state = state.copyWith(allCategory: data, isLoading: false, isLoadingMore: false);
       },
