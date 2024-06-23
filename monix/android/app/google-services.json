@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "305549396589",
+    "project_id": "monixai-78b0a",
+    "storage_bucket": "monixai-78b0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:305549396589:android:5b5ca397053bfa1544cd64",
+        "android_client_info": {
+          "package_name": "com.monix.monix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBo2gYET58VsZGTalwqUS94lSt9M_oGzXg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

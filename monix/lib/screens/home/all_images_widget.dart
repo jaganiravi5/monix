@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/routes_name.dart';
+import 'package:network/images/data/model/all_images_model.dart';
 
 import 'home_screen.dart';
 
@@ -14,7 +15,7 @@ class AllImagesWidget extends StatelessWidget {
     required this.onPortraitTap,
     required this.onSquareTap,
     required this.onImageTap,
-    required this.isLoading,
+    required this.isLoading,  this.imagesDataModel,
   });
 
   final bool isTitle;
@@ -23,6 +24,7 @@ class AllImagesWidget extends StatelessWidget {
   final void Function() onSquareTap;
   final void Function() onImageTap;
   final bool isLoading;
+  final List<ImagesDataModel>? imagesDataModel;
 
   @override
   Widget build(BuildContext context) {

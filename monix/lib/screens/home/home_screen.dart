@@ -11,13 +11,16 @@ import 'package:monix/screens/home/category_widget.dart';
 import 'package:monix/screens/home/new_images_widget.dart';
 import 'package:monix_assets/monix_assets.dart';
 import 'package:network/category/provider/all_category_provider.dart';
+import 'package:network/images/data/model/all_images_model.dart';
+import 'package:network/images/provider/all_images_provider.dart';
 
 import '../../router/custom_page_transition.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: const HomeScreen(),
         state: state,
       );
@@ -29,6 +32,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool isPortraitSelected = false;
   DateTime? _lastPressedAt;
+  List<ImagesDataModel>? imagesData;
 
   void getAllCategory({required WidgetRef ref}) {
     ref.read(allCategoryDataProvider.notifier).allCategory(
@@ -37,16 +41,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+   Future<void> getAllImages() async {
+    ref.read(allImagesDataProvider.notifier).page = 1;
+    ref.read(allImagesDataProvider.notifier).isPagination = true;
+
+   await ref
+        .read(allImagesDataProvider.notifier)
+        .allImages( isSearch: false, searchText: ''
+            // isSearch: false,
+            );
+  }
+
   @override
   Widget build(BuildContext context) {
+    imagesData = ref.watch(allImagesDataProvider.notifier).getAllImages();
+    print('LENGTH---->>>>>>>${imagesData!.length}');
+    final isLoading = ref.watch(allImagesDataProvider).isLoading;
+    final isLoadingMore = ref.watch(allImagesDataProvider).isLoadingMore;
+
     final color = Theme.of(context).monixColors;
     return Scaffold(
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
         color: color,
-        onSuffixBtnClick: () =>
-            // getAllCategory(ref: ref),
-            context.push(AppRoutesPath.ideaScreen),
+        onSuffixBtnClick: () => getAllImages(),
+        
+        // context.push(AppRoutesPath.ideaScreen),
         title: StringManager.monixAiGods,
         text: Padding(
           padding: EdgeInsets.only(left: 20.w),
@@ -85,7 +105,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       color: color,
                       ref: ref,
                     ),
-        
+
                     SizedBox(
                       height: 20.w,
                     ),
@@ -100,7 +120,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       child: AllImagesWidget(
                         isTitle: true,
-                        isLoading: true,
+                        imagesDataModel: imagesData,
+                        isLoading: isLoading,
                         portraitSel: isPortraitSelected,
                         onPortraitTap: () {
                           isPortraitSelected = !isPortraitSelected;
@@ -110,7 +131,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           isPortraitSelected = !isPortraitSelected;
                           setState(() {});
                         },
-                        onImageTap: () => context.push(AppRoutesPath.imagePreviewScreen, extra: isPortraitSelected),
+                        onImageTap: () => context.push(
+                            AppRoutesPath.imagePreviewScreen,
+                            extra: isPortraitSelected),
                       ),
                     ),
                   ],
@@ -124,7 +147,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<bool> _onBackPressed() {
-    if (_lastPressedAt == null || DateTime.now().difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+    if (_lastPressedAt == null ||
+        DateTime.now().difference(_lastPressedAt!) >
+            const Duration(seconds: 2)) {
       // Show a toast message to the user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -192,9 +217,11 @@ class ImageSizeWidget extends StatelessWidget {
                 title: "Square",
                 isBorder: true,
                 borderWidth: 0.5.h,
-                fillColor: portraitSelected ? Colors.transparent : color.secondary1,
+                fillColor:
+                    portraitSelected ? Colors.transparent : color.secondary1,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
-                borderColor: portraitSelected ? color.borderColor : color.secondary1,
+                borderColor:
+                    portraitSelected ? color.borderColor : color.secondary1,
                 textStyle: TextStyle(
                   fontSize: 16.sp,
                   color: portraitSelected ? color.secondary1 : color.white,
@@ -216,8 +243,10 @@ class ImageSizeWidget extends StatelessWidget {
                 title: "Portrait",
                 isBorder: true,
                 borderWidth: 0.5.h,
-                fillColor: portraitSelected ? color.secondary1 : Colors.transparent,
-                borderColor: portraitSelected ? color.secondary1 : color.borderColor,
+                fillColor:
+                    portraitSelected ? color.secondary1 : Colors.transparent,
+                borderColor:
+                    portraitSelected ? color.secondary1 : color.borderColor,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
                 textStyle: TextStyle(
                   fontSize: 16.sp,

@@ -36,7 +36,7 @@ _$CategoryDataModelImpl _$$CategoryDataModelImplFromJson(
       updatedAt: json['updatedAt'] == null
           ? null
           : DateTime.parse(json['updatedAt'] as String),
-      v: json['v'] as int?,
+      v: (json['v'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$CategoryDataModelImplToJson(

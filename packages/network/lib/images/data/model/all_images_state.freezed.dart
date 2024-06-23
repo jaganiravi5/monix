@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'all_category_state.dart';
+part of 'all_images_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,31 +15,31 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$AllCategoryState {
-  AllCategoryModel get allCategory => throw _privateConstructorUsedError;
+mixin _$AllImagesState {
+  AllImageModel get allImages => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
   bool get isLoadingMore => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $AllCategoryStateCopyWith<AllCategoryState> get copyWith =>
+  $AllImagesStateCopyWith<AllImagesState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AllCategoryStateCopyWith<$Res> {
-  factory $AllCategoryStateCopyWith(
-          AllCategoryState value, $Res Function(AllCategoryState) then) =
-      _$AllCategoryStateCopyWithImpl<$Res, AllCategoryState>;
+abstract class $AllImagesStateCopyWith<$Res> {
+  factory $AllImagesStateCopyWith(
+          AllImagesState value, $Res Function(AllImagesState) then) =
+      _$AllImagesStateCopyWithImpl<$Res, AllImagesState>;
   @useResult
-  $Res call({AllCategoryModel allCategory, bool isLoading, bool isLoadingMore});
+  $Res call({AllImageModel allImages, bool isLoading, bool isLoadingMore});
 
-  $AllCategoryModelCopyWith<$Res> get allCategory;
+  $AllImageModelCopyWith<$Res> get allImages;
 }
 
 /// @nodoc
-class _$AllCategoryStateCopyWithImpl<$Res, $Val extends AllCategoryState>
-    implements $AllCategoryStateCopyWith<$Res> {
-  _$AllCategoryStateCopyWithImpl(this._value, this._then);
+class _$AllImagesStateCopyWithImpl<$Res, $Val extends AllImagesState>
+    implements $AllImagesStateCopyWith<$Res> {
+  _$AllImagesStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -49,15 +49,15 @@ class _$AllCategoryStateCopyWithImpl<$Res, $Val extends AllCategoryState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? allCategory = null,
+    Object? allImages = null,
     Object? isLoading = null,
     Object? isLoadingMore = null,
   }) {
     return _then(_value.copyWith(
-      allCategory: null == allCategory
-          ? _value.allCategory
-          : allCategory // ignore: cast_nullable_to_non_nullable
-              as AllCategoryModel,
+      allImages: null == allImages
+          ? _value.allImages
+          : allImages // ignore: cast_nullable_to_non_nullable
+              as AllImageModel,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -71,47 +71,47 @@ class _$AllCategoryStateCopyWithImpl<$Res, $Val extends AllCategoryState>
 
   @override
   @pragma('vm:prefer-inline')
-  $AllCategoryModelCopyWith<$Res> get allCategory {
-    return $AllCategoryModelCopyWith<$Res>(_value.allCategory, (value) {
-      return _then(_value.copyWith(allCategory: value) as $Val);
+  $AllImageModelCopyWith<$Res> get allImages {
+    return $AllImageModelCopyWith<$Res>(_value.allImages, (value) {
+      return _then(_value.copyWith(allImages: value) as $Val);
     });
   }
 }
 
 /// @nodoc
-abstract class _$$AllCategoryStateImplCopyWith<$Res>
-    implements $AllCategoryStateCopyWith<$Res> {
-  factory _$$AllCategoryStateImplCopyWith(_$AllCategoryStateImpl value,
-          $Res Function(_$AllCategoryStateImpl) then) =
-      __$$AllCategoryStateImplCopyWithImpl<$Res>;
+abstract class _$$AllImagesStateImplCopyWith<$Res>
+    implements $AllImagesStateCopyWith<$Res> {
+  factory _$$AllImagesStateImplCopyWith(_$AllImagesStateImpl value,
+          $Res Function(_$AllImagesStateImpl) then) =
+      __$$AllImagesStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({AllCategoryModel allCategory, bool isLoading, bool isLoadingMore});
+  $Res call({AllImageModel allImages, bool isLoading, bool isLoadingMore});
 
   @override
-  $AllCategoryModelCopyWith<$Res> get allCategory;
+  $AllImageModelCopyWith<$Res> get allImages;
 }
 
 /// @nodoc
-class __$$AllCategoryStateImplCopyWithImpl<$Res>
-    extends _$AllCategoryStateCopyWithImpl<$Res, _$AllCategoryStateImpl>
-    implements _$$AllCategoryStateImplCopyWith<$Res> {
-  __$$AllCategoryStateImplCopyWithImpl(_$AllCategoryStateImpl _value,
-      $Res Function(_$AllCategoryStateImpl) _then)
+class __$$AllImagesStateImplCopyWithImpl<$Res>
+    extends _$AllImagesStateCopyWithImpl<$Res, _$AllImagesStateImpl>
+    implements _$$AllImagesStateImplCopyWith<$Res> {
+  __$$AllImagesStateImplCopyWithImpl(
+      _$AllImagesStateImpl _value, $Res Function(_$AllImagesStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? allCategory = null,
+    Object? allImages = null,
     Object? isLoading = null,
     Object? isLoadingMore = null,
   }) {
-    return _then(_$AllCategoryStateImpl(
-      allCategory: null == allCategory
-          ? _value.allCategory
-          : allCategory // ignore: cast_nullable_to_non_nullable
-              as AllCategoryModel,
+    return _then(_$AllImagesStateImpl(
+      allImages: null == allImages
+          ? _value.allImages
+          : allImages // ignore: cast_nullable_to_non_nullable
+              as AllImageModel,
       isLoading: null == isLoading
           ? _value.isLoading
           : isLoading // ignore: cast_nullable_to_non_nullable
@@ -126,15 +126,15 @@ class __$$AllCategoryStateImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AllCategoryStateImpl implements _AllCategoryState {
-  _$AllCategoryStateImpl(
-      {this.allCategory = const AllCategoryModel(),
+class _$AllImagesStateImpl implements _AllImagesState {
+  _$AllImagesStateImpl(
+      {this.allImages = const AllImageModel(),
       this.isLoading = true,
       this.isLoadingMore = true});
 
   @override
   @JsonKey()
-  final AllCategoryModel allCategory;
+  final AllImageModel allImages;
   @override
   @JsonKey()
   final bool isLoading;
@@ -144,16 +144,16 @@ class _$AllCategoryStateImpl implements _AllCategoryState {
 
   @override
   String toString() {
-    return 'AllCategoryState(allCategory: $allCategory, isLoading: $isLoading, isLoadingMore: $isLoadingMore)';
+    return 'AllImagesState(allImages: $allImages, isLoading: $isLoading, isLoadingMore: $isLoadingMore)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AllCategoryStateImpl &&
-            (identical(other.allCategory, allCategory) ||
-                other.allCategory == allCategory) &&
+            other is _$AllImagesStateImpl &&
+            (identical(other.allImages, allImages) ||
+                other.allImages == allImages) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.isLoadingMore, isLoadingMore) ||
@@ -162,30 +162,30 @@ class _$AllCategoryStateImpl implements _AllCategoryState {
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, allCategory, isLoading, isLoadingMore);
+      Object.hash(runtimeType, allImages, isLoading, isLoadingMore);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$AllCategoryStateImplCopyWith<_$AllCategoryStateImpl> get copyWith =>
-      __$$AllCategoryStateImplCopyWithImpl<_$AllCategoryStateImpl>(
+  _$$AllImagesStateImplCopyWith<_$AllImagesStateImpl> get copyWith =>
+      __$$AllImagesStateImplCopyWithImpl<_$AllImagesStateImpl>(
           this, _$identity);
 }
 
-abstract class _AllCategoryState implements AllCategoryState {
-  factory _AllCategoryState(
-      {final AllCategoryModel allCategory,
+abstract class _AllImagesState implements AllImagesState {
+  factory _AllImagesState(
+      {final AllImageModel allImages,
       final bool isLoading,
-      final bool isLoadingMore}) = _$AllCategoryStateImpl;
+      final bool isLoadingMore}) = _$AllImagesStateImpl;
 
   @override
-  AllCategoryModel get allCategory;
+  AllImageModel get allImages;
   @override
   bool get isLoading;
   @override
   bool get isLoadingMore;
   @override
   @JsonKey(ignore: true)
-  _$$AllCategoryStateImplCopyWith<_$AllCategoryStateImpl> get copyWith =>
+  _$$AllImagesStateImplCopyWith<_$AllImagesStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

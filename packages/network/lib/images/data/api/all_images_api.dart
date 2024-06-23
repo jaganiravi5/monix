@@ -17,6 +17,7 @@ class AllImagesApi {
   }) async {
     // final SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper(Preference());
     try {
+      print("---->>>>>>>>>>$queryParams");
       final Response res = await _dioClient.get(
         Endpoints.allImages,
         options: HttpOptions.getOptions(
@@ -24,7 +25,7 @@ class AllImagesApi {
               // sharedPreferenceHelper.authToken ?? '',
               ),
         ),
-        // queryParameters: queryParams,
+        queryParameters: queryParams,
       );
 
       return res.data;
