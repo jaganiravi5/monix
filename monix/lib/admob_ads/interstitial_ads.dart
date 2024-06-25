@@ -60,7 +60,7 @@ class InterstitialAds {
         print('$ad onAdFailedToShowFullScreenContent: $error');
         ad.dispose();
         createInterstitialAd(ref: ref);
-        onAdDismissedFullScreenContent(ad);
+        onAdFailedToShowFullScreenContent(ad,error);
       },
     );
     ref.read(interAdsProvider.notifier).state?.show();

@@ -5,42 +5,64 @@ import 'dart:typed_data';
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_watermark/image_watermark.dart';
+import 'package:network/network.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../router/custom_page_transition.dart';
 import 'image_preview_screen.dart';
 
-class DownloadImageScreen extends StatefulWidget {
+class DownloadImageScreen extends ConsumerStatefulWidget {
   const DownloadImageScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: const DownloadImageScreen(),
         state: state,
       );
 
   @override
-  State<DownloadImageScreen> createState() => _DownloadImageScreenState();
+  ConsumerState<DownloadImageScreen> createState() =>
+      _DownloadImageScreenState();
 }
 
-class _DownloadImageScreenState extends State<DownloadImageScreen> {
+class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
   var watermarkedImgBytes;
   Random random = Random();
-  String baseImgUrl = 'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg';
+  String baseImgUrl =
+      'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg';
 
   @override
   initState() {
     // TODO: implement initState
-    getWatermarkImg();
-    setState(() {});
+     
+
+    // WidgetsBinding.instance.addPostFrameCallback(
+      // (timeStamp) {
+        getWatermarkImg();
+      // },
+    // );
 
     super.initState();
   }
 
+//  void DisposableBuildContext(){
+// ref.read(watermarkLoadProvider.notifier).state = true;
+//   }
+
+  
+
   Future<void> getWatermarkImg() async {
-    Uint8List bytes = (await NetworkAssetBundle(Uri.parse(baseImgUrl)).load(baseImgUrl)).buffer.asUint8List();
+    // showLoadingDialog(context, true);
+    print('loader--------${ref.read(watermarkLoadProvider.notifier).state }');
+    // ref.read(watermarkLoadProvider.notifier).state = true;
+    Uint8List bytes =
+        (await NetworkAssetBundle(Uri.parse(baseImgUrl)).load(baseImgUrl))
+            .buffer
+            .asUint8List();
 
     Uint8List waterImgBytes = (await NetworkAssetBundle(Uri.parse(
                 'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
@@ -63,6 +85,9 @@ class _DownloadImageScreenState extends State<DownloadImageScreen> {
       //watermark position Y
       dstX: 190, //watermark position X
     );
+    setState(() {});
+    ref.read(watermarkLoadProvider.notifier).state = false;
+    // showLoadingDialog(context, false);
   }
 
   @override
@@ -99,31 +124,45 @@ class _DownloadImageScreenState extends State<DownloadImageScreen> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.r),
               child: Container(
-                width: MediaQuery.of(context).size.width / 2,
-                height: MediaQuery.of(context).size.height / 2,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: color.white,
-                      spreadRadius: 5,
-                      blurRadius: 48,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: watermarkedImgBytes == null
-                    ? SizedBox.shrink()
-                    : Image.memory(
-                        watermarkedImgBytes,
-                        fit: BoxFit.cover,
-                      ),
-                // Image.network(
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height / 2,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.white,
+                          spreadRadius: 5,
+                          blurRadius: 48,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                      color: color.bgColor),
+                  child: !ref.watch(watermarkLoadProvider.notifier).state
+                      ? watermarkedImgBytes == null
+                          ? SizedBox.shrink()
+                          : Image.memory(
+                              watermarkedImgBytes,
+                              fit: BoxFit.cover,
+                            )
+                      : SizedBox(
+                          child: Container(
+                            color: Colors.transparent,
+                            height: 200.w,
+                            width: 200.w,
+                            alignment: Alignment.center,
+                            child: SpinKitCircle(
+                              color: color.secondary1,
+                              size: 70.w,
+                            ),
+                          ),
+                        )
 
-                //   'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg',
-                //   fit: BoxFit.cover,
-                // ),
-              ),
+                  // Image.network(
+
+                  //   'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg',
+                  //   fit: BoxFit.cover,
+                  // ),
+                  ),
             ),
           ),
           Positioned(
@@ -143,7 +182,8 @@ class _DownloadImageScreenState extends State<DownloadImageScreen> {
                       ),
                     ),
                     onButtonClick: () async {
-                      _downloadMedia(bytes: watermarkedImgBytes, url: baseImgUrl);
+                      _downloadMedia(
+                          bytes: watermarkedImgBytes, url: baseImgUrl);
                     },
                     textStyle: TextStyle(
                       fontSize: 20.sp,
@@ -219,3 +259,6 @@ class _DownloadImageScreenState extends State<DownloadImageScreen> {
     // //}
   }
 }
+
+final watermarkLoadProvider = StateProvider<bool>((ref) => true,);
+

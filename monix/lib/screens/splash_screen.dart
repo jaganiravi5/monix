@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:monix/admob_ads/reward_ads.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix_assets/monix_assets.dart';
 
@@ -24,12 +25,14 @@ class SplashScreen extends ConsumerStatefulWidget {
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
   final InterstitialAds _interstitialAds = InterstitialAds();
+  final RewardedAds _rewardedAds = RewardedAds();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _interstitialAds.createInterstitialAd(ref: ref);
+      _rewardedAds.createRewardAd(ref: ref);
       // _nativeAds.loadNativeAds(ref: ref);
     });
     SystemChrome.setSystemUIOverlayStyle(

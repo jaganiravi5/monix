@@ -1,21 +1,31 @@
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:monix/admob_ads/reward_ads.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/images/low_quality_btn.dart';
 import 'package:monix/screens/images/no_watermark_btn.dart';
+import 'package:network/network.dart';
 
-class ImagePreviewScreen extends StatelessWidget {
-  const ImagePreviewScreen({super.key, required this.isPortrait});
+class ImagePreviewScreen extends ConsumerStatefulWidget {
+  ImagePreviewScreen({super.key, required this.isPortrait});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: ImagePreviewScreen(
           isPortrait: state.extra as bool,
         ),
         state: state,
       );
   final bool isPortrait;
+
+  @override
+  ConsumerState<ImagePreviewScreen> createState() => _ImagePreviewScreenState();
+}
+
+class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
+  final RewardedAds _rewardedAds = RewardedAds();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +41,7 @@ class ImagePreviewScreen extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          !isPortrait
+          !widget.isPortrait
               ? Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
@@ -64,7 +74,7 @@ class ImagePreviewScreen extends StatelessWidget {
               //TODO : share on What'sapp
             },
           ),
-          !isPortrait
+          !widget.isPortrait
               ? Positioned(
                   top: 240.w,
                   bottom: 240.w,
@@ -100,19 +110,40 @@ class ImagePreviewScreen extends StatelessWidget {
               right: 20.w,
               child: Column(
                 children: [
-                  LowQualityBtn(
-                    onBtnTap: () => context.push(
+                  LowQualityBtn(onBtnTap: () {
+                    context.push(
                       AppRoutesPath.downloadImageScreen,
-                    ),
-                  ),
+                    );
+                  }
+                      // context.push(
+                      //   AppRoutesPath.downloadImageScreen,
+                      // ),
+                      ),
                   SizedBox(
                     height: 14.w,
                   ),
-                  NoWatermarkBtn(
-                    onBtnTap: () => context.push(
-                      AppRoutesPath.downloadImageScreen,
-                    ),
-                  )
+                  NoWatermarkBtn(onBtnTap: () {
+                    _rewardedAds.showRewardedAd(
+                      ref: ref,
+                      context: context,
+                      onAdDismissedFullScreen: (p0) {
+                        print('RewardAdDismissed');
+                        context.push(
+                          AppRoutesPath.downloadImageScreen,
+                        );
+                      },
+                      onAdFailedToShowFullScreen: (p0, p1) {
+                         print('RewardAdFailed');
+                        context.push(
+                          AppRoutesPath.downloadImageScreen,
+                        );
+                      },
+                    );
+                  }
+                      // context.push(
+                      //   AppRoutesPath.downloadImageScreen,
+                      // ),
+                      )
                 ],
               ))
         ],
@@ -178,7 +209,10 @@ class ImagePreviewAppBar extends StatelessWidget {
                 Icons.share,
                 color: color.white,
               ),
-              textStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: color.white),
+              textStyle: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: color.white),
               padding: EdgeInsets.symmetric(vertical: 9.w),
             ),
           )
