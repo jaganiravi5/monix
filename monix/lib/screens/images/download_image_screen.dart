@@ -112,7 +112,7 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
           ImagePreviewAppBar(
             color: color,
             onSuffixClick: () {
-              _shareImg(url: baseImgUrl);
+              _shareImg(url: 'https://monixai.in/homeScreen');
               //TODO : share on What'sapp
             },
           ),
@@ -208,10 +208,14 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
     print("imgName $imgName");
     // final Uint8List list = bytes.buffer.asUint8List();
     if (Platform.isAndroid) {
-      dir = Directory('/storage/emulated/0/Download');
+      dir = Directory('/storage/emulated/0/Download/monix');
     } else {
-      dir = await getApplicationDocumentsDirectory();
+      final tempDir = await getApplicationDocumentsDirectory();
+      dir = Directory('${tempDir.path}/monix');
     }
+    if (!(await dir.exists())) {
+    await dir.create(recursive: true);
+  }
     final file = await File('${dir.path}/$imgName').create();
     final res = file.writeAsBytesSync(bytes);
 
@@ -234,7 +238,7 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
   }
 
   Future<void> _shareImg({required String url}) async {
-    final res = await Share.share('check out my website https://example.com');
+    final res = await Share.share('check out this stunning god image $url');
     if (res.status == ShareResultStatus.success) {
       print('Thank you for sharing my website!');
     }

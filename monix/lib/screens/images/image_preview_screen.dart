@@ -7,6 +7,7 @@ import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/images/low_quality_btn.dart';
 import 'package:monix/screens/images/no_watermark_btn.dart';
 import 'package:network/network.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ImagePreviewScreen extends ConsumerStatefulWidget {
   ImagePreviewScreen({super.key, required this.isPortrait});
@@ -26,7 +27,7 @@ class ImagePreviewScreen extends ConsumerStatefulWidget {
 
 class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
   final RewardedAds _rewardedAds = RewardedAds();
-
+  String uniLink = 'https://monixai.in/homeScreen';
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
@@ -71,6 +72,7 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
           ImagePreviewAppBar(
             color: color,
             onSuffixClick: () {
+              _shareImg(url: 'https://monixai.in/homeScreen');
               //TODO : share on What'sapp
             },
           ),
@@ -150,6 +152,32 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
       ),
     );
   }
+  Future<void> _shareImg({required String url}) async {
+    final res = await Share.share('check out this stunning god image $url');
+    if (res.status == ShareResultStatus.success) {
+      print('Thank you for sharing my website!');
+    }
+
+    // showLoadingDialog(context, true);
+    // Directory dir = await getTemporaryDirectory();
+    // // final result = await DownloadMediaRepository().download(
+    // //   url ?? '',
+    // //   "${dir.path}/${url.split("/").last}",
+    // // );
+    // //if (result != null) {
+    // //   showLoadingDialog(context, false);
+    //   File tempFile = File('${dir.path}/${url.split("/").last}');
+    //   // await tempFile.writeAsBytes(data);
+    //   final XFile file = XFile(tempFile.path);
+    //   final result = await Share.shareXFiles([file], text: 'Great Docs');
+    //   if (result.status == ShareResultStatus.success) {
+    //     print('Thank you for sharing the picture!');
+    //   }
+    // //} else {
+    //   showLoadingDialog(context, false);
+    // //}
+  }
+
 }
 
 class ImagePreviewAppBar extends StatelessWidget {
@@ -220,4 +248,5 @@ class ImagePreviewAppBar extends StatelessWidget {
       ),
     );
   }
+ 
 }
