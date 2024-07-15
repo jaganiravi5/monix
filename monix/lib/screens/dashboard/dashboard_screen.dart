@@ -10,12 +10,14 @@ import 'package:monix/screens/home/home_screen.dart';
 import 'package:monix/screens/monix_ai/monix_ai_screen.dart';
 import 'package:monix/screens/saved/saved_screen.dart';
 import 'package:monix/screens/search/search_screen.dart';
+import 'package:network/category/provider/all_category_provider.dart';
 import 'package:network/images/provider/all_images_provider.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: const DashboardScreen(),
         state: state,
       );
@@ -26,27 +28,12 @@ class DashboardScreen extends ConsumerStatefulWidget {
 
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   late final List<Widget> _screens = [
-    HomeScreen(),
-    SearchScreen(),
-    MonixAiScreen(),
+    const HomeScreen(),
+    const SearchScreen(),
+    const MonixAiScreen(),
     SavedScreen(),
   ];
   int selectedIndex = 0;
-  int _canPopCount = 0;
-    @override
-  void initState() {
-    // TODO: implement initState
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp){
-      getAllImages();
-    });
-    
-    super.initState();
-  }
-
-
-
-
-
 
   Future<bool> Function()? onBackPressed({required BuildContext context}) {
     final theme = Theme.of(context).monixColors;
@@ -68,16 +55,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       selectedIndex = index;
     });
   }
+
   Future<void> getAllImages() async {
     ref.read(allImagesDataProvider.notifier).page = 1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
-   await ref
+    await ref
         .read(allImagesDataProvider.notifier)
-        .allImages( isSearch: false, searchText: ''
+        .allImages(isSearch: false, searchText: '', type: StringManager.post
             // isSearch: false,
             );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

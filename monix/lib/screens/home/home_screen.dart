@@ -9,10 +9,13 @@ import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/home/all_images_widget.dart';
 import 'package:monix/screens/home/category_widget.dart';
 import 'package:monix/screens/home/new_images_widget.dart';
+import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:network/category/data/model/all_category_model.dart';
 import 'package:network/category/provider/all_category_provider.dart';
 import 'package:network/images/data/model/all_images_model.dart';
 import 'package:network/images/provider/all_images_provider.dart';
+import 'package:network/sub_category/provider/provider.dart';
 
 import '../../router/custom_page_transition.dart';
 
@@ -33,6 +36,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool isPortraitSelected = false;
   DateTime? _lastPressedAt;
   List<ImagesDataModel>? imagesData;
+  List<CategoryDataModel>? categoryData;
+  List<CategoryDataModel>? homeCategory;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      getAllImages(type: 'post');
+      getAllCategory(ref: ref);
+    });
+    super.initState();
+  }
 
   void getAllCategory({required WidgetRef ref}) {
     ref.read(allCategoryDataProvider.notifier).allCategory(
@@ -41,21 +56,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-   Future<void> getAllImages() async {
+  Future<void> getAllImages({required String type}) async {
     ref.read(allImagesDataProvider.notifier).page = 1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
-   await ref
+    await ref
         .read(allImagesDataProvider.notifier)
-        .allImages( isSearch: false, searchText: ''
-            // isSearch: false,
-            );
+        .allImages(isSearch: false, searchText: '', type: type);
   }
 
   @override
   Widget build(BuildContext context) {
     imagesData = ref.watch(allImagesDataProvider.notifier).getAllImages();
-    print('LENGTH---->>>>>>>${imagesData!.length}');
+    categoryData = ref.watch(allCategoryDataProvider.notifier).getAllCategory();
+    homeCategory =
+        ref.watch(allCategoryDataProvider.notifier).getHomeCategory();
+    final subCat = ref.watch(subCategoryDataProvider.notifier).getsubCategory();
+    print('IMG-LENGTH---->>>>>>>${imagesData!.length}');
+    print('HOME CAT---->>>>>>>${homeCategory!.length}');
+    print('SUB::::CAT---->>>>>>>${subCat.length}');
     final isLoading = ref.watch(allImagesDataProvider).isLoading;
     final isLoadingMore = ref.watch(allImagesDataProvider).isLoadingMore;
 
@@ -64,9 +83,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
         color: color,
-        onSuffixBtnClick: () => getAllImages(),
-        
-        // context.push(AppRoutesPath.ideaScreen),
+        onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         title: StringManager.monixAiGods,
         text: Padding(
           padding: EdgeInsets.only(left: 20.w),
@@ -100,10 +117,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //PrimaryShimmerEffect(shimmerHeight: 30.h),
+                    ///HOME CATEGORY WIDGET
                     CategoryWidget(
                       color: color,
                       ref: ref,
+                      categoryData: categoryData,
+                      homeCategory: homeCategory,
                     ),
 
                     SizedBox(
@@ -121,19 +140,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: AllImagesWidget(
                         isTitle: true,
                         imagesDataModel: imagesData,
-                        isLoading: isLoading,
+                        // isLoading: isLoading,
                         portraitSel: isPortraitSelected,
                         onPortraitTap: () {
-                          isPortraitSelected = !isPortraitSelected;
+                          if (isPortraitSelected == false) {
+                            isPortraitSelected = true;
+                            getAllImages(type: StringManager.reel);
+                          }
                           setState(() {});
                         },
                         onSquareTap: () {
-                          isPortraitSelected = !isPortraitSelected;
+                          if (isPortraitSelected == true) {
+                            isPortraitSelected = false;
+                            getAllImages(type: StringManager.post);
+                          }
                           setState(() {});
                         },
-                        onImageTap: () => context.push(
-                            AppRoutesPath.imagePreviewScreen,
-                            extra: isPortraitSelected),
                       ),
                     ),
                   ],

@@ -4,15 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/monix.dart';
 import 'package:monix/router/custom_page_transition.dart';
-import 'package:monix/screens/search/search.dart';
-
+import 'package:network/images/provider/all_images_provider.dart';
 import '../../router/routes_name.dart';
 
 class ImageListScreen extends ConsumerStatefulWidget {
-  const ImageListScreen({super.key});
+  const ImageListScreen({
+    super.key,
+    required this.subCategoryId,
+  });
+  final String? subCategoryId;
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
-        page: const ImageListScreen(),
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
+        page: ImageListScreen(
+          subCategoryId: state.extra as String?,
+        ),
         state: state,
       );
 
@@ -24,8 +30,29 @@ class _ImageListScreenState extends ConsumerState<ImageListScreen> {
   bool isPortraitSelected = false;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      getAllImages(type: 'post');
+    });
+    super.initState();
+  }
+
+  Future<void> getAllImages({required String type}) async {
+    ref.read(allImagesDataProvider.notifier).page = 1;
+    ref.read(allImagesDataProvider.notifier).isPagination = true;
+
+    await ref.read(allImagesDataProvider.notifier).allImages(
+        isSearch: false,
+        searchText: '',
+        type: type,
+        subCateId: widget.subCategoryId.toString());
+  }
+
+  @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
+    final imageData = ref.watch(allImagesDataProvider.notifier).getAllImages();
     return Scaffold(
       appBar: CommonAppBar(
         color: color,
@@ -70,17 +97,23 @@ class _ImageListScreenState extends ConsumerState<ImageListScreen> {
               ),
               child: AllImagesWidget(
                 isTitle: false,
-                isLoading: ref.watch(tempLoadingProvider.notifier).state,
+                imagesDataModel: imageData,
+                // isLoading: ref.watch(tempLoadingProvider.notifier).state,
                 portraitSel: isPortraitSelected,
                 onPortraitTap: () {
-                  isPortraitSelected = !isPortraitSelected;
+                  if (isPortraitSelected == false) {
+                    isPortraitSelected = true;
+                    getAllImages(type: StringManager.reel);
+                  }
                   setState(() {});
                 },
                 onSquareTap: () {
-                  isPortraitSelected = !isPortraitSelected;
+                  if (isPortraitSelected == true) {
+                    isPortraitSelected = false;
+                    getAllImages(type: StringManager.post);
+                  }
                   setState(() {});
                 },
-                onImageTap: () => context.push(AppRoutesPath.imagePreviewScreen, extra: isPortraitSelected),
               ),
             ),
           ],

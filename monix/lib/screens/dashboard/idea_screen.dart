@@ -150,6 +150,7 @@ class _IdeaScreenState extends ConsumerState<IdeaScreen> {
                 //   ),
                 // ),
                 onButtonClick: () async {
+                  
                   // _downloadMedia(bytes: watermarkedImgBytes, url: baseImgUrl);
                 },
                 textStyle: TextStyle(

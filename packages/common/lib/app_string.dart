@@ -14,6 +14,9 @@ class StringManager {
   static const String monixAi = 'Monix AI';
   static const String saved = 'Saved';
   static const String idea = 'Idea';
+  static const String post = 'post';
+  static const String reel = 'reel';
+  static const String imageUrl = 'http://51.20.12.79:5001/';
 
   //@HomeScreen
   static const String monixAiGods = 'Monix AI Gods';
@@ -24,9 +27,13 @@ class StringManager {
   static const String square = 'Square';
   static const String newImages = 'New Images';
   static const String allImages = 'All Images';
+  static const String trendingImages = 'Trending Images';
 
   //@AllCategoryScreen
   static const String allCategory = 'All Categories';
+
+  //@SubCategoryScreen
+  static const String subCategory = 'All Sub Categories';
 
   static const String free = 'Free';
 

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -10,16 +11,16 @@ import 'package:network/network.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ImagePreviewScreen extends ConsumerStatefulWidget {
-  ImagePreviewScreen({super.key, required this.isPortrait});
+  ImagePreviewScreen({super.key, required this.imaPreviewArgs});
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) =>
       AppPageTransition(
         page: ImagePreviewScreen(
-          isPortrait: state.extra as bool,
+          imaPreviewArgs: state.extra as ImagePreviewArgs,
         ),
         state: state,
       );
-  final bool isPortrait;
+  final ImagePreviewArgs imaPreviewArgs;
 
   @override
   ConsumerState<ImagePreviewScreen> createState() => _ImagePreviewScreenState();
@@ -30,6 +31,8 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
   String uniLink = 'https://monixai.in/homeScreen';
   @override
   Widget build(BuildContext context) {
+    final String imageUrl =
+        "${StringManager.imageUrl}${widget.imaPreviewArgs.imageUrl}";
     final color = Theme.of(context).monixColors;
     return Scaffold(
       body: Stack(
@@ -38,11 +41,11 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Image.network(
-              'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg',
+              imageUrl,
               fit: BoxFit.cover,
             ),
           ),
-          !widget.isPortrait
+          !widget.imaPreviewArgs.isPortrait
               ? Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
@@ -71,12 +74,13 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
           ),
           ImagePreviewAppBar(
             color: color,
+            name: widget.imaPreviewArgs.imageName,
             onSuffixClick: () {
               _shareImg(url: 'https://monixai.in/homeScreen');
               //TODO : share on What'sapp
             },
           ),
-          !widget.isPortrait
+          !widget.imaPreviewArgs.isPortrait
               ? Positioned(
                   top: 240.w,
                   bottom: 240.w,
@@ -98,8 +102,8 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
                           ),
                         ],
                       ),
-                      child: Image.network(
-                        'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg',
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -107,51 +111,52 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
                 )
               : SizedBox.shrink(),
           Positioned(
-              bottom: 35.w,
-              left: 20.w,
-              right: 20.w,
-              child: Column(
-                children: [
-                  LowQualityBtn(onBtnTap: () {
-                    context.push(
-                      AppRoutesPath.downloadImageScreen,
-                    );
-                  }
-                      // context.push(
-                      //   AppRoutesPath.downloadImageScreen,
-                      // ),
-                      ),
-                  SizedBox(
-                    height: 14.w,
-                  ),
-                  NoWatermarkBtn(onBtnTap: () {
-                    _rewardedAds.showRewardedAd(
-                      ref: ref,
-                      context: context,
-                      onAdDismissedFullScreen: (p0) {
-                        print('RewardAdDismissed');
-                        context.push(
-                          AppRoutesPath.downloadImageScreen,
-                        );
-                      },
-                      onAdFailedToShowFullScreen: (p0, p1) {
-                         print('RewardAdFailed');
-                        context.push(
-                          AppRoutesPath.downloadImageScreen,
-                        );
-                      },
-                    );
-                  }
-                      // context.push(
-                      //   AppRoutesPath.downloadImageScreen,
-                      // ),
-                      )
-                ],
-              ))
+            bottom: 35.w,
+            left: 20.w,
+            right: 20.w,
+            child: Column(
+              children: [
+                LowQualityBtn(onBtnTap: () {
+                  context.push(AppRoutesPath.downloadImageScreen,
+                      extra: widget.imaPreviewArgs);
+                }
+                    // context.push(
+                    //   AppRoutesPath.downloadImageScreen,
+                    // ),
+                    ),
+                SizedBox(
+                  height: 14.w,
+                ),
+                NoWatermarkBtn(onBtnTap: () {
+                  _rewardedAds.showRewardedAd(
+                    ref: ref,
+                    context: context,
+                    onAdDismissedFullScreen: (p0) {
+                      print('RewardAdDismissed');
+                      context.push(
+                        AppRoutesPath.downloadImageScreen,
+                      );
+                    },
+                    onAdFailedToShowFullScreen: (p0, p1) {
+                      print('RewardAdFailed');
+                      context.push(
+                        AppRoutesPath.downloadImageScreen,
+                      );
+                    },
+                  );
+                }
+                    // context.push(
+                    //   AppRoutesPath.downloadImageScreen,
+                    // ),
+                    )
+              ],
+            ),
+          )
         ],
       ),
     );
   }
+
   Future<void> _shareImg({required String url}) async {
     final res = await Share.share('check out this stunning god image $url');
     if (res.status == ShareResultStatus.success) {
@@ -177,7 +182,6 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
     //   showLoadingDialog(context, false);
     // //}
   }
-
 }
 
 class ImagePreviewAppBar extends StatelessWidget {
@@ -185,10 +189,12 @@ class ImagePreviewAppBar extends StatelessWidget {
     super.key,
     required this.color,
     required this.onSuffixClick,
+    this.name,
   });
 
   final MonixColors color;
   final void Function() onSuffixClick;
+  final String? name;
 
   @override
   Widget build(BuildContext context) {
@@ -214,7 +220,7 @@ class ImagePreviewAppBar extends StatelessWidget {
                 width: 16.w,
               ),
               Text(
-                'Hanuman',
+                name ?? 'Image',
                 style: TextStyle(
                   color: color.white,
                   fontSize: 21.sp,
@@ -248,5 +254,16 @@ class ImagePreviewAppBar extends StatelessWidget {
       ),
     );
   }
- 
+}
+
+class ImagePreviewArgs {
+  String imageUrl;
+  bool isPortrait;
+  String imageName;
+  ImagePreviewArgs({
+    Key? key,
+    required this.imageUrl,
+    required this.isPortrait,
+    required this.imageName,
+  });
 }

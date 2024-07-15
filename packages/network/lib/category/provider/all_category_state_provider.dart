@@ -65,6 +65,12 @@ class AllCategoryDataNotifier extends StateNotifier<AllCategoryState> {
   List<CategoryDataModel> getAllCategory() {
     return listAllData;
   }
+  List<CategoryDataModel> getHomeCategory() {
+    print(":::::::HOME-CATEGORY${homePageCategoryData.length}");
+    
+    
+    return homePageCategoryData;
+  }
 //
 // void updateProduct({required int index, required CategoryDataModel CategoryData}) {
 //   listAllData[index] = CategoryData;

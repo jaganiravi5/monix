@@ -5,6 +5,8 @@ This package includes all the API call related code (network call handelling) an
 #
 ## Structure
 
+- flutter pub run build_runner build --delete-conflicting-outputs //Command for generate frizzed model
+
 The network structured into following folders:
 
 - \'`pubspec.yaml`\' : contains all the dependencies like dio, flutter_riverpod, freezed_annotation, shared_preferences etc. and package configuration.

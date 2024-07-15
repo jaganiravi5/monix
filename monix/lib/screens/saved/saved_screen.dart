@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:common/common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/screens/search/search.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../router/custom_page_transition.dart';
 import '../../router/routes_name.dart';
@@ -13,7 +16,8 @@ import '../home/home_screen.dart';
 class SavedScreen extends ConsumerStatefulWidget {
   SavedScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: SavedScreen(),
         state: state,
       );
@@ -26,10 +30,53 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   final List<String> downloadedImage = ['jshs'];
 
   bool isPortraitSel = false;
+  Directory? directory;
+  List<String>? imageList = [];
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+       getDir();
+       _getLocalPath();
+    });
+   
+    super.initState();
+  }
+  Future<String>  _getLocalPath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    final String filePath = '$path/folderName/';
+
+ String _localPath = filePath;
+    final savedDir = Directory(_localPath);
+    bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      savedDir.create();
+    }
+    List<FileSystemEntity> files = savedDir.listSync();
+    print("::::${files}");
+
+    return filePath;
+  }
+
+  getDir() async {
+    final tempDir = await getApplicationDocumentsDirectory();
+    directory = (Platform.isAndroid)
+        ? directory = Directory('/storage/emulated/0/Download/monix')
+        : directory = Directory('${tempDir.path}/monix');
+  
+
+    imageList = directory
+        ?.listSync()
+        .map((item) => item.path)
+      
+        .toList(growable: false);
+  }
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
+    print(":::::LENGTH:::LOCAL::::${imageList?.length}");
     return Scaffold(
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
@@ -117,7 +164,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
 }
 
 class DownloadedImgWidget extends StatelessWidget {
-  const DownloadedImgWidget({
+  DownloadedImgWidget({
     super.key,
     required this.onPortraitTap,
     required this.onSquareTap,
@@ -135,6 +182,7 @@ class DownloadedImgWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
+
     return Column(
       children: [
         ImageSizeWidget(
@@ -168,7 +216,9 @@ class DownloadedImgWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: InkWell(
-                          onTap: () => onImgTap(), splashColor: Colors.transparent, child: Center(child: Text('data'))),
+                          onTap: () => onImgTap(),
+                          splashColor: Colors.transparent,
+                          child: Center(child: Text('data'))),
                     ),
                   )
                 : PrimaryShimmerEffect(shimmerHeight: 40.w);

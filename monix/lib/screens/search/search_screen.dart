@@ -7,6 +7,8 @@ import 'package:monix/monix.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix/screens/search/search.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:network/images/data/model/all_images_model.dart';
+import 'package:network/images/provider/all_images_provider.dart';
 import 'package:network/network.dart';
 
 import '../../router/routes_name.dart';
@@ -14,7 +16,8 @@ import '../../router/routes_name.dart';
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: const SearchScreen(),
         state: state,
       );
@@ -27,10 +30,37 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
   Timer? _debounce;
   bool isPortraitSelected = false;
+  List<ImagesDataModel>? imagesData;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      getAllImages(type: 'post');
+      // getAllCategory(ref: ref);
+    });
+    super.initState();
+  }
+
+  Future<void> getAllImages({required String type}) async {
+    ref.read(allImagesDataProvider.notifier).page = 1;
+    ref.read(allImagesDataProvider.notifier).isPagination = true;
+
+    await ref.read(allImagesDataProvider.notifier).allImages(
+          isSearch: false,
+          searchText: '',
+          type: type,
+          isTrending: true,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
+    final searchedList =
+        ref.watch(allImagesDataProvider.notifier).getSearchsubCat();
+    final trendindData =
+        ref.watch(allImagesDataProvider.notifier).getAllImages();
     return Scaffold(
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
@@ -83,6 +113,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     },
                     onClear: () {
                       // _searchClientList.clear();
+                      searchedList.clear();
                       searchController.clear();
                       setState(() {});
                       ref.read(searchTextProvider.notifier).state = '';
@@ -103,19 +134,83 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               //   },
               //   portraitSelected: isPortraitSelected,
               // ),
-              AllImagesWidget(
-                  isTitle: false,
-                  portraitSel: isPortraitSelected,
-                  onPortraitTap: () {
-                    isPortraitSelected = !isPortraitSelected;
-                    setState(() {});
-                  },
-                  onSquareTap: () {
-                    isPortraitSelected = !isPortraitSelected;
-                    setState(() {});
-                  },
-                  onImageTap: () {},
-                  isLoading: ref.watch(tempLoadingProvider.notifier).state),
+              searchController.text.isNotEmpty
+                  ? searchedList.isNotEmpty
+                      ? Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.r),
+                            color: color.bgSolidColor,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 16.w),
+                          child: ListView.separated(
+                            itemCount: searchedList.length,
+                            shrinkWrap: true,
+                            separatorBuilder: (context, index) {
+                              return SizedBox(
+                                height: 16.w,
+                              );
+                            },
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () => context.push(
+                                  AppRoutesPath.imageListScreen,
+                                  extra: searchedList[index].subcategory?.id,
+                                ),
+                                child: Row(
+                                  children: [
+                                    icons.search.svg(
+                                      height: 20.w,
+                                    ),
+                                    SizedBox(
+                                      width: 12.w,
+                                    ),
+                                    Text(
+                                      searchedList[index].subcategory?.name ??
+                                          '',
+                                      style: TextStyle(
+                                        color: color.grey500,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      : Text(
+                          'No Data Found!',
+                          style: TextStyle(
+                            color: color.grey500,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )
+                  : AllImagesWidget(
+                      isTitle: true,
+                      titleText: StringManager.trendingImages,
+
+                      imagesDataModel: trendindData,
+                      portraitSel: isPortraitSelected,
+                      onPortraitTap: () {
+                        if (isPortraitSelected == false) {
+                          isPortraitSelected = true;
+                          getAllImages(type: StringManager.reel);
+                        }
+                        setState(() {});
+                      },
+                      onSquareTap: () {
+                        if (isPortraitSelected == true) {
+                          isPortraitSelected = false;
+                          getAllImages(type: StringManager.post);
+                        }
+                        setState(() {});
+                      },
+                      // onImageTap: () {},
+                      // isLoading: ref.watch(tempLoadingProvider.notifier).state
+                    ),
               SizedBox(
                 height: 20.w,
               ),
@@ -130,16 +225,29 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
    * _onSearch is a function that is called when the search field is changed
    * and a search api is called after a debounce of 500 milliseconds
    */
-  Future<void> _onSearch({required String value, required WidgetRef ref}) async {
+  Future<void> _onSearch(
+      {required String value, required WidgetRef ref}) async {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 30), () async {
       ref.read(searchTextProvider.notifier).state = value;
       if (value.isEmpty) {
-        // _searchClientList.clear();
+        // imagesData?.clear();
       } else if (value.length >= 3) {
+        await getSearchImages(type: '', searchText: value);
         // await _searchClientApiCall();
       }
       setState(() {});
     });
+  }
+
+  Future<void> getSearchImages(
+      {required String type, required String searchText}) async {
+    ref.read(allImagesDataProvider.notifier).page = 1;
+    ref.read(allImagesDataProvider.notifier).isPagination = true;
+
+    await ref
+        .read(allImagesDataProvider.notifier)
+        .allImages(isSearch: true, searchText: searchText, type: type);
+    final data = ref.watch(allImagesDataProvider.notifier).getAllImages();
   }
 }

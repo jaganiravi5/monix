@@ -2,12 +2,15 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_watermark/image_watermark.dart';
+import 'package:monix/screens/images/down_image_shimmer.dart';
+import 'package:network/images/provider/all_images_provider.dart';
 import 'package:network/network.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -16,13 +19,19 @@ import '../../router/custom_page_transition.dart';
 import 'image_preview_screen.dart';
 
 class DownloadImageScreen extends ConsumerStatefulWidget {
-  const DownloadImageScreen({super.key});
+  const DownloadImageScreen({
+    super.key,
+    required this.imagePreviewArgs,
+  });
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) =>
       AppPageTransition(
-        page: const DownloadImageScreen(),
+        page: DownloadImageScreen(
+          imagePreviewArgs: state.extra as ImagePreviewArgs,
+        ),
         state: state,
       );
+  final ImagePreviewArgs imagePreviewArgs;
 
   @override
   ConsumerState<DownloadImageScreen> createState() =>
@@ -38,53 +47,52 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
   @override
   initState() {
     // TODO: implement initState
-     
-
-    // WidgetsBinding.instance.addPostFrameCallback(
-      // (timeStamp) {
-        getWatermarkImg();
-      // },
-    // );
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      ref.read(watermarkLoadProvider.notifier).state = true;
+      getWatermarkImg();
+    });
 
     super.initState();
   }
 
-//  void DisposableBuildContext(){
-// ref.read(watermarkLoadProvider.notifier).state = true;
-//   }
-
-  
-
   Future<void> getWatermarkImg() async {
     // showLoadingDialog(context, true);
-    print('loader--------${ref.read(watermarkLoadProvider.notifier).state }');
+    final String imageUrl =
+        "${StringManager.imageUrl}${widget.imagePreviewArgs.imageUrl}";
+
+    print('loader--------${ref.read(watermarkLoadProvider.notifier).state}');
     // ref.read(watermarkLoadProvider.notifier).state = true;
     Uint8List bytes =
-        (await NetworkAssetBundle(Uri.parse(baseImgUrl)).load(baseImgUrl))
+        (await NetworkAssetBundle(Uri.parse(imageUrl)).load(imageUrl))
             .buffer
             .asUint8List();
 
-    Uint8List waterImgBytes = (await NetworkAssetBundle(Uri.parse(
-                'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
-            .load(
-                'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
-        .buffer
-        .asUint8List();
-    print("bytesss $waterImgBytes");
-    print("WAtermark byts $waterImgBytes");
-    watermarkedImgBytes = await ImageWatermark.addImageWatermark(
-      originalImageBytes: bytes,
-      //image bytes
-      waterkmarkImageBytes: waterImgBytes,
-      //watermark img bytes
-      imgHeight: 100,
-      //watermark img height
-      imgWidth: 100,
-      //watermark img width
-      dstY: 390,
-      //watermark position Y
-      dstX: 190, //watermark position X
-    );
+    // Uint8List waterImgBytes = (await NetworkAssetBundle(Uri.parse(
+    //             'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
+    //         .load(
+    //             'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
+    //     .buffer
+    //     .asUint8List();
+    // watermarkedImgBytes = await ImageWatermark.addImageWatermark(
+
+    //   originalImageBytes: bytes,
+    //   //image bytes
+    //   waterkmarkImageBytes: waterImgBytes,
+    //   //watermark img bytes
+    //   imgHeight: 100,
+    //   //watermark img height
+    //   imgWidth: 100,
+    //   //watermark img width
+    //   dstY: 390,
+    //   //watermark position Y
+    //   dstX: 190, //watermark position X
+    // );
+    watermarkedImgBytes = await ImageWatermark.addTextWatermark(
+        watermarkText: ' @MONIX_AI_GODS     @MONIX_AI_GODS',
+        dstY: 900,
+        dstX: 80,
+        imgBytes: bytes,
+        color: Colors.white.withOpacity(0.5));
     setState(() {});
     ref.read(watermarkLoadProvider.notifier).state = false;
     // showLoadingDialog(context, false);
@@ -92,6 +100,8 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String imageUrl =
+        "${StringManager.imageUrl}${widget.imagePreviewArgs.imageUrl}";
     final color = Theme.of(context).monixColors;
     return Scaffold(
       body: Stack(
@@ -99,9 +109,9 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: Image.network(
-              'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg',
+            child: CachedNetworkImage(
               fit: BoxFit.cover,
+              imageUrl: imageUrl,
             ),
           ),
           Container(
@@ -111,6 +121,7 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
           ),
           ImagePreviewAppBar(
             color: color,
+            name: widget.imagePreviewArgs.imageName,
             onSuffixClick: () {
               _shareImg(url: 'https://monixai.in/homeScreen');
               //TODO : share on What'sapp
@@ -139,7 +150,12 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
                       color: color.bgColor),
                   child: !ref.watch(watermarkLoadProvider.notifier).state
                       ? watermarkedImgBytes == null
-                          ? SizedBox.shrink()
+                          ? PrimaryShimmerEffectDownloadImage(
+                              shimmerHeight:
+                                  MediaQuery.of(context).size.height / 2,
+                              shimmerWidth:
+                                  MediaQuery.of(context).size.width / 2,
+                            )
                           : Image.memory(
                               watermarkedImgBytes,
                               fit: BoxFit.cover,
@@ -183,7 +199,8 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
                     ),
                     onButtonClick: () async {
                       _downloadMedia(
-                          bytes: watermarkedImgBytes, url: baseImgUrl);
+                          bytes: watermarkedImgBytes,
+                          url: widget.imagePreviewArgs.imageUrl);
                     },
                     textStyle: TextStyle(
                       fontSize: 20.sp,
@@ -214,8 +231,8 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
       dir = Directory('${tempDir.path}/monix');
     }
     if (!(await dir.exists())) {
-    await dir.create(recursive: true);
-  }
+      await dir.create(recursive: true);
+    }
     final file = await File('${dir.path}/$imgName').create();
     final res = file.writeAsBytesSync(bytes);
 
@@ -264,5 +281,6 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
   }
 }
 
-final watermarkLoadProvider = StateProvider<bool>((ref) => true,);
-
+final watermarkLoadProvider = StateProvider<bool>(
+  (ref) => true,
+);

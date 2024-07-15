@@ -21,7 +21,7 @@ class ImagesDataModel with _$ImagesDataModel{
       @JsonKey(name: '_id')
         String? id,
         String? name,
-        List<String>? image,
+        String? image,
         CategoryDataModel? category,
         SubCategoryDataModel? subcategory,
         String? imageType,

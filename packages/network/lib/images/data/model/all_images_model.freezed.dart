@@ -233,7 +233,7 @@ mixin _$ImagesDataModel {
   @JsonKey(name: '_id')
   String? get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
-  List<String>? get image => throw _privateConstructorUsedError;
+  String? get image => throw _privateConstructorUsedError;
   CategoryDataModel? get category => throw _privateConstructorUsedError;
   SubCategoryDataModel? get subcategory => throw _privateConstructorUsedError;
   String? get imageType => throw _privateConstructorUsedError;
@@ -254,7 +254,7 @@ abstract class $ImagesDataModelCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: '_id') String? id,
       String? name,
-      List<String>? image,
+      String? image,
       CategoryDataModel? category,
       SubCategoryDataModel? subcategory,
       String? imageType,
@@ -297,7 +297,7 @@ class _$ImagesDataModelCopyWithImpl<$Res, $Val extends ImagesDataModel>
       image: freezed == image
           ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
+              as String?,
       category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
@@ -353,7 +353,7 @@ abstract class _$$ImagesDataModelImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: '_id') String? id,
       String? name,
-      List<String>? image,
+      String? image,
       CategoryDataModel? category,
       SubCategoryDataModel? subcategory,
       String? imageType,
@@ -394,9 +394,9 @@ class __$$ImagesDataModelImplCopyWithImpl<$Res>
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
       image: freezed == image
-          ? _value._image
+          ? _value.image
           : image // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
+              as String?,
       category: freezed == category
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
@@ -423,12 +423,11 @@ class _$ImagesDataModelImpl implements _ImagesDataModel {
   const _$ImagesDataModelImpl(
       {@JsonKey(name: '_id') this.id,
       this.name,
-      final List<String>? image,
+      this.image,
       this.category,
       this.subcategory,
       this.imageType,
-      this.downloadCount})
-      : _image = image;
+      this.downloadCount});
 
   factory _$ImagesDataModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$ImagesDataModelImplFromJson(json);
@@ -438,16 +437,8 @@ class _$ImagesDataModelImpl implements _ImagesDataModel {
   final String? id;
   @override
   final String? name;
-  final List<String>? _image;
   @override
-  List<String>? get image {
-    final value = _image;
-    if (value == null) return null;
-    if (_image is EqualUnmodifiableListView) return _image;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
+  final String? image;
   @override
   final CategoryDataModel? category;
   @override
@@ -469,7 +460,7 @@ class _$ImagesDataModelImpl implements _ImagesDataModel {
             other is _$ImagesDataModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            const DeepCollectionEquality().equals(other._image, _image) &&
+            (identical(other.image, image) || other.image == image) &&
             (identical(other.category, category) ||
                 other.category == category) &&
             (identical(other.subcategory, subcategory) ||
@@ -482,15 +473,8 @@ class _$ImagesDataModelImpl implements _ImagesDataModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      name,
-      const DeepCollectionEquality().hash(_image),
-      category,
-      subcategory,
-      imageType,
-      downloadCount);
+  int get hashCode => Object.hash(runtimeType, id, name, image, category,
+      subcategory, imageType, downloadCount);
 
   @JsonKey(ignore: true)
   @override
@@ -511,7 +495,7 @@ abstract class _ImagesDataModel implements ImagesDataModel {
   const factory _ImagesDataModel(
       {@JsonKey(name: '_id') final String? id,
       final String? name,
-      final List<String>? image,
+      final String? image,
       final CategoryDataModel? category,
       final SubCategoryDataModel? subcategory,
       final String? imageType,
@@ -526,7 +510,7 @@ abstract class _ImagesDataModel implements ImagesDataModel {
   @override
   String? get name;
   @override
-  List<String>? get image;
+  String? get image;
   @override
   CategoryDataModel? get category;
   @override

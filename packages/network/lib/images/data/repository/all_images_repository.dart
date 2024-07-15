@@ -23,6 +23,8 @@ class AllImagesRepository {
       final responseModel = AllImageModel.fromJson(
         res,
       );
+      log("response::::of:::::IMG$responseModel");
+      print("response::::of:::::IMG2$responseModel");
       return responseModel;
     } on DioException catch (e) {
       final errorMessage = DioExceptions.fromDioError(e);

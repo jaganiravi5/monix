@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,12 +6,21 @@ import 'package:go_router/go_router.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/search/search.dart';
+import 'package:network/category/data/model/all_category_model.dart';
+import 'package:network/category/provider/all_category_provider.dart';
 
 class AllCategoryScreen extends ConsumerStatefulWidget {
-  const AllCategoryScreen({super.key});
+  const AllCategoryScreen({
+    super.key,
+    this.categoryData,
+  });
+  final List<CategoryDataModel>? categoryData;
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
-        page: const AllCategoryScreen(),
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
+        page: AllCategoryScreen(
+          categoryData: state.extra as List<CategoryDataModel>?,
+        ),
         state: state,
       );
 
@@ -42,8 +52,10 @@ class _AllCategoryScreenState extends ConsumerState<AllCategoryScreen> {
         child: Column(
           children: [
             AllCategoryWidget(
-              isLoading: ref.watch(tempLoadingProvider.notifier).state,
-              onTap: () => context.push(AppRoutesPath.imageListScreen),
+              categoryData: widget.categoryData,
+              isLoading: ref.watch(allCategoryDataProvider).isLoading,
+              onTap: (index) => context.push(AppRoutesPath.subCategoryScreen,
+                  extra: widget.categoryData?[index].id ?? ''),
             ),
           ],
         ),
@@ -53,13 +65,21 @@ class _AllCategoryScreenState extends ConsumerState<AllCategoryScreen> {
 }
 
 class AllCategoryWidget extends StatelessWidget {
-  const AllCategoryWidget({super.key, required this.onTap, required this.isLoading});
+  const AllCategoryWidget({
+    super.key,
+    required this.onTap,
+    required this.isLoading,
+    this.categoryData,
+  });
 
-  final void Function() onTap;
+  final void Function(int) onTap;
   final bool isLoading;
+  final List<CategoryDataModel>? categoryData;
 
   @override
   Widget build(BuildContext context) {
+    print("::::::LENGTH-CATEGORY:::::${categoryData?.length}");
+
     final color = Theme.of(context).monixColors;
     return Padding(
       padding: EdgeInsets.only(
@@ -77,39 +97,48 @@ class AllCategoryWidget extends StatelessWidget {
               childAspectRatio: 9 / 11,
               mainAxisSpacing: 4,
             ),
-            itemCount: 20,
+            itemCount: categoryData?.length,
             padding: EdgeInsets.only(bottom: 30.h),
             primary: false,
             shrinkWrap: true,
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
-                onTap: () => onTap(),
-                child: !isLoading?Column(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                          'https://thumbs.dreamstime.com/b/man-monkey-his-back-holding-key-man-monkey-his-back-holding-key-man-wearing-gold-crown-has-315343831.jpg',
-                          width: 80.h,
-                          height: 80.h,
-                          alignment: Alignment.center,
-                          fit: BoxFit.cover),
-                    ),
-                    SizedBox(
-                      height: 15.h,
-                    ),
-                    Text(
-                      "Data",
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w400,
-                        color: color.white,
-                      ),
-                    )
-                  ],
-                ):PrimaryShimmerEffect(shimmerHeight: 30.w,
+                onTap: () => onTap(index),
+                child: !isLoading
+                    ? Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "${StringManager.imageUrl}${categoryData![index].image}",
+                              height: 80.w,
+                              width: 80.w,
+                              fit: BoxFit.cover,
+                            ),
+                            // child: Image.network(
+                            //     'https://thumbs.dreamstime.com/b/man-monkey-his-back-holding-key-man-monkey-his-back-holding-key-man-wearing-gold-crown-has-315343831.jpg',
+                            //     width: 80.h,
+                            //     height: 80.h,
+                            //     alignment: Alignment.center,
+                            //     fit: BoxFit.cover),
+                          ),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          Text(
+                            categoryData?[index].name ?? '',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w400,
+                              color: color.white,
+                            ),
+                          )
+                        ],
+                      )
+                    : PrimaryShimmerEffect(
+                        shimmerHeight: 30.w,
                         // borderRad: 100.r,
-
                       ),
               );
             },

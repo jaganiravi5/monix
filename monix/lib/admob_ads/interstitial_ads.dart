@@ -1,4 +1,3 @@
-import 'package:common/common.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -14,7 +13,7 @@ class InterstitialAds {
   void createInterstitialAd({required WidgetRef ref}) {
     InterstitialAd.load(
         adUnitId: AdHelper.interstitialAdUnitId,
-        request: AdRequest(),
+        request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
             ref.read(interAdsProvider.notifier).state = ad;

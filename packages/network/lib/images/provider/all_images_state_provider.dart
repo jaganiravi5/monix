@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:network/images/data/model/all_images_model.dart';
 import 'package:network/images/data/model/all_images_state.dart';
@@ -13,12 +13,14 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
   int page = 1;
   int limit = 18;
   List<ImagesDataModel> listAllImages = [];
+  List<ImagesDataModel> listAllSearchData = [];
   bool isPagination = true;
 
   Future<void> allImages({
-    // String? jwtToken,
-    // required Map<String, int> queryParams,
     required bool isSearch,
+    bool? isTrending,
+    required String type,
+    String? subCateId,
     String? searchText,
   }) async {
     state = state.copyWith(isLoading: true);
@@ -29,24 +31,39 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
           ? {
               'page': page,
               'limit': limit,
-              // "filters[\$or][0][business_name][\$contains]": searchText,
-              // "filters[\$or][1][first_name][\$contains]": searchText,
-              // "filters[\$or][2][last_name][\$contains]": searchText,
-              // "sort[0]": "business_name:asc",
-              // "sort[1]": "first_name:asc",
+              // 'type': type,
+              'search': searchText,
             }
-          : {
-              'page': page,
-              'limit': limit,
-              // "sort[0]": "business_name:asc",
-              // "sort[1]": "first_name:asc",
-            },
-      // jwtToken: jwtToken,
+          : subCateId != null && subCateId.isNotEmpty
+              ? {
+                  'page': page,
+                  'limit': limit,
+                  'type': type,
+                  'subcategory': subCateId
+                }
+              : isTrending != null && isTrending
+                  ? {
+                      'page': page,
+                      'limit': limit,
+                      'type': type,
+                      'trending': isTrending
+                    }
+                  : {
+                      'page': page,
+                      'limit': limit,
+                      'type': type,
+                    },
     )
         .then(
       (data) {
-        listAllImages.clear();
-        listAllImages.addAll(data.imagess!);
+        if (isSearch) {
+          listAllSearchData.clear();
+          listAllSearchData.addAll(data.imagess!);
+        } else {
+          listAllImages.clear();
+          listAllImages.addAll(data.imagess!);
+        }
+
         print('LoadingData $page ${listAllImages.length}');
         state = state.copyWith(
             allImages: data, isLoading: false, isLoadingMore: false);
@@ -58,6 +75,13 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
 
   List<ImagesDataModel> getAllImages() {
     return listAllImages;
+  }
+
+  List<ImagesDataModel> getSearchsubCat() {
+    final List<ImagesDataModel> temp = listAllSearchData.toSet().toList();
+    print(":::::listAllSearchedData${temp}");
+
+    return listAllSearchData;
   }
 
   // void updateCustomer({required int index, required AllCustomerData customerData}) {
@@ -96,7 +120,7 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
         }
         state = state.copyWith(isLoading: false, isLoadingMore: false);
         listAllImages.addAll(data.imagess!);
-        print('LoadingData $page ${listAllImages.length}');
+        print('LoadingData:::::::IMG $page ${listAllImages.length}');
         state = state.copyWith(
           allImages: data,
           isLoading: false,

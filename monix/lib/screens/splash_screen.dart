@@ -6,6 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:monix/admob_ads/reward_ads.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:network/category/provider/all_category_provider.dart';
+import 'package:network/images/provider/all_images_provider.dart';
+import 'package:network/sub_category/provider/provider.dart';
 
 import '../admob_ads/interstitial_ads.dart';
 import '../admob_ads/native_ads.dart';
@@ -14,7 +17,8 @@ import '../router/routes_name.dart';
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: SplashScreen(),
         state: state,
       );
@@ -32,6 +36,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _interstitialAds.createInterstitialAd(ref: ref);
+      getAllImages();
+      getAllCategory(ref: ref);
       _rewardedAds.createRewardAd(ref: ref);
       // _nativeAds.loadNativeAds(ref: ref);
     });
@@ -44,6 +50,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _navigation();
   }
 
+  void getAllCategory({required WidgetRef ref}) {
+    ref.read(allCategoryDataProvider.notifier).allCategory(
+      queryParams: {},
+      isSearch: false,
+    );
+  }
+
+
   // Navigation to home screen
   void _navigation() async {
     Duration time = const Duration(seconds: 3);
@@ -53,6 +67,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         context.go(AppRoutesPath.onboardScreen);
       },
     );
+  }
+
+  Future<void> getAllImages() async {
+    ref.read(allImagesDataProvider.notifier).page = 1;
+    ref.read(allImagesDataProvider.notifier).isPagination = true;
+
+    await ref
+        .read(allImagesDataProvider.notifier)
+        .allImages(isSearch: false, searchText: '',type: StringManager.post
+            );
   }
 
   @override

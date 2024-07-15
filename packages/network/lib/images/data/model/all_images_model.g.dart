@@ -29,8 +29,7 @@ _$ImagesDataModelImpl _$$ImagesDataModelImplFromJson(
     _$ImagesDataModelImpl(
       id: json['_id'] as String?,
       name: json['name'] as String?,
-      image:
-          (json['image'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      image: json['image'] as String?,
       category: json['category'] == null
           ? null
           : CategoryDataModel.fromJson(
