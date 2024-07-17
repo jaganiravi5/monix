@@ -11,23 +11,23 @@ class SuggestionApi {
   // injecting dio instance
   SuggestionApi(this._dioClient);
 
-  Future<Map<String, dynamic>> submitSuggestionApi(
-    { required Map<String, dynamic> queryParams,}
-  ) async {
+  Future<Map<String, dynamic>> submitSuggestionApi({
+    required Map<String, dynamic> body,
+  }) async {
     // final SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper(Preference());
     try {
-     
-        final Response res = await _dioClient.post(
-          Endpoints.suggetion,
-          options: HttpOptions.getOptions(
-            HttpOptions.getHeader(
-                // sharedPreferenceHelper.authToken ?? '',
-                ),
-          ),
-          queryParameters: queryParams,
-        );
-        return res.data;
-     
+      final Response res = await _dioClient.post(
+        Endpoints.suggetion,
+        data: body,
+        options: HttpOptions.getOptions(
+          HttpOptions.getHeader(
+              // sharedPreferenceHelper.authToken ?? '',
+              ),
+        ),
+
+        // queryParameters: queryParams,
+      );
+      return res.data;
     } on DioException catch (e) {
       if (e.error is SocketException) {
         Fluttertoast.showToast(msg: "Internet not available !");

@@ -78,10 +78,16 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
   }
 
   List<ImagesDataModel> getSearchsubCat() {
-    final List<ImagesDataModel> temp = listAllSearchData.toSet().toList();
-    print(":::::listAllSearchedData${temp}");
+    Set<String> subCategorySet = {};
+    List<ImagesDataModel> uniqueImagesList = [];
+    for (var image in listAllSearchData) {
+      if (!subCategorySet.contains(image.subcategory?.name)) {
+        subCategorySet.add(image.subcategory?.name??'');
+        uniqueImagesList.add(image);
+      }
+    }
 
-    return listAllSearchData;
+    return uniqueImagesList;
   }
 
   // void updateCustomer({required int index, required AllCustomerData customerData}) {

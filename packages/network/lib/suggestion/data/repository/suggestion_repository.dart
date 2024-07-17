@@ -15,10 +15,11 @@ class SuggestionRepository {
   SuggestionRepository(this._suggestionApi);
 
   Future<SuggestionModel> suggestionRepo(
+    {required Map<String, dynamic> body,}
    
   ) async {
     try {
-      final res = await _suggestionApi.submitSuggestionApi(queryParams: {}
+      final res = await _suggestionApi.submitSuggestionApi(body: body
         
        
       );

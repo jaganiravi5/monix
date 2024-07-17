@@ -7,14 +7,18 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:monix/admob_ads/ad_helper.dart';
 import 'package:monix/admob_ads/native_ads.dart';
 import 'package:monix/router/custom_page_transition.dart';
+import 'package:monix/utils/primary_validator.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:network/suggestion/provider/provide.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../router/routes_name.dart';
 
 class IdeaScreen extends ConsumerStatefulWidget {
   const IdeaScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: const IdeaScreen(),
         state: state,
       );
@@ -26,8 +30,9 @@ class IdeaScreen extends ConsumerStatefulWidget {
 class _IdeaScreenState extends ConsumerState<IdeaScreen> {
   // NativeAd? nativeAd;
   bool _nativeAdIsLoaded = false;
-  final nameController = TextEditingController();
-  final ideaController = TextEditingController();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController ideaController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -95,7 +100,8 @@ class _IdeaScreenState extends ConsumerState<IdeaScreen> {
               size: 28.h,
             ),
           ),
-          suffixIcon: images.star.image(width: 24.w, height: 24.w, fit: BoxFit.cover),
+          suffixIcon:
+              images.star.image(width: 24.w, height: 24.w, fit: BoxFit.cover),
           onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         ),
         body: Padding(
@@ -105,74 +111,96 @@ class _IdeaScreenState extends ConsumerState<IdeaScreen> {
             right: 20.w,
             bottom: 22.w,
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+          child: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    StringManager.suggestionDesc,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        StringManager.suggestionDesc,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16.sp,
+                          color: color.grey500.withOpacity(0.9),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30.w,
+                      ),
+                      CommonTextFormField(
+                        color: color,
+                        controller: nameController,
+                       validator: (p0) => Validation.getFullNameValidation(p0, context),
+                        hintText: StringManager.enterName,
+                      ),
+                      SizedBox(
+                        height: 18.w,
+                      ),
+                      CommonTextFormField(
+                        color: color,
+                        hintText: StringManager.yourSuggestionHint,
+                        controller: ideaController,
+                         validator: (p0) => Validation.getideaValidation(p0, context),
+                        maxLines: 6,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 50.w,),
+            
+                  CommonButton(
+                    title: StringManager.submitSuggestion,
+                    // icon: Padding(
+                    //   padding: EdgeInsets.only(right: 5.w),
+                    //   child: Icon(
+                    //     Icons.file_download_outlined,
+                    //     color: color.white,
+                    //     size: 24.w,
+                    //   ),
+                    // ),
+                    onButtonClick: () async {
+
+                      if (formKey.currentState!.validate()) {
+                        final res = await _addSuggestionApiCall(
+                          reqModel: IdeaRequest(
+                            idea: ideaController.text,
+                            name: nameController.text,
+                          ),
+                        );
+                        if (res) {
+                          context.pop();
+                        }
+                      }else{
+                         Fluttertoast.showToast(msg: "Please try again letter!");
+                      }
+            
+                      // _downloadMedia(bytes: watermarkedImgBytes, url: baseImgUrl);
+                    },
+                    textStyle: TextStyle(
                       fontSize: 16.sp,
-                      color: color.grey500.withOpacity(0.9),
+                      fontWeight: FontWeight.w600,
+                      color: color.white,
                     ),
-                  ),
-                  SizedBox(
-                    height: 30.w,
-                  ),
-                  CommonTextFormField(
-                    color: color,
-                    controller: nameController,
-                    hintText: StringManager.enterName,
-                  ),
-                  SizedBox(
-                    height: 18.w,
-                  ),
-                  CommonTextFormField(
-                    color: color,
-                    hintText: StringManager.yourSuggestionHint,
-                    controller: nameController,
-                    maxLines: 6,
-                  ),
+                  )
+                  // ref.watch(nativeAdNotifierProvider.notifier).state.nativeAdIsLoaded
+                  //     ? ConstrainedBox(
+                  //         constraints: BoxConstraints(
+                  //           minWidth: 180.w, // minimum recommended width
+                  //           minHeight: 190.w, // minimum recommended height
+                  //           maxWidth: MediaQuery.of(context).size.width / 2,
+                  //           maxHeight: 290.w,
+                  //         ),
+                  //         child: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAd != null
+                  //             ? AdWidget(ad: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAd!)
+                  //             : Text('No Data Found'),
+                  //       )
+                  //     : CircularProgressIndicator(),
                 ],
               ),
-
-              CommonButton(
-                title: StringManager.submitSuggestion,
-                // icon: Padding(
-                //   padding: EdgeInsets.only(right: 5.w),
-                //   child: Icon(
-                //     Icons.file_download_outlined,
-                //     color: color.white,
-                //     size: 24.w,
-                //   ),
-                // ),
-                onButtonClick: () async {
-                  
-                  // _downloadMedia(bytes: watermarkedImgBytes, url: baseImgUrl);
-                },
-                textStyle: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w600,
-                  color: color.white,
-                ),
-              )
-              // ref.watch(nativeAdNotifierProvider.notifier).state.nativeAdIsLoaded
-              //     ? ConstrainedBox(
-              //         constraints: BoxConstraints(
-              //           minWidth: 180.w, // minimum recommended width
-              //           minHeight: 190.w, // minimum recommended height
-              //           maxWidth: MediaQuery.of(context).size.width / 2,
-              //           maxHeight: 290.w,
-              //         ),
-              //         child: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAd != null
-              //             ? AdWidget(ad: ref.watch(nativeAdNotifierProvider.notifier).state.nativeAd!)
-              //             : Text('No Data Found'),
-              //       )
-              //     : CircularProgressIndicator(),
-            ],
+            ),
           ),
         )
         // ConstrainedBox(
@@ -185,5 +213,36 @@ class _IdeaScreenState extends ConsumerState<IdeaScreen> {
         //   child: nativeAd != null ? AdWidget(ad: nativeAd!) : Text('No Data Found'),
         // ),
         );
+  }
+
+  Future<bool> _addSuggestionApiCall({required IdeaRequest reqModel}) async {
+    showLoadingDialog(context, true);
+    await ref
+        .read(suggestionDataProvider.notifier)
+        .submitSuggestion(body: reqModel.toMap());
+
+    final data = ref.read(suggestionDataProvider).suggestion.id;
+    if (data != null) {
+       Fluttertoast.showToast(msg: "Submitted Successfully! !");
+      showLoadingDialog(context, false);
+      // mediaUrl = data[0].url ?? '';
+      return true;
+    } else {
+      showLoadingDialog(context, false);
+      // showPrimarySnackbar(context: context, text: "${error?.message}");
+      return false;
+    }
+  }
+}
+
+class IdeaRequest {
+  String idea;
+  String name;
+  IdeaRequest({required this.idea, required this.name});
+  toMap() {
+    return {
+      "name": name,
+      "suggestion": idea,
+    };
   }
 }

@@ -7,10 +7,12 @@ class SuggestionDataNotifier extends StateNotifier<SuggestionState> {
 
   SuggestionRepository suggestionRepository;
 
-  Future<void> submitSuggestion({String? catId}) async {
+  Future<void> submitSuggestion({
+    required Map<String, dynamic> body,
+  }) async {
     state = state.copyWith(isLoading: true);
 
-    await suggestionRepository.suggestionRepo().then(
+    await suggestionRepository.suggestionRepo(body: body).then(
       (data) {
         state = state.copyWith(
             suggestion: data, isLoading: false, isLoadingMore: false);
