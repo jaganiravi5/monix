@@ -33,17 +33,23 @@ class NoWatermarkBtn extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  StringManager.noWatermark,
-                  style: TextStyle(
-                    color: theme.white,
-                    fontSize: 17.sp,
-                    fontWeight: FontWeight.w500,
-                  ),
+                
+                Row(
+                  children: [
+                      SizedBox(width: 4.w,),
+                    Text(
+                      StringManager.noWatermark,
+                      style: TextStyle(
+                        color: theme.white,
+                        fontSize: 17.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(
-                  width: 91.w,
-                  height: 31.w,
+                  width: 104.w,
+                  height: 30.w,
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(7.r),
@@ -56,10 +62,14 @@ class NoWatermarkBtn extends StatelessWidget {
                           Icons.play_circle_fill_rounded,
                           color: theme.black,
                         ),
+                        SizedBox(
+                          width: 2.w,
+                        ),
                         Text(
                           StringManager.watchAd,
                           style: TextStyle(
-                            fontSize: 11.sp,
+                            fontSize: 14.sp,
+            
                             fontWeight: FontWeight.w500,
                           ),
                         ),

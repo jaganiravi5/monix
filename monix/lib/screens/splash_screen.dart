@@ -70,13 +70,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> getAllImages() async {
-    ref.read(allImagesDataProvider.notifier).page = 1;
+    // ref.read(allImagesDataProvider.notifier).page = 1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
     await ref
         .read(allImagesDataProvider.notifier)
         .allImages(isSearch: false, searchText: '',type: StringManager.post
-            );
+        ,page: 1,limit: 10    );
   }
 
   @override

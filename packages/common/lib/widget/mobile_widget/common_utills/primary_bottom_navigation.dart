@@ -26,7 +26,7 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: 15.h,
-        horizontal: 18.w,
+        horizontal: 44.w,
       ),
       decoration: BoxDecoration(
         color: colors.bgColor,
@@ -45,11 +45,11 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
               isBoxShadow: widget.currentIndex == 0 ? true : false,
               title: StringManager.home,
               icon: widget.currentIndex == 0
-                  ? icons.home.svg(width: 24.w, height: 24.w, color: colors.secondary1)
+                  ? icons.home.svg(width: 24.w, height: 24.w, color: colors.secondary1,)
                   : icons.homeUnfill.svg(
                       width: 24.w,
                       height: 24.w,
-                      color: colors.grey500,
+                      color: colors.grey500.withOpacity(0.4),
                     ),
               isCurrentIndex: widget.currentIndex == 0,
             ),
@@ -65,9 +65,12 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
               content: context,
               title: StringManager.search,
               icon: widget.currentIndex == 1
-                  ? icons.searchFill.svg(color: colors.secondary1)
+                  ? icons.searchFill.svg( width: 24.w,
+                      height: 24.w,color: colors.secondary1)
                   : icons.search.svg(
-                      color: colors.grey500,
+                     width: 24.w,
+                      height: 24.w,
+                      color: colors.grey500.withOpacity(0.4),
                     ),
               isCurrentIndex: widget.currentIndex == 1,
             ),
@@ -81,19 +84,19 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
             child: _menuItem(
               isBoxShadow: widget.currentIndex == 2 ? true : false,
               content: context,
-              title: StringManager.monixAi,
+              title: StringManager.monix,
               icon: widget.currentIndex == 2
                   ? icons.monixAiFill.svg(
                       width: 24.w,
                       height: 24.w,
                       fit: BoxFit.cover,
-                      color: widget.currentIndex == 2 ? colors.secondary1 : colors.grey500,
+                      color: widget.currentIndex == 2 ? colors.secondary1 :  colors.grey500.withOpacity(0.4),
                     )
                   : icons.monixAi.svg(
                       width: 24.w,
                       height: 24.w,
                       fit: BoxFit.cover,
-                      color: widget.currentIndex == 2 ? colors.secondary1 : colors.grey500,
+                      color: widget.currentIndex == 2 ? colors.secondary1 :  colors.grey500.withOpacity(0.4),
                     ),
               isCurrentIndex: widget.currentIndex == 2,
             ),
@@ -116,7 +119,7 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
                       color: colors.secondary1,
                     )
                   : icons.saved.svg(
-                      color: colors.grey500,
+                      color: colors.grey500.withOpacity(0.4),
                     ),
               isCurrentIndex: widget.currentIndex == 3,
             ),
@@ -151,17 +154,17 @@ class _PrimaryBottomNavigationState extends State<PrimaryBottomNavigation> {
               title,
               style: TextStyle(
                 fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-                color: isCurrentIndex ? color.secondary1 : color.grey500,
+                fontWeight:isCurrentIndex? FontWeight.w600:FontWeight.w400,
+                color: isCurrentIndex ? color.secondary1 :  color.grey500.withOpacity(0.4),
               ),
             )
           ],
         ),
         decoration: BoxDecoration(boxShadow: [
           BoxShadow(
-            color: isBoxShadow ? color.secondary1.withOpacity(0.17) : color.bgColor,
+            color: isBoxShadow ? color.secondary1.withOpacity(0.32) : color.bgColor,
             spreadRadius: 5,
-            blurRadius: 48,
+            blurRadius: 36,
             offset: const Offset(0, 4),
           ),
         ]),

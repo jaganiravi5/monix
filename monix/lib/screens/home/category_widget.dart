@@ -29,8 +29,8 @@ class CategoryWidget extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(
-            right: 20.h,
-            left: 20.h,
+            right: 20.w,
+            left: 20.w,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,7 +61,7 @@ class CategoryWidget extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: 5,
+          height: 12.w,
         ),
         SizedBox(
           height: 120.w,
@@ -70,14 +70,15 @@ class CategoryWidget extends StatelessWidget {
                   ? ListView.separated(
                       itemCount: homeCategory!.length,
                       scrollDirection: Axis.horizontal,
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       padding: EdgeInsets.only(
-                        right: 20.h,
-                        left: 20.h,
+                        right: 20.w,
+                        left: 20.w,
                       ),
                       separatorBuilder: (context, index) {
                         return SizedBox(
-                          width: 16.w,
+                          width: 12.w,
                         );
                       },
                       itemBuilder: (context, index) {
@@ -91,8 +92,8 @@ class CategoryWidget extends StatelessWidget {
                                child: CachedNetworkImage(
                                   imageUrl:
                                       "${StringManager.imageUrl}${homeCategory![index].image}",
-                                      height: 80.w,
-                                      width: 80.w,
+                                      height: 76.w,
+                                      width: 76.w,
                                       fit: BoxFit.cover,
                                 ),
                              ),

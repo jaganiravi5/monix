@@ -57,14 +57,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Future<void> getAllImages() async {
-    ref.read(allImagesDataProvider.notifier).page = 1;
+    // ref.read(allImagesDataProvider.notifier).page = 1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
-    await ref
-        .read(allImagesDataProvider.notifier)
-        .allImages(isSearch: false, searchText: '', type: StringManager.post
-            // isSearch: false,
-            );
+    await ref.read(allImagesDataProvider.notifier).allImages(
+        isSearch: false,
+        searchText: '',
+        type: StringManager.post,
+        page: 1,
+        limit: 18
+        // isSearch: false,
+        );
   }
 
   @override

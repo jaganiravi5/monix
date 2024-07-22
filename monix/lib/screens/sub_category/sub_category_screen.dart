@@ -157,8 +157,11 @@ class AllSubCategoryWidget extends StatelessWidget {
                               ),
                               Text(
                                 subCategoryData?[index].name ?? '',
+                                maxLines: 1,
                                 style: TextStyle(
                                   fontSize: 18.sp,
+                                  
+                                  overflow: TextOverflow.ellipsis,
                                   fontWeight: FontWeight.w400,
                                   color: color.white,
                                 ),

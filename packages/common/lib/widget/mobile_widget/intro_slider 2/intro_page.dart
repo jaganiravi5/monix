@@ -26,7 +26,7 @@ class IntroPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(
-              height: 70.h,
+              height: 70.w,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 42.w),
@@ -37,7 +37,7 @@ class IntroPage extends StatelessWidget {
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            height: 420.h,
+            height: 420.w,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   colors: [Colors.transparent, theme.bgColor, theme.bgColor],
@@ -67,7 +67,7 @@ class IntroPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        height: 14.sp,
+                        height: 14.w,
                       ),
                       Text(
                         desc,
@@ -85,7 +85,7 @@ class IntroPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: 54,
+                  height: 54.w,
                 ),
                 // Padding(
                 //   padding: EdgeInsets.symmetric(horizontal: 20.w),

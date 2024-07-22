@@ -36,4 +36,6 @@ class AllImagesApi {
       return e.response?.data;
     }
   }
+
+  
 }

@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/screens/search/search.dart';
+import 'package:monix/utils/common_fun.dart';
 import 'package:monix_assets/monix_assets.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../router/custom_page_transition.dart';
 import '../../router/routes_name.dart';
@@ -32,51 +34,83 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   bool isPortraitSel = false;
   Directory? directory;
   List<String>? imageList = [];
+  List<File> _imageFiles = [];
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-       getDir();
-       _getLocalPath();
+      //  getDir();
+      //  _getLocalPath();
+      // _fetchImages();
+      // _checkPermissions();
+      CommonFun.requestPermission(Permission.storage);
+     
     });
-   
+
     super.initState();
   }
-  Future<String>  _getLocalPath() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-    final String filePath = '$path/folderName/';
+   
+  Future<void> _fetchImages() async {
+    Directory? downloadDir;
 
- String _localPath = filePath;
-    final savedDir = Directory(_localPath);
-    bool hasExisted = await savedDir.exists();
-    if (!hasExisted) {
-      savedDir.create();
+    if (Platform.isAndroid) {
+      downloadDir = Directory('/storage/emulated/0/Download/monix');
+    } else if (Platform.isIOS) {
+      downloadDir = await getApplicationDocumentsDirectory();
+      downloadDir = Directory('${downloadDir.path}/monix');
     }
-    List<FileSystemEntity> files = savedDir.listSync();
-    print("::::${files}");
 
-    return filePath;
+    if (downloadDir != null && await downloadDir.exists()) {
+      List<FileSystemEntity> files = downloadDir.listSync();
+      List<File> imageFiles = files
+          .where((file) => file is File && _isImageFile(file.path))
+          .map((file) => File(file.path))
+          .toList();
+
+      setState(() {
+        _imageFiles = imageFiles;
+      });
+    }
   }
 
-  getDir() async {
-    final tempDir = await getApplicationDocumentsDirectory();
-    directory = (Platform.isAndroid)
-        ? directory = Directory('/storage/emulated/0/Download/monix')
-        : directory = Directory('${tempDir.path}/monix');
-  
-
-    imageList = directory
-        ?.listSync()
-        .map((item) => item.path)
-      
-        .toList(growable: false);
+  bool _isImageFile(String path) {
+    final extension = path.split('.').last.toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(extension);
   }
+//   Future<String>  _getLocalPath() async {
+//     final directory = await getApplicationDocumentsDirectory();
+//     final path = directory.path;
+//     final String filePath = '$path/monix/';
+
+//  String _localPath = filePath;
+//     final savedDir = Directory(_localPath);
+//     bool hasExisted = await savedDir.exists();
+//     if (!hasExisted) {
+//       savedDir.create();
+//     }
+//     List<FileSystemEntity> files = savedDir.listSync();
+//     print("::::${files}");
+
+//     return filePath;
+//   }
+
+  // getDir() async {
+  //   final tempDir = await getApplicationDocumentsDirectory();
+  //   directory = (Platform.isAndroid)
+  //       ? directory = Directory('/storage/emulated/0/Download/monix')
+  //       : directory = Directory('${tempDir.path}/monix');
+
+  //   imageList = directory
+  //       ?.listSync()
+  //       .map((item) => item.path)
+
+  //       .toList(growable: false);
+  // }
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
-    print(":::::LENGTH:::LOCAL::::${imageList?.length}");
+    print(":::::LENGTH:::LOCAL::::${_imageFiles?.length}");
     return Scaffold(
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(

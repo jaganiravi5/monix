@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:monix/monix.dart';
 import 'package:monix/router/custom_page_transition.dart';
 import 'package:network/images/provider/all_images_provider.dart';
+import 'package:network/images/provider/provider.dart';
 import '../../router/routes_name.dart';
 
 class ImageListScreen extends ConsumerStatefulWidget {
@@ -28,7 +29,7 @@ class ImageListScreen extends ConsumerStatefulWidget {
 
 class _ImageListScreenState extends ConsumerState<ImageListScreen> {
   bool isPortraitSelected = false;
-
+   final scrollController = ScrollController();
   @override
   void initState() {
     // TODO: implement initState
@@ -38,13 +39,38 @@ class _ImageListScreenState extends ConsumerState<ImageListScreen> {
     super.initState();
   }
 
+  // late final ScrollController _scrollController = ScrollController()
+  //   ..addListener(
+  //     () async {
+  //       if (ref.read(allImagesDataProvider.notifier).isPagination) {
+  //         final meta = ref.watch(allImagesDataProvider).allImages;
+  //         if (((meta?.pagination?.page)! * meta!.pagination!.pageSize!) < (meta?.pagination!.total ?? 0) &&
+  //             _scrollController.offset >= _scrollController.position.maxScrollExtent &&
+  //             !_scrollController.position.outOfRange) {
+  //           ref.read(allImagesDataProvider.notifier).state =
+  //               ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
+  //           ref.read(allImagesDataProvider.notifier).fetchNextBatch(
+  //             // jwtToken: sharedPreferenceHelper.authToken,
+  //             queryParams: {}, type: 'post',
+  //           );
+  //         }
+  //       }
+  //     },
+  //   );
+
   Future<void> getAllImages({required String type}) async {
-    ref.read(allImagesDataProvider.notifier).page = 1;
+    // ref.read(allImagesDataProvider.notifier).page = 1;
+    final page = ref.read(pageProvider);
+    
+    print("::::::Page::::::$page");
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
     await ref.read(allImagesDataProvider.notifier).allImages(
         isSearch: false,
         searchText: '',
+        page: page,
+        limit: 18,
+
         type: type,
         subCateId: widget.subCategoryId.toString());
   }
@@ -97,6 +123,7 @@ class _ImageListScreenState extends ConsumerState<ImageListScreen> {
               ),
               child: AllImagesWidget(
                 isTitle: false,
+                scrollController: scrollController,
                 imagesDataModel: imageData,
                 // isLoading: ref.watch(tempLoadingProvider.notifier).state,
                 portraitSel: isPortraitSelected,

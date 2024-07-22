@@ -12,7 +12,9 @@ class StringManager {
   static const String home = 'Home';
   static const String search = 'Search';
   static const String monixAi = 'Monix AI';
+  static const String monix = 'Monix';
   static const String saved = 'Saved';
+  static const String share = 'Share';
   static const String idea = 'Idea';
   static const String post = 'post';
   static const String reel = 'reel';
@@ -37,7 +39,7 @@ class StringManager {
 
   static const String free = 'Free';
 
-  static const String lowQuatilyWatermark = 'Low Quality + Watermark';
+  static const String lowQuatilyWatermark = 'Low quality + Watermark';
   static const String noWatermark = 'No Watermark + HD';
   static const String watchAd = 'Watch Ad';
 

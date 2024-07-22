@@ -5,11 +5,15 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_watermark/image_watermark.dart';
 import 'package:monix/screens/images/down_image_shimmer.dart';
+import 'package:monix_assets/gen/assets.gen.dart';
+import 'package:monix_assets/monix_assets.dart';
+import 'package:network/download_count/provider/provider.dart';
 import 'package:network/images/provider/all_images_provider.dart';
 import 'package:network/network.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,19 +23,22 @@ import '../../router/custom_page_transition.dart';
 import 'image_preview_screen.dart';
 
 class DownloadImageScreen extends ConsumerStatefulWidget {
-  const DownloadImageScreen({
+  DownloadImageScreen({
     super.key,
-    required this.imagePreviewArgs,
+    this.imagePreviewArgs,
+    this.urlData,
   });
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) =>
       AppPageTransition(
         page: DownloadImageScreen(
-          imagePreviewArgs: state.extra as ImagePreviewArgs,
+          imagePreviewArgs: state.extra as ImagePreviewArgs?,
+          urlData: state.uri.queryParameters as Map<String, dynamic>?,
         ),
         state: state,
       );
-  final ImagePreviewArgs imagePreviewArgs;
+  ImagePreviewArgs? imagePreviewArgs;
+  Map<String, dynamic>? urlData;
 
   @override
   ConsumerState<DownloadImageScreen> createState() =>
@@ -41,146 +48,150 @@ class DownloadImageScreen extends ConsumerStatefulWidget {
 class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
   var watermarkedImgBytes;
   Random random = Random();
-  String baseImgUrl =
-      'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg';
+  String imageUrl = '';
+  bool? isPortrait;
+  String imageName = '';
+  String imageId = '';
+
+  String shareUrl = '';
 
   @override
   initState() {
     // TODO: implement initState
+    getWatermarkImg();
+    if (widget.urlData != null && widget.urlData!.isNotEmpty) {
+      imageUrl = widget.urlData?['imageUrl'];
+      imageId = widget.urlData?['id'];
+      isPortrait = widget.urlData?['isPortrait'];
+      imageName = widget.urlData?['imageName'];
+    }
+    if (widget.imagePreviewArgs != null) {
+      imageUrl = widget.imagePreviewArgs!.imageUrl;
+      imageName = widget.imagePreviewArgs!.imageName;
+      imageId = widget.imagePreviewArgs!.imageId;
+      isPortrait = widget.imagePreviewArgs?.isPortrait;
+    }
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      ref.read(watermarkLoadProvider.notifier).state = true;
-      getWatermarkImg();
+      shareUrl =
+          'https://monixai.in/imagePreviewScreen?imageUrl=${imageUrl}&isPortrait=${isPortrait}&imageName=${imageName}&id=${imageId}';
+      // ref.read(watermarkLoadProvider.notifier).state = true;
+
+      print("::::::::WATERMARKIMGGGG${watermarkedImgBytes}");
     });
 
     super.initState();
   }
 
-  Future<void> getWatermarkImg() async {
-    // showLoadingDialog(context, true);
-    final String imageUrl =
-        "${StringManager.imageUrl}${widget.imagePreviewArgs.imageUrl}";
-
-    print('loader--------${ref.read(watermarkLoadProvider.notifier).state}');
-    // ref.read(watermarkLoadProvider.notifier).state = true;
-    Uint8List bytes =
-        (await NetworkAssetBundle(Uri.parse(imageUrl)).load(imageUrl))
-            .buffer
-            .asUint8List();
-
-    // Uint8List waterImgBytes = (await NetworkAssetBundle(Uri.parse(
-    //             'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
-    //         .load(
-    //             'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
-    //     .buffer
-    //     .asUint8List();
-    // watermarkedImgBytes = await ImageWatermark.addImageWatermark(
-
-    //   originalImageBytes: bytes,
-    //   //image bytes
-    //   waterkmarkImageBytes: waterImgBytes,
-    //   //watermark img bytes
-    //   imgHeight: 100,
-    //   //watermark img height
-    //   imgWidth: 100,
-    //   //watermark img width
-    //   dstY: 390,
-    //   //watermark position Y
-    //   dstX: 190, //watermark position X
-    // );
-    watermarkedImgBytes = await ImageWatermark.addTextWatermark(
-        watermarkText: ' @MONIX_AI_GODS     @MONIX_AI_GODS',
-        dstY: 900,
-        dstX: 80,
-        imgBytes: bytes,
-        color: Colors.white.withOpacity(0.5));
-    setState(() {});
-    ref.read(watermarkLoadProvider.notifier).state = false;
-    // showLoadingDialog(context, false);
+  getWatermarkImg() {
+    if (widget.imagePreviewArgs?.imageData != null) {
+      watermarkedImgBytes = widget.imagePreviewArgs?.imageData!;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final String imageUrl =
-        "${StringManager.imageUrl}${widget.imagePreviewArgs.imageUrl}";
+    final String imageAwsUrl = "${StringManager.imageUrl}${imageUrl}";
     final color = Theme.of(context).monixColors;
     return Scaffold(
+      backgroundColor: color.bgColor,
       body: Stack(
         children: [
           Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            child: CachedNetworkImage(
-              fit: BoxFit.cover,
-              imageUrl: imageUrl,
-            ),
+            child: isPortrait != null && !(isPortrait!)
+                ? CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: imageAwsUrl,
+                  )
+                : watermarkedImgBytes == null
+                    ? SpinKitCircle(
+                        color: color.secondary1,
+                        size: 70.w,
+                      )
+                    : Image.memory(
+                        watermarkedImgBytes,
+                        fit: BoxFit.cover,
+                      ),
           ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: color.bgColor.withOpacity(0.8),
+          isPortrait != null && !(isPortrait!)
+              ? Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  color: color.bgColor.withOpacity(0.8),
+                )
+              : SizedBox.shrink(),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: Container(
+              height: 200,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    color.black,
+                    color.black.withOpacity(0.3),
+                    Colors.transparent
+                  ], // Red to orange (adjust as needed)
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0, 0.8, 1],
+                ),
+              ),
+            ),
           ),
           ImagePreviewAppBar(
             color: color,
-            name: widget.imagePreviewArgs.imageName,
+            name: imageName,
             onSuffixClick: () {
-              _shareImg(url: 'https://monixai.in/homeScreen');
+              _shareImg(url: shareUrl, imgData: watermarkedImgBytes);
               //TODO : share on What'sapp
             },
           ),
-          Positioned(
-            top: 240.w,
-            bottom: 240.w,
-            left: 20.w,
-            right: 20.w,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.r),
-              child: Container(
-                  width: MediaQuery.of(context).size.width / 2,
-                  height: MediaQuery.of(context).size.height / 2,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: color.white,
-                          spreadRadius: 5,
-                          blurRadius: 48,
-                          offset: const Offset(0, 4),
+          isPortrait != null && !(isPortrait!)
+              ? Positioned(
+                  top: 240.w,
+                  bottom: 240.w,
+                  left: 20.w,
+                  right: 20.w,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.r),
+                    child: Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        height: MediaQuery.of(context).size.height / 2,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: color.white,
+                                spreadRadius: 5,
+                                blurRadius: 48,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                            color: color.bgColor),
+                        child: watermarkedImgBytes == null
+                            ? SpinKitCircle(
+                                color: color.secondary1,
+                                size: 70.w,
+                              )
+                            : Image.memory(
+                                watermarkedImgBytes,
+                                fit: BoxFit.cover,
+                              )
+
+                        // Image.network(
+
+                        //   'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg',
+                        //   fit: BoxFit.cover,
+                        // ),
                         ),
-                      ],
-                      color: color.bgColor),
-                  child: !ref.watch(watermarkLoadProvider.notifier).state
-                      ? watermarkedImgBytes == null
-                          ? PrimaryShimmerEffectDownloadImage(
-                              shimmerHeight:
-                                  MediaQuery.of(context).size.height / 2,
-                              shimmerWidth:
-                                  MediaQuery.of(context).size.width / 2,
-                            )
-                          : Image.memory(
-                              watermarkedImgBytes,
-                              fit: BoxFit.cover,
-                            )
-                      : SizedBox(
-                          child: Container(
-                            color: Colors.transparent,
-                            height: 200.w,
-                            width: 200.w,
-                            alignment: Alignment.center,
-                            child: SpinKitCircle(
-                              color: color.secondary1,
-                              size: 70.w,
-                            ),
-                          ),
-                        )
-
-                  // Image.network(
-
-                  //   'https://images1.dnaindia.com/images/DNA-EN/900x1600/2023/6/1/1685617819241_krishna.jpg',
-                  //   fit: BoxFit.cover,
-                  // ),
                   ),
-            ),
-          ),
+                )
+              : SizedBox.shrink(),
+
+          ///DOWNLOAD BUTTON
           Positioned(
               bottom: 35.w,
               left: 20.w,
@@ -199,8 +210,10 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
                     ),
                     onButtonClick: () async {
                       _downloadMedia(
-                          bytes: watermarkedImgBytes,
-                          url: widget.imagePreviewArgs.imageUrl);
+                        bytes: watermarkedImgBytes,
+                        url: imageAwsUrl,
+                      );
+                      _downloadCountApi(imageId: imageId);
                     },
                     textStyle: TextStyle(
                       fontSize: 20.sp,
@@ -216,6 +229,26 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
         ],
       ),
     );
+  }
+
+  Future<bool> _downloadCountApi({required String imageId}) async {
+    showLoadingDialog(context, true);
+    await ref
+        .read(downloadCountDataProvider.notifier)
+        .downloadCount(imgId: imageId);
+
+    final data = ref.read(downloadCountDataProvider).downloadCountModel;
+    if (data != null) {
+      //  Fluttertoast.showToast(msg: "Submitted Successfully! !");
+
+      showLoadingDialog(context, false);
+      // mediaUrl = data[0].url ?? '';
+      return true;
+    } else {
+      showLoadingDialog(context, false);
+      // showPrimarySnackbar(context: context, text: "${error?.message}");
+      return false;
+    }
   }
 
   void _downloadMedia({required Uint8List bytes, required String url}) async {
@@ -254,10 +287,23 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
     //showPrimaryLoading(context, false);
   }
 
-  Future<void> _shareImg({required String url}) async {
-    final res = await Share.share('check out this stunning god image $url');
+  Future<void> _shareImg(
+      {required String url, required Uint8List imgData}) async {
+    // final res = await Share.share('check out this stunning god image $url',);
+
+    // Get the temporary directory
+    final directory = await getTemporaryDirectory();
+
+    // Create a file in the temporary directory
+    final file = File('${directory.path}/temp.jpg');
+
+    // Write the bytes to the file
+    await file.writeAsBytes(imgData);
+    final res = await Share.shareXFiles([XFile(file.path)],
+        text:
+            'Check out this awesome image from Monix AI Gods Gallery! 📸 $url');
     if (res.status == ShareResultStatus.success) {
-      print('Thank you for sharing my website!');
+      print('Thank you for sharing Our App!');
     }
 
     // showLoadingDialog(context, true);
@@ -279,6 +325,32 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
     //   showLoadingDialog(context, false);
     // //}
   }
+
+  // Future<void> _shareImg({required String url}) async {
+  //   final res = await Share.share('check out this stunning god image $url');
+  //   if (res.status == ShareResultStatus.success) {
+  //     print('Thank you for sharing my website!');
+  //   }
+
+  //   // showLoadingDialog(context, true);
+  //   // Directory dir = await getTemporaryDirectory();
+  //   // // final result = await DownloadMediaRepository().download(
+  //   // //   url ?? '',
+  //   // //   "${dir.path}/${url.split("/").last}",
+  //   // // );
+  //   // //if (result != null) {
+  //   // //   showLoadingDialog(context, false);
+  //   //   File tempFile = File('${dir.path}/${url.split("/").last}');
+  //   //   // await tempFile.writeAsBytes(data);
+  //   //   final XFile file = XFile(tempFile.path);
+  //   //   final result = await Share.shareXFiles([file], text: 'Great Docs');
+  //   //   if (result.status == ShareResultStatus.success) {
+  //   //     print('Thank you for sharing the picture!');
+  //   //   }
+  //   // //} else {
+  //   //   showLoadingDialog(context, false);
+  //   // //}
+  // }
 }
 
 final watermarkLoadProvider = StateProvider<bool>(

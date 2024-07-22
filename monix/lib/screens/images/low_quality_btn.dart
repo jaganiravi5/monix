@@ -16,10 +16,11 @@ class LowQualityBtn extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         height: 52.w,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.w), color: color.white),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12.r), color: color.white),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(width: 4.w,),
             Text(
               StringManager.lowQuatilyWatermark,
               style: TextStyle(
@@ -33,7 +34,7 @@ class LowQualityBtn extends StatelessWidget {
             ),
             SizedBox(
               width: 91.w,
-              height: 31.h,
+              height: 31.w,
               child: CommonButton(
                 title: StringManager.free,
                 icon: Icon(
@@ -47,7 +48,7 @@ class LowQualityBtn extends StatelessWidget {
                   vertical: 6.w,
                   horizontal: 22.w,
                 ),
-                textStyle: TextStyle(color: color.white),
+                textStyle: TextStyle(color: color.white,fontSize: 14.sp,),
               ),
             ),
           ],

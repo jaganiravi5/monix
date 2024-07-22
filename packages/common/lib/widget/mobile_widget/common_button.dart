@@ -147,9 +147,10 @@ class CommonSolidButton extends StatelessWidget {
                   icon ?? SizedBox.shrink(),
                   icon != null
                       ? SizedBox(
-                          width: 8.h,
+                          width: 8.w,
                         )
                       : SizedBox.shrink(),
+                      
                   Text(
                     title,
                     style: textStyle ??

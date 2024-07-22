@@ -128,7 +128,10 @@ class AllCategoryWidget extends StatelessWidget {
                           ),
                           Text(
                             categoryData?[index].name ?? '',
+                            maxLines: 1,
+
                             style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
                               fontSize: 18.sp,
                               fontWeight: FontWeight.w400,
                               color: color.white,

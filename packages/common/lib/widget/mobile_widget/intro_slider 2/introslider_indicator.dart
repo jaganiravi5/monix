@@ -31,8 +31,8 @@ class IntroSliderIndicator extends StatelessWidget {
                 child: Container(
                   width: entry.key == currentPage ? 23.w : 6.w,
                   height: 6.h,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 4.0,
+                  margin:  EdgeInsets.symmetric(
+                    horizontal: 4.w,
                   ),
                   decoration: BoxDecoration(
                     // border: Border.all(color: theme.monixColors.onSecondary),

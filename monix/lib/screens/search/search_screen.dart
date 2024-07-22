@@ -9,7 +9,9 @@ import 'package:monix/screens/search/search.dart';
 import 'package:monix_assets/monix_assets.dart';
 import 'package:network/images/data/model/all_images_model.dart';
 import 'package:network/images/provider/all_images_provider.dart';
+import 'package:network/images/provider/all_images_state_provider.dart';
 import 'package:network/network.dart';
+import 'package:network/search/provider/provider.dart';
 
 import '../../router/routes_name.dart';
 
@@ -30,12 +32,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
   Timer? _debounce;
   bool isPortraitSelected = false;
+  final scrollController = ScrollController();
+
   List<ImagesDataModel>? imagesData;
 
   @override
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+       scrollController.addListener(_onScrollListener);
       getAllImages(type: 'post');
       // getAllCategory(ref: ref);
     });
@@ -43,22 +48,51 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Future<void> getAllImages({required String type}) async {
-    ref.read(allImagesDataProvider.notifier).page = 1;
+    // ref.read(allImagesDataProvider.notifier).page = 1;
+    ref.read(pageProvider.notifier).state=1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
     await ref.read(allImagesDataProvider.notifier).allImages(
           isSearch: false,
           searchText: '',
+          page: 1,
+          limit: 18,
           type: type,
           isTrending: true,
         );
   }
 
+   Future<void> _onScrollListener() async {
+     if (ref.read(allImagesDataProvider.notifier).isPagination) {
+          final page = ref.watch(pageProvider);
+          final pageSize = ref.watch(pageSizeProvider);
+          final total = ref.watch(allImagesDataProvider).allImages.total;
+          print(":::::page$page");
+          print(":::::::::pagesize $pageSize");
+          print("::::::total $total");
+          if (((page) * pageSize) < (total ?? 0) &&
+              scrollController.offset >=
+                  scrollController.position.maxScrollExtent &&
+              !scrollController.position.outOfRange) {
+                
+            ref.read(allImagesDataProvider.notifier).state =
+                ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
+            ref.read(allImagesDataProvider.notifier).fetchNextBatch(
+                  type: isPortraitSelected ? 'reel' : 'post',
+                  page: page,
+                  limit: 18,
+
+                );
+          }
+        }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
     final searchedList =
-        ref.watch(allImagesDataProvider.notifier).getSearchsubCat();
+        ref.watch(searchDataProvider.notifier).getAllSearches();
     final trendindData =
         ref.watch(allImagesDataProvider.notifier).getAllImages();
     return Scaffold(
@@ -93,6 +127,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           // bottom: 50.w,
         ),
         child: SingleChildScrollView(
+          controller: scrollController,
           child: Column(
             children: [
               SizedBox(
@@ -155,7 +190,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               return InkWell(
                                 onTap: () => context.push(
                                   AppRoutesPath.imageListScreen,
-                                  extra: searchedList[index].subcategory?.id,
+                                  extra: searchedList[index]?.id,
                                 ),
                                 child: Row(
                                   children: [
@@ -166,8 +201,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                       width: 12.w,
                                     ),
                                     Text(
-                                      searchedList[index].subcategory?.name ??
-                                          '',
+                                      searchedList[index].name ?? '',
                                       style: TextStyle(
                                         color: color.grey500,
                                         fontSize: 16.sp,
@@ -190,8 +224,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         )
                   : AllImagesWidget(
                       isTitle: true,
+                      scrollController: scrollController,
                       titleText: StringManager.trendingImages,
-
                       imagesDataModel: trendindData,
                       portraitSel: isPortraitSelected,
                       onPortraitTap: () {
@@ -242,12 +276,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Future<void> getSearchImages(
       {required String type, required String searchText}) async {
-    ref.read(allImagesDataProvider.notifier).page = 1;
-    ref.read(allImagesDataProvider.notifier).isPagination = true;
+    ref.read(searchDataProvider.notifier).page = 1;
+    ref.read(searchDataProvider.notifier).isPagination = true;
 
-    await ref
-        .read(allImagesDataProvider.notifier)
-        .allImages(isSearch: true, searchText: searchText, type: type);
-    final data = ref.watch(allImagesDataProvider.notifier).getAllImages();
+    await ref.read(searchDataProvider.notifier).allsearch(
+          searchText: searchText,
+        );
+    // final data = ref.watch(allImagesDataProvider.notifier).getAllImages();
   }
 }

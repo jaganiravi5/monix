@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:common/common.dart';
 import 'package:common/widget/mobile_widget/primary_simmer_effect.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
@@ -15,6 +16,7 @@ import 'package:network/category/data/model/all_category_model.dart';
 import 'package:network/category/provider/all_category_provider.dart';
 import 'package:network/images/data/model/all_images_model.dart';
 import 'package:network/images/provider/all_images_provider.dart';
+import 'package:network/images/provider/all_images_state_provider.dart';
 import 'package:network/sub_category/provider/provider.dart';
 
 import '../../router/custom_page_transition.dart';
@@ -38,11 +40,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<ImagesDataModel>? imagesData;
   List<CategoryDataModel>? categoryData;
   List<CategoryDataModel>? homeCategory;
+   final scrollController = ScrollController();
+
+    //   late final ScrollController _scrollController = ScrollController()
+    // ..addListener(
+    //   () async {
+    //     if (ref.read(allImagesDataProvider.notifier).isPagination) {
+    //       final page = ref.watch(pageProvider);
+    //       final pageSize = ref.watch(pageSizeProvider);
+    //       final total = ref.watch(allImagesDataProvider).allImages.total;
+    //       if (((page) * pageSize) < (total??0) &&
+    //           _scrollController.offset >= _scrollController.position.maxScrollExtent &&
+    //           !_scrollController.position.outOfRange) {
+    //         ref.read(allImagesDataProvider.notifier).state =
+    //             ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
+    //         ref.read(allImagesDataProvider.notifier).fetchNextBatch(
+    //          type: isPortraitSelected ?'reel':'post',
+    //          page: 1,
+    //          limit: 18,
+    //         );
+    //       }
+    //     }
+    //   },
+    // );
 
   @override
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      scrollController.addListener(_onScrollListener);
       getAllImages(type: 'post');
       getAllCategory(ref: ref);
     });
@@ -57,12 +83,37 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> getAllImages({required String type}) async {
-    ref.read(allImagesDataProvider.notifier).page = 1;
+    // ref.read(allImagesDataProvider.notifier).page = 1;
+    ref.read(pageProvider.notifier).state=1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
     await ref
         .read(allImagesDataProvider.notifier)
-        .allImages(isSearch: false, searchText: '', type: type);
+        .allImages(isSearch: false, searchText: '', type: type,page: 1,limit: 18);
+  }
+
+  Future<void> _onScrollListener() async {
+     if (ref.read(allImagesDataProvider.notifier).isPagination) {
+          final page = ref.watch(pageProvider);
+          final pageSize = ref.watch(pageSizeProvider);
+          final total = ref.watch(allImagesDataProvider).allImages.total;
+          print(":::::page$page");
+          print(":::::::::pagesize $pageSize");
+          print("::::::total $total");
+          if (((page) * pageSize) < (total ?? 0) &&
+              scrollController.offset >=
+                  scrollController.position.maxScrollExtent &&
+              !scrollController.position.outOfRange) {
+
+            ref.read(allImagesDataProvider.notifier).state =
+                ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
+            ref.read(allImagesDataProvider.notifier).fetchNextBatch(
+                  type: isPortraitSelected ? 'reel' : 'post',
+                  page: page,
+                  limit: 18,
+                );
+          }
+        }
   }
 
   @override
@@ -108,6 +159,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           content: Text('Tap back again to leave'),
         ),
         child: SingleChildScrollView(
+          controller: scrollController,
           child: Column(
             children: [
               Padding(
@@ -126,18 +178,116 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
 
                     SizedBox(
-                      height: 20.w,
+                      height: 16.w,
                     ),
                     // NewImagesWidget(),
                     // SizedBox(
                     //   height: 38.h,
                     // ),
+            //          !isLoading
+            // ? imagesData != null &&
+            //         imagesData!.isNotEmpty
+            //     ? GridView.builder(
+            //         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //           crossAxisCount: 2,
+            //           crossAxisSpacing: 4,
+            //           mainAxisSpacing: 4,
+            //           childAspectRatio: isPortraitSelected ? 9 / 16 : 1,
+            //         ),
+            //         controller: _scrollController,
+            //         itemCount: imagesData?.length,
+            //         padding: EdgeInsets.only(bottom: 90.w),
+            //         primary: false,
+            //         shrinkWrap: true,
+            //         itemBuilder: (BuildContext context, int index) {
+            //           final String imageUrl = StringManager.imageUrl;
+            //           return InkWell(
+            //             onTap: () => context.push(
+            //               AppRoutesPath.imagePreviewScreen,
+            //               extra: ImagePreviewArgs(
+            //                 imageUrl:
+            //                    imagesData![index].image ?? '',
+            //                 imageName: imagesData![index].name ?? '',
+            //                 isPortrait: isPortraitSelected,
+            //               ),
+            //             ),
+            //             child: Card(
+            //               color: color.bgSolidColor,
+            //               elevation: 3,
+            //               child: ClipRRect(
+            //                 borderRadius: BorderRadius.circular(8.r),
+            //                 child: CachedNetworkImage(
+            //                   imageUrl:
+            //                       "${imageUrl}${imagesData![index].image}",
+            //                   fit: BoxFit.cover,
+            //                 ),
+            //               ),
+            //             ),
+            //           );
+            //         },
+            //       )
+            //     : Container(
+            //         height: MediaQuery.sizeOf(context).height / 2,
+            //         child: Center(
+            //           child: Text(
+            //             'No data found!',
+            //             style: TextStyle(
+            //               color: Colors.white.withOpacity(0.5),
+            //               fontSize: 22.sp,
+            //               fontWeight: FontWeight.w500,
+            //             ),
+            //           ),
+            //         ),
+            //       )
+            // : GridView.builder(
+            //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //       crossAxisCount: 2,
+            //       crossAxisSpacing: 4,
+            //       mainAxisSpacing: 4,
+            //       childAspectRatio: isPortraitSelected ? 9 / 16 : 1,
+            //     ),
+            //     itemCount: isLoading ? 10 : 1,
+            //     padding: EdgeInsets.only(bottom: 90.h),
+            //     primary: false,
+            //     shrinkWrap: true,
+            //     itemBuilder: (BuildContext context, int index) {
+            //       final String imageUrl = StringManager.imageUrl;
+
+            //       return isLoading
+            //           ? PrimaryShimmerEffect(shimmerHeight: 50.w)
+            //           : imagesData != null &&
+            //                   imagesData!.isNotEmpty
+            //               ? Card(
+            //                   color: color.white,
+            //                   elevation: 3,
+            //                   child: ClipRRect(
+            //                     borderRadius: BorderRadius.circular(8.r),
+            //                     child: CachedNetworkImage(
+            //                       imageUrl:
+            //                           "${imageUrl}${imagesData![index].image}",
+            //                       fit: BoxFit.cover,
+            //                     ),
+            //                   ))
+            //               : Text(
+            //                   'No data found!',
+            //                   style: TextStyle(
+            //                     color: Colors.white,
+            //                     fontSize: 22.sp,
+            //                     fontWeight: FontWeight.w500,
+            //                   ),
+            //                 );
+            //       // : PrimaryShimmerEffect(shimmerHeight: 50.w);
+            //     },
+            //   )
+     
+                    ///TODO UNCOMMENT
                     Padding(
                       padding: EdgeInsets.only(
                         right: 20.h,
                         left: 20.h,
                       ),
                       child: AllImagesWidget(
+                        scrollController: scrollController,
                         isTitle: true,
                         imagesDataModel: imagesData,
                         // isLoading: isLoading,
@@ -158,6 +308,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         },
                       ),
                     ),
+                 
                   ],
                 ),
               ),

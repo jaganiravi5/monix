@@ -10,8 +10,8 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
 
   AllImagesRepository allImagesRepository;
 
-  int page = 1;
-  int limit = 18;
+  // int page = 1;
+  // int limit = 18;
   List<ImagesDataModel> listAllImages = [];
   List<ImagesDataModel> listAllSearchData = [];
   bool isPagination = true;
@@ -20,6 +20,8 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     required bool isSearch,
     bool? isTrending,
     required String type,
+    required int page,
+    required int limit,
     String? subCateId,
     String? searchText,
   }) async {
@@ -31,7 +33,6 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
           ? {
               'page': page,
               'limit': limit,
-              // 'type': type,
               'search': searchText,
             }
           : subCateId != null && subCateId.isNotEmpty
@@ -82,7 +83,7 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     List<ImagesDataModel> uniqueImagesList = [];
     for (var image in listAllSearchData) {
       if (!subCategorySet.contains(image.subcategory?.name)) {
-        subCategorySet.add(image.subcategory?.name??'');
+        subCategorySet.add(image.subcategory?.name ?? '');
         uniqueImagesList.add(image);
       }
     }
@@ -90,21 +91,12 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     return uniqueImagesList;
   }
 
-  // void updateCustomer({required int index, required AllCustomerData customerData}) {
-  //   listAllImages[index] = customerData;
-  // }
-
-  // void removeItem({required int index}) {
-  //   listAllData.remove(index);
-  // }
-
-  // void addCustomer({required AllCustomerData customerData}) {
-  //   listAllImages.add(customerData);
-  // }
-
   Future<void> fetchNextBatch({
     String? jwtToken,
-    required Map<String, int> queryParams,
+    required int page,
+    required int limit,
+    required String type,
+     bool? isTrending,
   }) async {
     page++;
     print('PageNo $page ${listAllImages.length}');
@@ -112,11 +104,19 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     state = state.copyWith(isLoading: false, isLoadingMore: true);
 
     await allImagesRepository.allImagesRepo(
-      queryParams: {
-        "pagination[page]": page,
-        "pagination[pageSize]": limit,
-        "sort[0]": "business_name:asc",
-        "sort[1]": "first_name:asc",
+      queryParams: isTrending!=null &&isTrending?{
+        'page': page,
+        'limit': limit,
+        'type': type,
+        "trending":isTrending,
+        // "sort[0]": "business_name:asc",
+        // "sort[1]": "first_name:asc",
+      }:{
+        'page': page,
+        'limit': limit,
+        'type': type,
+        // "sort[0]": "business_name:asc",
+        // "sort[1]": "first_name:asc",
       },
       // jwtToken: jwtToken,
     ).then(
@@ -137,3 +137,6 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     );
   }
 }
+
+final pageProvider = StateProvider<int>((ref) => 1);
+final pageSizeProvider = StateProvider<int>((ref) => 18);

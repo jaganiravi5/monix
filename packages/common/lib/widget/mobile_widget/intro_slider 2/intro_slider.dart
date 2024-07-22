@@ -94,6 +94,7 @@ class _IntroSliderState extends State<IntroSlider> {
                         Expanded(
                           child: CommonSolidButton(
                             title: StringManager.skip,
+                            padding: EdgeInsets.symmetric(vertical: 14.w),
                             isBorder: false,
                             onButtonClick: () => widget.onSkipClick(),
                           ),
@@ -104,6 +105,7 @@ class _IntroSliderState extends State<IntroSlider> {
                         Expanded(
                           child: CommonButton(
                             title: StringManager.next,
+                            padding: EdgeInsets.symmetric(vertical: 14.w),
                             onButtonClick: () {
                               carouselController.animateToPage(1);
                               currentPage=1;
@@ -117,6 +119,7 @@ class _IntroSliderState extends State<IntroSlider> {
                       ],
                     )
                   : CommonButton(
+                    padding: EdgeInsets.symmetric(vertical: 14.w),
                       title: StringManager.getStarted,
                       onButtonClick: () => widget.onGetStartedClick()),
             ),
