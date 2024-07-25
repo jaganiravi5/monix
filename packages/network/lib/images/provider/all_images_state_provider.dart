@@ -96,40 +96,48 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     required int page,
     required int limit,
     required String type,
-     bool? isTrending,
+    bool? isTrending,
   }) async {
     page++;
     print('PageNo $page ${listAllImages.length}');
 
     state = state.copyWith(isLoading: false, isLoadingMore: true);
 
-    await allImagesRepository.allImagesRepo(
-      queryParams: isTrending!=null &&isTrending?{
-        'page': page,
-        'limit': limit,
-        'type': type,
-        "trending":isTrending,
-        // "sort[0]": "business_name:asc",
-        // "sort[1]": "first_name:asc",
-      }:{
-        'page': page,
-        'limit': limit,
-        'type': type,
-        // "sort[0]": "business_name:asc",
-        // "sort[1]": "first_name:asc",
-      },
+    await allImagesRepository
+        .allImagesRepo(
+      queryParams: isTrending != null && isTrending
+          ? {
+              'page': page,
+              'limit': limit,
+              'type': type,
+              "trending": isTrending,
+              // "sort[0]": "business_name:asc",
+              // "sort[1]": "first_name:asc",
+            }
+          : {
+              'page': page,
+              'limit': limit,
+              'type': type,
+              // "sort[0]": "business_name:asc",
+              // "sort[1]": "first_name:asc",
+            },
       // jwtToken: jwtToken,
-    ).then(
+    )
+        .then(
       (data) {
+         bool isAdded = true;
         if (data.imagess!.length < limit) {
           isPagination = false;
         }
-        state = state.copyWith(isLoading: false, isLoadingMore: false);
-        listAllImages.addAll(data.imagess!);
+        // state = state.copyWith(isLoading: false, isLoadingMore: false);
+        // if (isAdded) {
+          listAllImages.addAll(data.imagess!);
+          // isAdded=false;
+        // }
         print('LoadingData:::::::IMG $page ${listAllImages.length}');
         state = state.copyWith(
           allImages: data,
-          isLoading: false,
+          isLoading: false,isLoadingMore: false
         );
       },
     ).onError(

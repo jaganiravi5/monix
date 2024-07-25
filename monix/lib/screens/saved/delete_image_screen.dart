@@ -11,6 +11,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_watermark/image_watermark.dart';
 import 'package:monix/screens/images/down_image_shimmer.dart';
+import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix_assets/gen/assets.gen.dart';
 import 'package:monix_assets/monix_assets.dart';
 import 'package:network/download_count/provider/provider.dart';
@@ -20,32 +21,27 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../router/custom_page_transition.dart';
-import 'image_preview_screen.dart';
 
-class DownloadImageScreen extends ConsumerStatefulWidget {
-  DownloadImageScreen({
+class DeleteImageScreen extends ConsumerStatefulWidget {
+  DeleteImageScreen({
     super.key,
-    this.imagePreviewArgs,
-    this.urlData,
+    required this.deleteScreenArgs,
   });
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) =>
       AppPageTransition(
-        page: DownloadImageScreen(
-          imagePreviewArgs: state.extra as ImagePreviewArgs?,
-          urlData: state.uri.queryParameters as Map<String, dynamic>?,
+        page: DeleteImageScreen(
+          deleteScreenArgs: state.extra as DeleteScreenArgs,
         ),
         state: state,
       );
-  ImagePreviewArgs? imagePreviewArgs;
-  Map<String, dynamic>? urlData;
+  DeleteScreenArgs deleteScreenArgs;
 
   @override
-  ConsumerState<DownloadImageScreen> createState() =>
-      _DownloadImageScreenState();
+  ConsumerState<DeleteImageScreen> createState() => _DownloadImageScreenState();
 }
 
-class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
+class _DownloadImageScreenState extends ConsumerState<DeleteImageScreen> {
   var watermarkedImgBytes;
   Random random = Random();
   String imageUrl = '';
@@ -58,62 +54,29 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
   @override
   initState() {
     // TODO: implement initState
-    getWatermarkImg();
-    if (widget.urlData != null && widget.urlData!.isNotEmpty) {
-      imageUrl = widget.urlData?['imageUrl'];
-      imageId = widget.urlData?['id'];
-      isPortrait = widget.urlData?['isPortrait'];
-      imageName = widget.urlData?['imageName'];
-    }
-    if (widget.imagePreviewArgs != null) {
-      imageUrl = widget.imagePreviewArgs!.imageUrl;
-      imageName = widget.imagePreviewArgs!.imageName;
-      imageId = widget.imagePreviewArgs!.imageId;
-      isPortrait = widget.imagePreviewArgs?.isPortrait;
-    }
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      shareUrl =
-          'https://monixai.in/imagePreviewScreen?imageUrl=${imageUrl}&isPortrait=${isPortrait}&imageName=${imageName}&id=${imageId}';
-      // ref.read(watermarkLoadProvider.notifier).state = true;
 
-      print("::::::::WATERMARKIMGGGG${watermarkedImgBytes}");
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      isPortrait = widget.deleteScreenArgs.isPortrait;
+    // });
 
     super.initState();
   }
 
-  getWatermarkImg() {
-    if (widget.imagePreviewArgs?.imageData != null) {
-      watermarkedImgBytes = widget.imagePreviewArgs?.imageData!;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final String imageAwsUrl = "${StringManager.imageUrl}${imageUrl}";
+    // final String imageAwsUrl = "${StringManager.imageUrl}${imageUrl}";
     final color = Theme.of(context).monixColors;
     return Scaffold(
       backgroundColor: color.bgColor,
       body: Stack(
         children: [
           Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: isPortrait != null && !(isPortrait!)
-                ? CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: imageAwsUrl,
-                  )
-                : watermarkedImgBytes == null
-                    ? SpinKitCircle(
-                        color: color.secondary1,
-                        size: 70.w,
-                      )
-                    : Image.memory(
-                        watermarkedImgBytes,
-                        fit: BoxFit.cover,
-                      ),
-          ),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Image.file(
+                File(widget.deleteScreenArgs.filePath.path),
+                fit: BoxFit.cover,
+              )),
           isPortrait != null && !(isPortrait!)
               ? Container(
                   width: MediaQuery.of(context).size.width,
@@ -142,11 +105,11 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
             ),
           ),
           ImagePreviewAppBar(
-            isSuffixIcon: true,
+            isSuffixIcon: false,
             color: color,
             name: imageName,
             onSuffixClick: () {
-              _shareImg(url: shareUrl, imgData: watermarkedImgBytes);
+              // _shareImg(url: shareUrl, imgData: watermarkedImgBytes);
               //TODO : share on What'sapp
             },
           ),
@@ -172,13 +135,8 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
                               ),
                             ],
                             color: color.bgColor),
-                        child: watermarkedImgBytes == null
-                            ? SpinKitCircle(
-                                color: color.secondary1,
-                                size: 70.w,
-                              )
-                            : Image.memory(
-                                watermarkedImgBytes,
+                        child:  Image.file(
+                                File(widget.deleteScreenArgs.filePath.path),
                                 fit: BoxFit.cover,
                               )
 
@@ -192,7 +150,7 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
                 )
               : SizedBox.shrink(),
 
-          ///DOWNLOAD BUTTON
+          ///DELETE BUTTON
           Positioned(
               bottom: 35.w,
               left: 20.w,
@@ -200,21 +158,28 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
               child: Column(
                 children: [
                   CommonButton(
-                    title: StringManager.downloadImg,
+                    title: StringManager.deleteImg,
                     icon: Padding(
                       padding: EdgeInsets.only(right: 5.w),
                       child: Icon(
-                        Icons.file_download_outlined,
+                        Icons.delete,
                         color: color.white,
                         size: 24.w,
                       ),
                     ),
                     onButtonClick: () async {
-                      _downloadMedia(
-                        bytes: watermarkedImgBytes,
-                        url: imageAwsUrl,
+                      showLoadingDialog(context, true);
+                      await widget.deleteScreenArgs.filePath.delete();
+                      showLoadingDialog(context, false);
+                      showToast(
+                        msg: "Deleted Successfully!",
+                        success: true,
                       );
-                      _downloadCountApi(imageId: imageId);
+                      context.pop(true);
+                      // _downloadMedia(
+                      //   bytes: watermarkedImgBytes,
+                      //   url: imageAwsUrl,
+                      // );
                     },
                     textStyle: TextStyle(
                       fontSize: 20.sp,
@@ -232,63 +197,43 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
     );
   }
 
-  Future<bool> _downloadCountApi({required String imageId}) async {
-    showLoadingDialog(context, true);
-    await ref
-        .read(downloadCountDataProvider.notifier)
-        .downloadCount(imgId: imageId);
+  // void _downloadMedia({required File bytes, required String url}) async {
+  //   showLoadingDialog(context, true);
+  //   Directory? dir;
+  //   final imgName = url.split('/').last;
+  //   print("imgName $imgName");
+  //   // final Uint8List list = bytes.buffer.asUint8List();
+  //   if (Platform.isAndroid) {
+  //     dir = Directory('/storage/emulated/0/Download/monix');
+  //   } else {
+  //     final tempDir = await getApplicationDocumentsDirectory();
+  //     dir = Directory('${tempDir.path}/monix');
+  //   }
+  //   if (!(await dir.exists())) {
+  //     await dir.create(recursive: true);
+  //   }
 
-    final data = ref.read(downloadCountDataProvider).downloadCountModel;
-    if (data != null) {
-      //  Fluttertoast.showToast(msg: "Submitted Successfully! !");
+  //   final fileShape = isPortrait ?? false ? 'portrait' : 'square';
+  //   final file = await File('${dir.path}/$fileShape/$imgName').create();
+  //   final res = file.writeAsBytesSync(bytes);
 
-      showLoadingDialog(context, false);
-      // mediaUrl = data[0].url ?? '';
-      return true;
-    } else {
-      showLoadingDialog(context, false);
-      // showPrimarySnackbar(context: context, text: "${error?.message}");
-      return false;
-    }
-  }
+  //   showLoadingDialog(context, false);
+  // showToast(
+  //   msg: "Download Successfully!",
+  //   success: true,
+  // );
+  //   // final result = await DownloadMediaRepository().download(
+  //   //   url ?? '',
+  //   //   "${dir.path}/${url.split("/").last}",
+  //   // );
 
-  void _downloadMedia({required Uint8List bytes, required String url}) async {
-    showLoadingDialog(context, true);
-    Directory? dir;
-    final imgName = url.split('/').last;
-    print("imgName $imgName");
-    // final Uint8List list = bytes.buffer.asUint8List();
-    if (Platform.isAndroid) {
-      dir = Directory('/storage/emulated/0/Download/monix');
-    } else {
-      final tempDir = await getApplicationDocumentsDirectory();
-      dir = Directory('${tempDir.path}/monix');
-    }
-    if (!(await dir.exists())) {
-      await dir.create(recursive: true);
-    }
-
-    final fileShape = isPortrait ?? false ? 'portrait' : 'square';
-    final file = await File('${dir.path}/${fileShape}_$imgName').create();
-    final res = file.writeAsBytesSync(bytes);
-
-    showLoadingDialog(context, false);
-    showToast(
-      msg: "Download Successfully!",
-      success: true,
-    );
-    // final result = await DownloadMediaRepository().download(
-    //   url ?? '',
-    //   "${dir.path}/${url.split("/").last}",
-    // );
-
-    //if (result != null) {
-    // showPrimarySnackbar(context: context, text: "Download successfully!");
-    //} else {
-    //showPrimarySnackbar(context: context, text: "couldn't load invoice");
-    //}
-    //showPrimaryLoading(context, false);
-  }
+  //   //if (result != null) {
+  //   // showPrimarySnackbar(context: context, text: "Download successfully!");
+  //   //} else {
+  //   //showPrimarySnackbar(context: context, text: "couldn't load invoice");
+  //   //}
+  //   //showPrimaryLoading(context, false);
+  // }
 
   Future<void> _shareImg(
       {required String url, required Uint8List imgData}) async {
@@ -359,3 +304,9 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
 final watermarkLoadProvider = StateProvider<bool>(
   (ref) => true,
 );
+
+class DeleteScreenArgs {
+  final File filePath;
+  final bool isPortrait;
+  DeleteScreenArgs({required this.filePath, required this.isPortrait});
+}

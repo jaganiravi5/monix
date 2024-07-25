@@ -53,6 +53,7 @@ class StringManager {
   static const String allDownloadImg = 'All Downloaded images';
   static const String deleteAll = 'Delete all';
   static const String noImg = 'No images';
+  static const String deleteImg = 'Delete images';
 
   static const String downloadImg = 'Download Image';
   static const String yourSuggestion = 'Your Suggestions';

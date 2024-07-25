@@ -3,6 +3,7 @@ import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monix/router/routes_name.dart';
+import 'package:monix/screens/images/download_image_screen.dart';
 import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:network/images/data/model/all_images_model.dart';
 import 'package:network/images/provider/all_images_provider.dart';
@@ -144,7 +145,9 @@ class _AllImagesWidgetState extends ConsumerState<AllImagesWidget> {
                         return PrimaryShimmerEffect(shimmerHeight: 60.w);
                       } else {
                         return InkWell(
-                          onTap: () => context.push(
+                          onTap: () {
+                            ref.read(watermarkLoadProvider.notifier).state=true;
+                            context.push(
                             AppRoutesPath.imagePreviewScreen,
                             extra: ImagePreviewArgs(
                               imageUrl:
@@ -154,7 +157,8 @@ class _AllImagesWidgetState extends ConsumerState<AllImagesWidget> {
                                   widget.imagesDataModel![index].name ?? '',
                               isPortrait: widget.portraitSel,
                             ),
-                          ),
+                          );
+                          },
                           child: Card(
                             color: color.bgSolidColor,
                             elevation: 3,

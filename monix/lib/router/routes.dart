@@ -9,6 +9,7 @@ import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix/screens/images/images_list_screen.dart';
 import 'package:monix/screens/monix_ai/monix_ai_screen.dart';
 import 'package:monix/screens/onboard/onboard_screen.dart';
+import 'package:monix/screens/saved/delete_image_screen.dart';
 import 'package:monix/screens/saved/saved_screen.dart';
 import 'package:monix/screens/sub_category/sub_category_screen.dart';
 
@@ -66,5 +67,9 @@ final routes = [
   GoRoute(
     path: AppRoutesPath.subCategoryScreen,
     pageBuilder: SubCategoryScreen.builder,
+  ),
+   GoRoute(
+    path: AppRoutesPath.deleteImageScreen,
+    pageBuilder: DeleteImageScreen.builder,
   ),
 ];

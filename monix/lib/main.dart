@@ -16,7 +16,8 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   MobileAds.instance.initialize();
-///FOR NOTIFICATION PERMISSION
+
+  ///FOR NOTIFICATION PERMISSION
   OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
   OneSignal.initialize("c0d46362-978e-42f4-acf0-71a18dea3663");
   OneSignal.Notifications.requestPermission(true);
@@ -24,7 +25,6 @@ Future<void> main() async {
   //  OneSignal.shared
   //      .promptUserForPushNotificationPermission()
   //      .then((accepted) {});
-  
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

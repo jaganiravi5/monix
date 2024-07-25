@@ -191,6 +191,7 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
             ),
           ),
           ImagePreviewAppBar(
+            isSuffixIcon: true,
             color: color,
             name: imageName,
             onSuffixClick: () {
@@ -255,7 +256,9 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
             right: 20.w,
             child: Column(
               children: [
-                LowQualityBtn(onBtnTap: () {
+                LowQualityBtn(
+                  isLoad: ref.watch(watermarkLoadProvider.notifier).state,
+                  onBtnTap: () {
                   context.push(
                     AppRoutesPath.downloadImageScreen,
                     extra: ImagePreviewArgs(
@@ -274,7 +277,9 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
                 SizedBox(
                   height: 14.w,
                 ),
-                NoWatermarkBtn(onBtnTap: () {
+                NoWatermarkBtn(
+                  isLoad: ref.watch(watermarkLoadProvider.notifier).state,
+                  onBtnTap: () {
                   _rewardedAds.showRewardedAd(
                     ref: ref,
                     context: context,
@@ -327,7 +332,7 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
     final directory = await getTemporaryDirectory();
 
     // Create a file in the temporary directory
-    final file = File('${directory.path}/temp.jpg');
+    final file = File('${directory.path}/${DateTime.now().millisecond}.jpg');
 
     // Write the bytes to the file
     await file.writeAsBytes(imgData);
@@ -365,11 +370,13 @@ class ImagePreviewAppBar extends StatelessWidget {
     required this.color,
     required this.onSuffixClick,
     this.name,
+    required this.isSuffixIcon,
   });
 
   final MonixColors color;
   final void Function() onSuffixClick;
   final String? name;
+  final bool isSuffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -404,7 +411,7 @@ class ImagePreviewAppBar extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(
+       isSuffixIcon?   SizedBox(
             width: 88.w,
             child: CommonSolidButton(
               title: StringManager.share,
@@ -425,7 +432,7 @@ class ImagePreviewAppBar extends StatelessWidget {
                   color: color.white),
               padding: EdgeInsets.symmetric(vertical: 8.w),
             ),
-          )
+          ):SizedBox.shrink()
         ],
       ),
     );

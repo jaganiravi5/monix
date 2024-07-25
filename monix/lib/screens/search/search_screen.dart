@@ -231,6 +231,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       onPortraitTap: () {
                         if (isPortraitSelected == false) {
                           isPortraitSelected = true;
+                          
                           getAllImages(type: StringManager.reel);
                         }
                         setState(() {});
