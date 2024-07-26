@@ -24,8 +24,7 @@ import '../../router/custom_page_transition.dart';
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
-      AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
         page: const HomeScreen(),
         state: state,
       );
@@ -40,29 +39,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   List<ImagesDataModel>? imagesData;
   List<CategoryDataModel>? categoryData;
   List<CategoryDataModel>? homeCategory;
-   final scrollController = ScrollController();
+  final scrollController = ScrollController();
 
-    //   late final ScrollController _scrollController = ScrollController()
-    // ..addListener(
-    //   () async {
-    //     if (ref.read(allImagesDataProvider.notifier).isPagination) {
-    //       final page = ref.watch(pageProvider);
-    //       final pageSize = ref.watch(pageSizeProvider);
-    //       final total = ref.watch(allImagesDataProvider).allImages.total;
-    //       if (((page) * pageSize) < (total??0) &&
-    //           _scrollController.offset >= _scrollController.position.maxScrollExtent &&
-    //           !_scrollController.position.outOfRange) {
-    //         ref.read(allImagesDataProvider.notifier).state =
-    //             ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
-    //         ref.read(allImagesDataProvider.notifier).fetchNextBatch(
-    //          type: isPortraitSelected ?'reel':'post',
-    //          page: 1,
-    //          limit: 18,
-    //         );
-    //       }
-    //     }
-    //   },
-    // );
+  //   late final ScrollController _scrollController = ScrollController()
+  // ..addListener(
+  //   () async {
+  //     if (ref.read(allImagesDataProvider.notifier).isPagination) {
+  //       final page = ref.watch(pageProvider);
+  //       final pageSize = ref.watch(pageSizeProvider);
+  //       final total = ref.watch(allImagesDataProvider).allImages.total;
+  //       if (((page) * pageSize) < (total??0) &&
+  //           _scrollController.offset >= _scrollController.position.maxScrollExtent &&
+  //           !_scrollController.position.outOfRange) {
+  //         ref.read(allImagesDataProvider.notifier).state =
+  //             ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
+  //         ref.read(allImagesDataProvider.notifier).fetchNextBatch(
+  //          type: isPortraitSelected ?'reel':'post',
+  //          page: 1,
+  //          limit: 18,
+  //         );
+  //       }
+  //     }
+  //   },
+  // );
 
   @override
   void initState() {
@@ -84,44 +83,42 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> getAllImages({required String type}) async {
     // ref.read(allImagesDataProvider.notifier).page = 1;
-    ref.read(pageProvider.notifier).state=1;
+    ref.read(pageProvider.notifier).state = 1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
     await ref
         .read(allImagesDataProvider.notifier)
-        .allImages(isSearch: false, searchText: '', type: type,page: 1,limit: 18);
+        .allImages(isSearch: false, searchText: '', type: type, page: 1, limit: 18);
   }
 
   Future<void> _onScrollListener() async {
-     if (ref.read(allImagesDataProvider.notifier).isPagination) {
-          final page = ref.watch(pageProvider);
-          final pageSize = ref.watch(pageSizeProvider);
-          final total = ref.watch(allImagesDataProvider).allImages.total;
-          print(":::::page$page");
-          print(":::::::::pagesize $pageSize");
-          print("::::::total $total");
-          if (((page) * pageSize) < (total ?? 0) &&
-              scrollController.offset >=
-                  scrollController.position.maxScrollExtent &&
-              !scrollController.position.outOfRange) {
+    if (ref.read(allImagesDataProvider.notifier).isPagination) {
+      int page = ref.watch(pageProvider);
+      final pageSize = ref.watch(pageSizeProvider);
+      final total = ref.watch(allImagesDataProvider).allImages.total;
+      print(":::::page$page");
+      print(":::::::::pagesize $pageSize");
+      print("::::::total $total");
+      if (((page) * pageSize) < (total ?? 0) &&
+          scrollController.offset >= scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        ref.read(pageProvider.notifier).state = ++page;
 
-            ref.read(allImagesDataProvider.notifier).state =
-                ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
-           await ref.read(allImagesDataProvider.notifier).fetchNextBatch(
-                  type: isPortraitSelected ? 'reel' : 'post',
-                  page: page,
-                  limit: 18,
-                );
-          }
-        }
+        ref.read(allImagesDataProvider.notifier).state = ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
+        await ref.read(allImagesDataProvider.notifier).fetchNextBatch(
+              type: isPortraitSelected ? 'reel' : 'post',
+              page: page,
+              limit: 18,
+            );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     imagesData = ref.watch(allImagesDataProvider.notifier).getAllImages();
     categoryData = ref.watch(allCategoryDataProvider.notifier).getAllCategory();
-    homeCategory =
-        ref.watch(allCategoryDataProvider.notifier).getHomeCategory();
+    homeCategory = ref.watch(allCategoryDataProvider.notifier).getHomeCategory();
     final subCat = ref.watch(subCategoryDataProvider.notifier).getsubCategory();
     print('IMG-LENGTH---->>>>>>>${imagesData!.length}');
     print('HOME CAT---->>>>>>>${homeCategory!.length}');
@@ -180,8 +177,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     SizedBox(
                       height: 16.w,
                     ),
-                  
-                
+
                     Padding(
                       padding: EdgeInsets.only(
                         right: 20.h,
@@ -209,7 +205,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         },
                       ),
                     ),
-                 
                   ],
                 ),
               ),
@@ -221,9 +216,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<bool> _onBackPressed() {
-    if (_lastPressedAt == null ||
-        DateTime.now().difference(_lastPressedAt!) >
-            const Duration(seconds: 2)) {
+    if (_lastPressedAt == null || DateTime.now().difference(_lastPressedAt!) > const Duration(seconds: 2)) {
       // Show a toast message to the user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -291,11 +284,9 @@ class ImageSizeWidget extends StatelessWidget {
                 title: "Square",
                 isBorder: true,
                 borderWidth: 0.5.h,
-                fillColor:
-                    portraitSelected ? Colors.transparent : color.secondary1,
+                fillColor: portraitSelected ? Colors.transparent : color.secondary1,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
-                borderColor:
-                    portraitSelected ? color.borderColor : color.secondary1,
+                borderColor: portraitSelected ? color.borderColor : color.secondary1,
                 textStyle: TextStyle(
                   fontSize: 16.sp,
                   color: portraitSelected ? color.secondary1 : color.white,
@@ -317,10 +308,8 @@ class ImageSizeWidget extends StatelessWidget {
                 title: "Portrait",
                 isBorder: true,
                 borderWidth: 0.5.h,
-                fillColor:
-                    portraitSelected ? color.secondary1 : Colors.transparent,
-                borderColor:
-                    portraitSelected ? color.secondary1 : color.borderColor,
+                fillColor: portraitSelected ? color.secondary1 : Colors.transparent,
+                borderColor: portraitSelected ? color.secondary1 : color.borderColor,
                 padding: EdgeInsets.symmetric(vertical: 12.h),
                 textStyle: TextStyle(
                   fontSize: 16.sp,

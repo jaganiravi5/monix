@@ -7,7 +7,6 @@ import 'package:monix/firebase_options.dart';
 import 'package:monix/router/router.dart';
 import 'package:network/network.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-import 'package:permission_handler/permission_handler.dart';
 // static final String oneSignalAppId = "c0d46362-978e-42f4-acf0-71a18dea3663";
 
 Future<void> main() async {
