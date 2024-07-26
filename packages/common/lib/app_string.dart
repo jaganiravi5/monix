@@ -39,8 +39,8 @@ class StringManager {
 
   static const String free = 'Free';
 
-  static const String lowQuatilyWatermark = 'Low quality + Watermark';
-  static const String noWatermark = 'No Watermark + HD';
+  static const String lowQuatilyWatermark = 'Save With Watermark';
+  static const String noWatermark = 'Remove Watermark';
   static const String watchAd = 'Watch Ad';
 
   static const String generatingTool = 'Generating AI Tool...';
