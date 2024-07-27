@@ -14,4 +14,5 @@ class Endpoints {
   static const String subCategory = '$baseUrl/api/v1/subCategory';
   static const String suggetion = '$baseUrl/api/v1/suggestion/add';
   static const String search = '$baseUrl/api/v1/images/search';
+  static const String ads = '$baseUrl/ads.json';
 }
