@@ -18,8 +18,7 @@ import '../../router/routes_name.dart';
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
-      AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
         page: const SearchScreen(),
         state: state,
       );
@@ -40,7 +39,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void initState() {
     // TODO: implement initState
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-       scrollController.addListener(_onScrollListener);
+      scrollController.addListener(_onScrollListener);
       getAllImages(type: 'post');
       // getAllCategory(ref: ref);
     });
@@ -49,7 +48,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   Future<void> getAllImages({required String type}) async {
     // ref.read(allImagesDataProvider.notifier).page = 1;
-    ref.read(pageProvider.notifier).state=1;
+    ref.read(pageProvider.notifier).state = 1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
     await ref.read(allImagesDataProvider.notifier).allImages(
@@ -62,39 +61,33 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         );
   }
 
-   Future<void> _onScrollListener() async {
-     if (ref.read(allImagesDataProvider.notifier).isPagination) {
-          final page = ref.watch(pageProvider);
-          final pageSize = ref.watch(pageSizeProvider);
-          final total = ref.watch(allImagesDataProvider).allImages.total;
-          print(":::::page$page");
-          print(":::::::::pagesize $pageSize");
-          print("::::::total $total");
-          if (((page) * pageSize) < (total ?? 0) &&
-              scrollController.offset >=
-                  scrollController.position.maxScrollExtent &&
-              !scrollController.position.outOfRange) {
-                
-            ref.read(allImagesDataProvider.notifier).state =
-                ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
-            ref.read(allImagesDataProvider.notifier).fetchNextBatch(
-                  type: isPortraitSelected ? 'reel' : 'post',
-                  page: page,
-                  limit: 18,
-
-                );
-          }
-        }
+  Future<void> _onScrollListener() async {
+    if (ref.read(allImagesDataProvider.notifier).isPagination) {
+      int page = ref.watch(pageProvider);
+      final pageSize = ref.watch(pageSizeProvider);
+      final total = ref.watch(allImagesDataProvider).allImages.total;
+      print(":::::page$page");
+      print(":::::::::pagesize $pageSize");
+      print("::::::total $total");
+      if (((page) * pageSize) < (total ?? 0) &&
+          scrollController.offset >= scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        ref.read(pageProvider.notifier).state = ++page;
+        ref.read(allImagesDataProvider.notifier).state = ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
+        ref.read(allImagesDataProvider.notifier).fetchNextBatch(
+              type: isPortraitSelected ? 'reel' : 'post',
+              page: page,
+              limit: 18,
+            );
+      }
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
-    final searchedList =
-        ref.watch(searchDataProvider.notifier).getAllSearches();
-    final trendindData =
-        ref.watch(allImagesDataProvider.notifier).getAllImages();
+    final searchedList = ref.watch(searchDataProvider.notifier).getAllSearches();
+    final trendindData = ref.watch(allImagesDataProvider.notifier).getAllImages();
     return Scaffold(
       backgroundColor: color.bgColor,
       appBar: CommonAppBar(
@@ -176,8 +169,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                             borderRadius: BorderRadius.circular(12.r),
                             color: color.bgSolidColor,
                           ),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 16.w, vertical: 16.w),
+                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
                           child: ListView.separated(
                             itemCount: searchedList.length,
                             shrinkWrap: true,
@@ -231,7 +223,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       onPortraitTap: () {
                         if (isPortraitSelected == false) {
                           isPortraitSelected = true;
-                          
+
                           getAllImages(type: StringManager.reel);
                         }
                         setState(() {});
@@ -260,8 +252,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
    * _onSearch is a function that is called when the search field is changed
    * and a search api is called after a debounce of 500 milliseconds
    */
-  Future<void> _onSearch(
-      {required String value, required WidgetRef ref}) async {
+  Future<void> _onSearch({required String value, required WidgetRef ref}) async {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 30), () async {
       ref.read(searchTextProvider.notifier).state = value;
@@ -275,8 +266,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     });
   }
 
-  Future<void> getSearchImages(
-      {required String type, required String searchText}) async {
+  Future<void> getSearchImages({required String type, required String searchText}) async {
     ref.read(searchDataProvider.notifier).page = 1;
     ref.read(searchDataProvider.notifier).isPagination = true;
 

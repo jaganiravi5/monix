@@ -8,9 +8,8 @@
 // ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vector_graphics/vector_graphics.dart';
+import 'package:flutter/services.dart';
 
 class $AssetsIconsGen {
   const $AssetsIconsGen();
@@ -48,6 +47,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/portrait.svg
   SvgGenImage get portrait => const SvgGenImage('assets/icons/portrait.svg');
 
+  /// File path: assets/icons/rating.svg
+  SvgGenImage get rating => const SvgGenImage('assets/icons/rating.svg');
+
   /// File path: assets/icons/recordings.svg
   SvgGenImage get recordings =>
       const SvgGenImage('assets/icons/recordings.svg');
@@ -84,6 +86,7 @@ class $AssetsIconsGen {
         monixAiFill,
         noImage,
         portrait,
+        rating,
         recordings,
         saved,
         savedFill,
@@ -97,6 +100,9 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/appIcon.png
+  AssetGenImage get appIcon => const AssetGenImage('assets/images/appIcon.png');
+
   /// File path: assets/images/buttonBG.png
   AssetGenImage get buttonBG =>
       const AssetGenImage('assets/images/buttonBG.png');
@@ -108,6 +114,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/image_placeholder.jpeg
   AssetGenImage get imagePlaceholder =>
       const AssetGenImage('assets/images/image_placeholder.jpeg');
+
+  /// File path: assets/images/onboard1.1.png
+  AssetGenImage get onboard11 =>
+      const AssetGenImage('assets/images/onboard1.1.png');
 
   /// File path: assets/images/onboard1.png
   AssetGenImage get onboard1 =>
@@ -124,15 +134,27 @@ class $AssetsImagesGen {
   /// File path: assets/images/star.png
   AssetGenImage get star => const AssetGenImage('assets/images/star.png');
 
+  /// File path: assets/images/waterMark.png
+  AssetGenImage get waterMark =>
+      const AssetGenImage('assets/images/waterMark.png');
+
+  /// File path: assets/images/waterMarkImg.png
+  AssetGenImage get waterMarkImg =>
+      const AssetGenImage('assets/images/waterMarkImg.png');
+
   /// List of all assets
   List<AssetGenImage> get values => [
+        appIcon,
         buttonBG,
         generatingAi,
         imagePlaceholder,
+        onboard11,
         onboard1,
         onboard2,
         splashLogo,
-        star
+        star,
+        waterMark,
+        waterMarkImg
       ];
 }
 
@@ -146,13 +168,11 @@ class MonixAssets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName, {this.size = null});
+  const AssetGenImage(this._assetName);
 
   final String _assetName;
 
   static const String package = 'monix_assets';
-
-  final Size? size;
 
   Image image({
     Key? key,
@@ -226,22 +246,11 @@ class AssetGenImage {
 }
 
 class SvgGenImage {
-  const SvgGenImage(
-    this._assetName, {
-    this.size = null,
-  }) : _isVecFormat = false;
-
-  const SvgGenImage.vec(
-    this._assetName, {
-    this.size = null,
-  }) : _isVecFormat = true;
+  const SvgGenImage(this._assetName);
 
   final String _assetName;
 
   static const String package = 'monix_assets';
-
-  final Size? size;
-  final bool _isVecFormat;
 
   SvgPicture svg({
     Key? key,
@@ -257,21 +266,19 @@ class SvgGenImage {
     WidgetBuilder? placeholderBuilder,
     String? semanticsLabel,
     bool excludeFromSemantics = false,
-    SvgTheme? theme,
+    SvgTheme theme = const SvgTheme(),
     ColorFilter? colorFilter,
     Clip clipBehavior = Clip.hardEdge,
     @deprecated Color? color,
     @deprecated BlendMode colorBlendMode = BlendMode.srcIn,
     @deprecated bool cacheColorFilter = false,
   }) {
-    return SvgPicture(
-      _isVecFormat
-          ? AssetBytesLoader(_assetName,
-              assetBundle: bundle, packageName: package)
-          : SvgAssetLoader(_assetName,
-              assetBundle: bundle, packageName: package),
+    return SvgPicture.asset(
+      _assetName,
       key: key,
       matchTextDirection: matchTextDirection,
+      bundle: bundle,
+      package: package,
       width: width,
       height: height,
       fit: fit,
@@ -281,8 +288,9 @@ class SvgGenImage {
       semanticsLabel: semanticsLabel,
       excludeFromSemantics: excludeFromSemantics,
       theme: theme,
-      colorFilter: colorFilter ??
-          (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
+      colorFilter: colorFilter,
+      color: color,
+      colorBlendMode: colorBlendMode,
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,
     );

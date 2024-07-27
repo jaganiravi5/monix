@@ -36,19 +36,9 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
               'search': searchText,
             }
           : subCateId != null && subCateId.isNotEmpty
-              ? {
-                  'page': page,
-                  'limit': limit,
-                  'type': type,
-                  'subcategory': subCateId
-                }
+              ? {'page': page, 'limit': limit, 'type': type, 'subcategory': subCateId}
               : isTrending != null && isTrending
-                  ? {
-                      'page': page,
-                      'limit': limit,
-                      'type': type,
-                      'trending': isTrending
-                    }
+                  ? {'page': page, 'limit': limit, 'type': type, 'trending': isTrending}
                   : {
                       'page': page,
                       'limit': limit,
@@ -66,8 +56,7 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
         }
 
         print('LoadingData $page ${listAllImages.length}');
-        state = state.copyWith(
-            allImages: data, isLoading: false, isLoadingMore: false);
+        state = state.copyWith(allImages: data, isLoading: false, isLoadingMore: false);
       },
     ).onError(
       (error, stackTrace) {},
@@ -98,7 +87,7 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     required String type,
     bool? isTrending,
   }) async {
-    page++;
+    // page++;
     print('PageNo $page ${listAllImages.length}');
 
     state = state.copyWith(isLoading: false, isLoadingMore: true);
@@ -125,20 +114,16 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     )
         .then(
       (data) {
-         bool isAdded = true;
+        bool isAdded = true;
         if (data.imagess!.length < limit) {
           isPagination = false;
         }
         // state = state.copyWith(isLoading: false, isLoadingMore: false);
-        // if (isAdded) {
-          listAllImages.addAll(data.imagess!);
-          // isAdded=false;
-        // }
+
+        listAllImages.addAll(data.imagess!);
+
         print('LoadingData:::::::IMG $page ${listAllImages.length}');
-        state = state.copyWith(
-          allImages: data,
-          isLoading: false,isLoadingMore: false
-        );
+        state = state.copyWith(allImages: data, isLoading: false, isLoadingMore: false);
       },
     ).onError(
       (error, stackTrace) {},
