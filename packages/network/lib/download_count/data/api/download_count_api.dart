@@ -21,7 +21,7 @@ class DownloadCountApi {
     // final SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper(Preference());
     try {
       final Response res = await _dioClient.patch(
-        "${Endpoints.allImages}$imageId/incrementDownloadCount",
+        "${Endpoints.allImages}/$imageId/incrementDownloadCount",
         options: HttpOptions.getOptions(
           HttpOptions.getHeader(
            // sharedPreferenceHelper.authToken ?? '',

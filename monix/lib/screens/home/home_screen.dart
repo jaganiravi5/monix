@@ -12,12 +12,14 @@ import 'package:monix/screens/home/category_widget.dart';
 import 'package:monix/screens/home/new_images_widget.dart';
 import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:network/ads/provider/provider.dart';
 import 'package:network/category/data/model/all_category_model.dart';
 import 'package:network/category/provider/all_category_provider.dart';
 import 'package:network/images/data/model/all_images_model.dart';
 import 'package:network/images/provider/all_images_provider.dart';
 import 'package:network/images/provider/all_images_state_provider.dart';
 import 'package:network/sub_category/provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../router/custom_page_transition.dart';
 
@@ -62,7 +64,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   //     }
   //   },
   // );
-
   @override
   void initState() {
     // TODO: implement initState
@@ -70,6 +71,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       scrollController.addListener(_onScrollListener);
       getAllImages(type: 'post');
       getAllCategory(ref: ref);
+       final SharedPreferences prefs = await SharedPreferences.getInstance();
+        // Save an boolean value to 'repeat' key.
+        final isLoginStatus = await prefs.getBool('isLogin');
+        print("LOGIN------$isLoginStatus");
     });
     super.initState();
   }
@@ -123,6 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     print('IMG-LENGTH---->>>>>>>${imagesData!.length}');
     print('HOME CAT---->>>>>>>${homeCategory!.length}');
     print('SUB::::CAT---->>>>>>>${subCat.length}');
+    print("ADSID::::::${ref.watch(adsDataProvider.notifier).adsId}");
     final isLoading = ref.watch(allImagesDataProvider).isLoading;
     final isLoadingMore = ref.watch(allImagesDataProvider).isLoadingMore;
 

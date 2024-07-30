@@ -34,7 +34,7 @@ class _IntroSliderState extends State<IntroSlider> {
       IntroPage(
         title: StringManager.onboard1Title,
         desc: StringManager.onboard1Desc,
-        image: images.onboard1.image(
+        image: images.onboard11.image(
             // fit: BoxFit.fill,
             ),
         descBody: '',

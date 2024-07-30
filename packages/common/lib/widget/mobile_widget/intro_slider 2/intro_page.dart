@@ -61,7 +61,7 @@ class IntroPage extends StatelessWidget {
                         title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 25.sp,
+                          fontSize: 23.sp,
                           fontWeight: FontWeight.w600,
                           color: theme.white,
                         ),

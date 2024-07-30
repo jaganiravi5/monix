@@ -5,16 +5,12 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_watermark/image_watermark.dart';
-import 'package:monix/screens/images/down_image_shimmer.dart';
-import 'package:monix_assets/gen/assets.gen.dart';
-import 'package:monix_assets/monix_assets.dart';
+import 'package:network/ads/provider/provider.dart';
 import 'package:network/download_count/provider/provider.dart';
-import 'package:network/images/provider/all_images_provider.dart';
 import 'package:network/network.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -26,19 +22,19 @@ class DownloadImageScreen extends ConsumerStatefulWidget {
   DownloadImageScreen({
     super.key,
     this.imagePreviewArgs,
-    this.urlData,
+    // this.urlData,
   });
 
   static AppPageTransition builder(BuildContext context, GoRouterState state) =>
       AppPageTransition(
         page: DownloadImageScreen(
           imagePreviewArgs: state.extra as ImagePreviewArgs?,
-          urlData: state.uri.queryParameters as Map<String, dynamic>?,
+          // urlData: state.uri.queryParameters as Map<String, dynamic>?,
         ),
         state: state,
       );
   ImagePreviewArgs? imagePreviewArgs;
-  Map<String, dynamic>? urlData;
+  // Map<String, dynamic>? urlData;
 
   @override
   ConsumerState<DownloadImageScreen> createState() =>
@@ -59,12 +55,12 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
   initState() {
     // TODO: implement initState
     getWatermarkImg();
-    if (widget.urlData != null && widget.urlData!.isNotEmpty) {
-      imageUrl = widget.urlData?['imageUrl'];
-      imageId = widget.urlData?['id'];
-      isPortrait = widget.urlData?['isPortrait'];
-      imageName = widget.urlData?['imageName'];
-    }
+    // if (widget.urlData != null && widget.urlData!.isNotEmpty) {
+    //   imageUrl = widget.urlData?['imageUrl'];
+    //   imageId = widget.urlData?['id'];
+    //   isPortrait = widget.urlData?['isPortrait'];
+    //   imageName = widget.urlData?['imageName'];
+    // }
     if (widget.imagePreviewArgs != null) {
       imageUrl = widget.imagePreviewArgs!.imageUrl;
       imageName = widget.imagePreviewArgs!.imageName;
@@ -146,7 +142,7 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
             color: color,
             name: imageName,
             onSuffixClick: () {
-              _shareImg(url: shareUrl, imgData: watermarkedImgBytes);
+              _shareImg(url: shareUrl, imgData: watermarkedImgBytes, ref: ref);
               //TODO : share on What'sapp
             },
           ),
@@ -210,11 +206,11 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
                       ),
                     ),
                     onButtonClick: () async {
+                      _downloadCountApi(imageId: imageId);
                       _downloadMedia(
                         bytes: watermarkedImgBytes,
                         url: imageAwsUrl,
                       );
-                      _downloadCountApi(imageId: imageId);
                     },
                     textStyle: TextStyle(
                       fontSize: 20.sp,
@@ -238,7 +234,7 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
         .read(downloadCountDataProvider.notifier)
         .downloadCount(imgId: imageId);
 
-    final data = ref.read(downloadCountDataProvider).downloadCountModel;
+    final data = await ref.read(downloadCountDataProvider).downloadCountModel;
     if (data != null) {
       //  Fluttertoast.showToast(msg: "Submitted Successfully! !");
 
@@ -269,7 +265,9 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
     }
 
     final fileShape = isPortrait ?? false ? 'portrait' : 'square';
-    final file = await File('${dir.path}/${fileShape}_$imgName').create();
+    final file = await File(
+            '${dir.path}/${fileShape}_${DateTime.now().millisecond}_$imgName')
+        .create();
     final res = file.writeAsBytesSync(bytes);
 
     showLoadingDialog(context, false);
@@ -290,9 +288,14 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
     //showPrimaryLoading(context, false);
   }
 
-  Future<void> _shareImg(
-      {required String url, required Uint8List imgData}) async {
-    // final res = await Share.share('check out this stunning god image $url',);
+  Future<void> _shareImg({
+    required String url,
+    required Uint8List imgData,
+    required WidgetRef ref,
+  }) async {
+    final ytUrl = ref.watch(adsDataProvider.notifier).ytUrl;
+    final instaUrl = ref.watch(adsDataProvider.notifier).instaUrl;
+    final wpUrl = ref.watch(adsDataProvider.notifier).wpUrl;
 
     // Get the temporary directory
     final directory = await getTemporaryDirectory();
@@ -302,58 +305,27 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
 
     // Write the bytes to the file
     await file.writeAsBytes(imgData);
+// Construct the share message
+    String message =
+        'Check out this awesome image from Monix AI Gods Gallery! 📸 $url';
+
+    if (ytUrl.isNotEmpty) {
+      message += '\n\nYouTube: $ytUrl\n';
+    }
+    if (instaUrl.isNotEmpty) {
+      message += '\nInstagram: $instaUrl\n';
+    }
+    if (wpUrl.isNotEmpty) {
+      message += '\nWhatsApp: $wpUrl';
+    }
+
     final res = await Share.shareXFiles([XFile(file.path)],
         text:
-            'Check out this awesome image from Monix AI Gods Gallery! 📸 $url');
+           message);
     if (res.status == ShareResultStatus.success) {
       print('Thank you for sharing Our App!');
     }
-
-    // showLoadingDialog(context, true);
-    // Directory dir = await getTemporaryDirectory();
-    // // final result = await DownloadMediaRepository().download(
-    // //   url ?? '',
-    // //   "${dir.path}/${url.split("/").last}",
-    // // );
-    // //if (result != null) {
-    // //   showLoadingDialog(context, false);
-    //   File tempFile = File('${dir.path}/${url.split("/").last}');
-    //   // await tempFile.writeAsBytes(data);
-    //   final XFile file = XFile(tempFile.path);
-    //   final result = await Share.shareXFiles([file], text: 'Great Docs');
-    //   if (result.status == ShareResultStatus.success) {
-    //     print('Thank you for sharing the picture!');
-    //   }
-    // //} else {
-    //   showLoadingDialog(context, false);
-    // //}
   }
-
-  // Future<void> _shareImg({required String url}) async {
-  //   final res = await Share.share('check out this stunning god image $url');
-  //   if (res.status == ShareResultStatus.success) {
-  //     print('Thank you for sharing my website!');
-  //   }
-
-  //   // showLoadingDialog(context, true);
-  //   // Directory dir = await getTemporaryDirectory();
-  //   // // final result = await DownloadMediaRepository().download(
-  //   // //   url ?? '',
-  //   // //   "${dir.path}/${url.split("/").last}",
-  //   // // );
-  //   // //if (result != null) {
-  //   // //   showLoadingDialog(context, false);
-  //   //   File tempFile = File('${dir.path}/${url.split("/").last}');
-  //   //   // await tempFile.writeAsBytes(data);
-  //   //   final XFile file = XFile(tempFile.path);
-  //   //   final result = await Share.shareXFiles([file], text: 'Great Docs');
-  //   //   if (result.status == ShareResultStatus.success) {
-  //   //     print('Thank you for sharing the picture!');
-  //   //   }
-  //   // //} else {
-  //   //   showLoadingDialog(context, false);
-  //   // //}
-  // }
 }
 
 final watermarkLoadProvider = StateProvider<bool>(

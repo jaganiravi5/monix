@@ -10,6 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_watermark/image_watermark.dart';
+import 'package:monix/admob_ads/interstitial_ads.dart';
+import 'package:monix/router/routes_name.dart';
 import 'package:monix/screens/images/down_image_shimmer.dart';
 import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix_assets/gen/assets.gen.dart';
@@ -19,6 +21,7 @@ import 'package:network/images/provider/all_images_provider.dart';
 import 'package:network/network.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../router/custom_page_transition.dart';
 
@@ -56,11 +59,13 @@ class _DownloadImageScreenState extends ConsumerState<DeleteImageScreen> {
     // TODO: implement initState
 
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      isPortrait = widget.deleteScreenArgs.isPortrait;
+    isPortrait = widget.deleteScreenArgs.isPortrait;
     // });
 
     super.initState();
   }
+
+  final InterstitialAds _interstitialAds = InterstitialAds();
 
   @override
   Widget build(BuildContext context) {
@@ -135,10 +140,10 @@ class _DownloadImageScreenState extends ConsumerState<DeleteImageScreen> {
                               ),
                             ],
                             color: color.bgColor),
-                        child:  Image.file(
-                                File(widget.deleteScreenArgs.filePath.path),
-                                fit: BoxFit.cover,
-                              )
+                        child: Image.file(
+                          File(widget.deleteScreenArgs.filePath.path),
+                          fit: BoxFit.cover,
+                        )
 
                         // Image.network(
 
@@ -168,18 +173,21 @@ class _DownloadImageScreenState extends ConsumerState<DeleteImageScreen> {
                       ),
                     ),
                     onButtonClick: () async {
-                      showLoadingDialog(context, true);
-                      await widget.deleteScreenArgs.filePath.delete();
-                      showLoadingDialog(context, false);
-                      showToast(
-                        msg: "Deleted Successfully!",
-                        success: true,
-                      );
-                      context.pop(true);
-                      // _downloadMedia(
-                      //   bytes: watermarkedImgBytes,
-                      //   url: imageAwsUrl,
-                      // );
+                      if (ref.read(interAdsProvider.notifier).state == null) {
+                        print(
+                            'Warning: attempt to show interstitial before loaded.');
+                            await _onDeleteTap(context);
+                      } else {
+                        _interstitialAds.showInterstitialAd(
+                          ref: ref,
+                          context: context,
+                          onAdDismissedFullScreenContent: (p0) async => await _onDeleteTap(context),
+                          onAdFailedToShowFullScreenContent: (p0, p1) async =>
+                               await _onDeleteTap(context),
+                        );
+                      }
+
+                     
                     },
                     textStyle: TextStyle(
                       fontSize: 20.sp,
@@ -197,108 +205,16 @@ class _DownloadImageScreenState extends ConsumerState<DeleteImageScreen> {
     );
   }
 
-  // void _downloadMedia({required File bytes, required String url}) async {
-  //   showLoadingDialog(context, true);
-  //   Directory? dir;
-  //   final imgName = url.split('/').last;
-  //   print("imgName $imgName");
-  //   // final Uint8List list = bytes.buffer.asUint8List();
-  //   if (Platform.isAndroid) {
-  //     dir = Directory('/storage/emulated/0/Download/monix');
-  //   } else {
-  //     final tempDir = await getApplicationDocumentsDirectory();
-  //     dir = Directory('${tempDir.path}/monix');
-  //   }
-  //   if (!(await dir.exists())) {
-  //     await dir.create(recursive: true);
-  //   }
-
-  //   final fileShape = isPortrait ?? false ? 'portrait' : 'square';
-  //   final file = await File('${dir.path}/$fileShape/$imgName').create();
-  //   final res = file.writeAsBytesSync(bytes);
-
-  //   showLoadingDialog(context, false);
-  // showToast(
-  //   msg: "Download Successfully!",
-  //   success: true,
-  // );
-  //   // final result = await DownloadMediaRepository().download(
-  //   //   url ?? '',
-  //   //   "${dir.path}/${url.split("/").last}",
-  //   // );
-
-  //   //if (result != null) {
-  //   // showPrimarySnackbar(context: context, text: "Download successfully!");
-  //   //} else {
-  //   //showPrimarySnackbar(context: context, text: "couldn't load invoice");
-  //   //}
-  //   //showPrimaryLoading(context, false);
-  // }
-
-  Future<void> _shareImg(
-      {required String url, required Uint8List imgData}) async {
-    // final res = await Share.share('check out this stunning god image $url',);
-
-    // Get the temporary directory
-    final directory = await getTemporaryDirectory();
-
-    // Create a file in the temporary directory
-    final file = File('${directory.path}/temp.jpg');
-
-    // Write the bytes to the file
-    await file.writeAsBytes(imgData);
-    final res = await Share.shareXFiles([XFile(file.path)],
-        text:
-            'Check out this awesome image from Monix AI Gods Gallery! 📸 $url');
-    if (res.status == ShareResultStatus.success) {
-      print('Thank you for sharing Our App!');
-    }
-
-    // showLoadingDialog(context, true);
-    // Directory dir = await getTemporaryDirectory();
-    // // final result = await DownloadMediaRepository().download(
-    // //   url ?? '',
-    // //   "${dir.path}/${url.split("/").last}",
-    // // );
-    // //if (result != null) {
-    // //   showLoadingDialog(context, false);
-    //   File tempFile = File('${dir.path}/${url.split("/").last}');
-    //   // await tempFile.writeAsBytes(data);
-    //   final XFile file = XFile(tempFile.path);
-    //   final result = await Share.shareXFiles([file], text: 'Great Docs');
-    //   if (result.status == ShareResultStatus.success) {
-    //     print('Thank you for sharing the picture!');
-    //   }
-    // //} else {
-    //   showLoadingDialog(context, false);
-    // //}
+  Future<void> _onDeleteTap(BuildContext context) async {
+    showLoadingDialog(context, true);
+    await widget.deleteScreenArgs.filePath.delete();
+    showLoadingDialog(context, false);
+    showToast(
+      msg: "Deleted Successfully!",
+      success: true,
+    );
+    context.pop(true);
   }
-
-  // Future<void> _shareImg({required String url}) async {
-  //   final res = await Share.share('check out this stunning god image $url');
-  //   if (res.status == ShareResultStatus.success) {
-  //     print('Thank you for sharing my website!');
-  //   }
-
-  //   // showLoadingDialog(context, true);
-  //   // Directory dir = await getTemporaryDirectory();
-  //   // // final result = await DownloadMediaRepository().download(
-  //   // //   url ?? '',
-  //   // //   "${dir.path}/${url.split("/").last}",
-  //   // // );
-  //   // //if (result != null) {
-  //   // //   showLoadingDialog(context, false);
-  //   //   File tempFile = File('${dir.path}/${url.split("/").last}');
-  //   //   // await tempFile.writeAsBytes(data);
-  //   //   final XFile file = XFile(tempFile.path);
-  //   //   final result = await Share.shareXFiles([file], text: 'Great Docs');
-  //   //   if (result.status == ShareResultStatus.success) {
-  //   //     print('Thank you for sharing the picture!');
-  //   //   }
-  //   // //} else {
-  //   //   showLoadingDialog(context, false);
-  //   // //}
-  // }
 }
 
 final watermarkLoadProvider = StateProvider<bool>(

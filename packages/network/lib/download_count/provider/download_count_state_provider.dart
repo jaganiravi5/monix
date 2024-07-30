@@ -8,7 +8,8 @@ import 'package:network/images/data/model/all_images_state.dart';
 import 'package:network/images/data/repository/all_images_repository.dart';
 
 class DownloadCountDataNotifier extends StateNotifier<DownloadCountState> {
-  DownloadCountDataNotifier(this.downloadCountRepository) : super(DownloadCountState());
+  DownloadCountDataNotifier(this.downloadCountRepository)
+      : super(DownloadCountState());
 
   DownloadCountRepository downloadCountRepository;
 
@@ -20,17 +21,12 @@ class DownloadCountDataNotifier extends StateNotifier<DownloadCountState> {
 
   Future<void> downloadCount({
     required String imgId,
-  
   }) async {
     state = state.copyWith(isLoading: true);
 
-    await downloadCountRepository
-        .downloadCountRepo(imageId: imgId
-    )
-        .then(
+    await downloadCountRepository.downloadCountRepo(imageId: imgId).then(
       (data) {
-        
-
+        print("${data.downloadCount}");
         state = state.copyWith(
             downloadCountModel: data, isLoading: false, isLoadingMore: false);
       },
@@ -38,7 +34,6 @@ class DownloadCountDataNotifier extends StateNotifier<DownloadCountState> {
       (error, stackTrace) {},
     );
   }
-
 }
 
 final pageProvider = StateProvider<int>((ref) => 1);

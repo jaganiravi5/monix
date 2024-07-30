@@ -50,6 +50,7 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
   String imageId = '';
   String shareUrl = '';
   var watermarkedImgBytes;
+  var orgImgBytes;
   @override
   initState() {
     // TODO: implement initState
@@ -82,7 +83,7 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
 
     print('loader--------${ref.read(watermarkLoadProvider.notifier).state}');
     // ref.read(watermarkLoadProvider.notifier).state = true;
-    Uint8List bytes =
+     orgImgBytes =
         (await NetworkAssetBundle(Uri.parse(imageUrl)).load(imageUrl1))
             .buffer
             .asUint8List();
@@ -96,20 +97,22 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
     //     .buffer
     //     .asUint8List();
     // print("PATH:::::::${images.splashLogo.path}");
-    final ByteData waterImg = await rootBundle.load(images.splashLogo.keyName);
+    final ByteData waterImg = await rootBundle.load(images.waterMarkImg.keyName);
     final Uint8List waterImgBytes = waterImg.buffer.asUint8List();
     watermarkedImgBytes = await ImageWatermark.addImageWatermark(
-      originalImageBytes: bytes,
+      originalImageBytes: orgImgBytes,
+
       //image bytes
       waterkmarkImageBytes: waterImgBytes,
       //watermark img bytes
-      imgHeight: 100,
+      // imgHeight: 100,
       //watermark img height
-      imgWidth: 100,
+      imgWidth:960,
+
       //watermark img width
-      dstY: 840,
+      dstY:isPortrait!=null&&isPortrait!?1300: 840,
       //watermark position Y
-      dstX: 340, //watermark position X
+      dstX: 30, //watermark position X
     );
 
     ///TEXT AS WATERMARK
@@ -289,10 +292,12 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
                         AppRoutesPath.downloadImageScreen,
                         extra: ImagePreviewArgs(
                           imageId: imageId,
+                          isAdSeen:false,
+
                           imageUrl: imageUrl,
                           isPortrait: isPortrait!,
                           imageName: imageName,
-                          imageData: watermarkedImgBytes,
+                          imageData: orgImgBytes,
                         ),
                       );
                     },
@@ -445,11 +450,13 @@ class ImagePreviewArgs {
   String imageName;
   String imageId;
   Uint8List? imageData;
+  bool? isAdSeen;
   ImagePreviewArgs(
       {Key? key,
       required this.imageId,
       required this.imageUrl,
       required this.isPortrait,
       required this.imageName,
+      this.isAdSeen,
       this.imageData});
 }

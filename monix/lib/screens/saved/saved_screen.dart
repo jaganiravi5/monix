@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:monix/admob_ads/reward_ads.dart';
 import 'package:monix/screens/images/image_preview_screen.dart';
 import 'package:monix/screens/saved/delete_image_screen.dart';
 import 'package:monix/screens/search/search.dart';
@@ -38,6 +39,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   List<String>? imageList = [];
   List<File> _imageFiles = [];
   bool? isPermissionGiven;
+  final RewardedAds _rewardedAds = RewardedAds();
 
   @override
   void initState() {
@@ -80,6 +82,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   }
 
   Future<void> deleteAllImagesInMonixFolder() async {
+
     // Request storage permission
     if (isPermissionGiven != null && isPermissionGiven!) {
       try {
@@ -127,6 +130,21 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
       );
       print("Storage permission denied");
     }
+  }
+
+  void showRewardAd() {
+    _rewardedAds.showRewardedAd(
+      ref: ref,
+      context: context,
+      onAdDismissedFullScreen: (p0) {
+        deleteAllImagesInMonixFolder();
+        print('RewardAdDismissed');
+      },
+      onAdFailedToShowFullScreen: (p0, p1) {
+        deleteAllImagesInMonixFolder();
+        print('RewardAdFailed');
+      },
+    );
   }
 
   @override
@@ -191,7 +209,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                     )
               : NoImageWidget(
                   color: color,
-                  isPermissionGiven: false,
+                  isPermissionGiven: isPermissionGiven,
                 ),
           _imageFiles.isNotEmpty
               ? Positioned(
@@ -219,7 +237,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                               WarningPopup(
                                 color: color,
                                 onRightTap: () =>
-                                    deleteAllImagesInMonixFolder(),
+                                    showRewardAd(),
                               ),
                             );
                           },
@@ -501,9 +519,8 @@ class NoImageWidget extends StatelessWidget {
         ),
         isPermissionGiven != null && !(isPermissionGiven!)
             ? InkWell(
-              onTap: () async => await openAppSettings(),
-
-              child: Text(
+                onTap: () async => await openAppSettings(),
+                child: Text(
                   "Open Settings",
                   style: TextStyle(
                     color: color.white,
@@ -514,7 +531,7 @@ class NoImageWidget extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-            )
+              )
             : SizedBox.shrink(),
       ],
     );

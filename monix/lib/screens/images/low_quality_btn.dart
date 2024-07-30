@@ -26,43 +26,56 @@ class LowQualityBtn extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r), color: color.white),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                width: 4.w,
-              ),
-              Text(
-                StringManager.lowQuatilyWatermark,
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 17.sp,
-                  color: color.black,
-                ),
-              ),
-              SizedBox(
-                width: 20.w,
-              ),
-              SizedBox(
-                width: 91.w,
-                height: 31.w,
-                child: CommonButton(
-                  title: StringManager.free,
-                  icon: Icon(
-                    Icons.file_download_outlined,
-                    color: color.white,
-                    size: 17.w,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 14.w,
                   ),
-                  onButtonClick: () {},
-                  borderRadius: BorderRadius.circular(7.w),
-                  padding: EdgeInsets.symmetric(
-                    vertical: 6.w,
-                    horizontal: 22.w,
+                  Text(
+                    StringManager.lowQuatilyWatermark,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 17.sp,
+                      color: color.black,
+                    ),
                   ),
-                  textStyle: TextStyle(
-                    color: color.white,
-                    fontSize: 14.sp,
+                ],
+              ),
+              // SizedBox(
+              //   width: 20.w,
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    width: 91.w,
+                    height: 31.w,
+                    child: CommonButton(
+                      title: StringManager.free,
+                      icon: Icon(
+                        Icons.file_download_outlined,
+                        color: color.white,
+                        size: 17.w,
+                      ),
+                      onButtonClick: () {},
+                      borderRadius: BorderRadius.circular(7.w),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 6.w,
+                        horizontal: 22.w,
+                      ),
+                      textStyle: TextStyle(
+                        color: color.white,
+                        fontSize: 14.sp,
+                      ),
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    width: 12.w,
+                  ),
+                ],
               ),
             ],
           ),

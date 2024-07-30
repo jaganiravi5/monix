@@ -8,10 +8,9 @@ import 'package:monix/router/custom_page_transition.dart';
 import 'package:monix_assets/monix_assets.dart';
 import 'package:network/category/provider/all_category_provider.dart';
 import 'package:network/images/provider/all_images_provider.dart';
-import 'package:network/sub_category/provider/provider.dart';
-
+import 'package:network/ads/provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../admob_ads/interstitial_ads.dart';
-import '../admob_ads/native_ads.dart';
 import '../router/routes_name.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -37,6 +36,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       _interstitialAds.createInterstitialAd(ref: ref);
       getAllImages();
+      getAdsData();
       getAllCategory(ref: ref);
       _rewardedAds.createRewardAd(ref: ref);
       // _nativeAds.loadNativeAds(ref: ref);
@@ -57,14 +57,26 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     );
   }
 
+  getAdsData() {
+    ref.read(adsDataProvider.notifier).adsData();
+    // ref.read(adsDataProvider.notifier).;
+  }
 
   // Navigation to home screen
   void _navigation() async {
     Duration time = const Duration(seconds: 3);
     await Future.delayed(
       time,
-      () {
-        context.go(AppRoutesPath.onboardScreen);
+      () async {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        // Save an boolean value to 'repeat' key.
+        final isLoginStatus = await prefs.getBool('isLogin');
+        print("statusLogin$isLoginStatus");
+        if (isLoginStatus != null && isLoginStatus) {
+          context.go(AppRoutesPath.dashboardScreen);
+        } else {
+          context.go(AppRoutesPath.onboardScreen);
+        }
       },
     );
   }
@@ -73,10 +85,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     // ref.read(allImagesDataProvider.notifier).page = 1;
     ref.read(allImagesDataProvider.notifier).isPagination = true;
 
-    await ref
-        .read(allImagesDataProvider.notifier)
-        .allImages(isSearch: false, searchText: '',type: StringManager.post
-        ,page: 1,limit: 10    );
+    await ref.read(allImagesDataProvider.notifier).allImages(
+        isSearch: false,
+        searchText: '',
+        type: StringManager.post,
+        page: 1,
+        limit: 10);
   }
 
   @override

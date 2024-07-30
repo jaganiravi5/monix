@@ -7,6 +7,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:monix/admob_ads/native_ads.dart';
 import 'package:monix/router/routes_name.dart';
 import 'package:network/category/data/model/all_category_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../admob_ads/interstitial_ads.dart';
 import '../../router/custom_page_transition.dart';
@@ -14,7 +15,8 @@ import '../../router/custom_page_transition.dart';
 class OnboardScreen extends ConsumerStatefulWidget {
   OnboardScreen({super.key});
 
-  static AppPageTransition builder(BuildContext context, GoRouterState state) => AppPageTransition(
+  static AppPageTransition builder(BuildContext context, GoRouterState state) =>
+      AppPageTransition(
         page: OnboardScreen(),
         state: state,
       );
@@ -43,7 +45,12 @@ class _OnboardScreenState extends ConsumerState<OnboardScreen> {
       backgroundColor: Theme.of(context).monixColors.bgColor,
       body: IntroSlider(
           onComplete: () {},
-          onGetStartedClick: () => context.go(AppRoutesPath.dashboardScreen),
+          onGetStartedClick: () async {
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            await prefs.setBool('isLogin', true);
+            context.go(AppRoutesPath.dashboardScreen);
+          },
           onNextClick: () {
             //  context.go(AppRoutesPath.onboardScreen);
           },
@@ -54,10 +61,17 @@ class _OnboardScreenState extends ConsumerState<OnboardScreen> {
               _interstitialAds.showInterstitialAd(
                 ref: ref,
                 context: context,
-                onAdDismissedFullScreenContent: (p0) {
+                onAdDismissedFullScreenContent: (p0) async {
+                  // Obtain shared preferences.
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  // Save an boolean value to 'repeat' key.
+                  await prefs.setBool('isLogin', true);
+
                   context.go(AppRoutesPath.dashboardScreen);
                 },
-                onAdFailedToShowFullScreenContent: (p0, p1) => context.go(AppRoutesPath.dashboardScreen),
+                onAdFailedToShowFullScreenContent: (p0, p1) =>
+                    context.go(AppRoutesPath.dashboardScreen),
               );
             }
             // if (intersAd == null) {
