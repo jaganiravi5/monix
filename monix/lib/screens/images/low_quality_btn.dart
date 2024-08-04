@@ -18,7 +18,8 @@ class LowQualityBtn extends StatelessWidget {
     final color = Theme.of(context).monixColors;
     return Opacity(
       opacity: isLoad ? 0.4 : 1,
-      child: InkWell(
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () => isLoad ? () {} : onBtnTap(),
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -60,7 +61,7 @@ class LowQualityBtn extends StatelessWidget {
                         color: color.white,
                         size: 17.w,
                       ),
-                      onButtonClick: () {},
+                      onButtonClick: () =>isLoad ? () {} : onBtnTap(),
                       borderRadius: BorderRadius.circular(7.w),
                       padding: EdgeInsets.symmetric(
                         vertical: 6.w,

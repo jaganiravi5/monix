@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:monix/admob_ads/native_ads.dart';
 import 'package:monix/router/routes_name.dart';
+import 'package:network/ads/provider/ads_provider.dart';
 import 'package:network/category/data/model/all_category_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -54,26 +55,35 @@ class _OnboardScreenState extends ConsumerState<OnboardScreen> {
           onNextClick: () {
             //  context.go(AppRoutesPath.onboardScreen);
           },
-          onSkipClick: () {
-            if (ref.read(interAdsProvider.notifier).state == null) {
-              print('Warning: attempt to show interstitial before loaded.');
-            } else {
-              _interstitialAds.showInterstitialAd(
-                ref: ref,
-                context: context,
-                onAdDismissedFullScreenContent: (p0) async {
-                  // Obtain shared preferences.
+          onSkipClick: () async {
+              // Obtain shared preferences.
                   final SharedPreferences prefs =
                       await SharedPreferences.getInstance();
                   // Save an boolean value to 'repeat' key.
                   await prefs.setBool('isLogin', true);
 
                   context.go(AppRoutesPath.dashboardScreen);
-                },
-                onAdFailedToShowFullScreenContent: (p0, p1) =>
-                    context.go(AppRoutesPath.dashboardScreen),
-              );
-            }
+            // if (ref.read(interAdsProvider.notifier).state == null) {
+            //   print('Warning: attempt to show interstitial before loaded.');
+            // } else {
+              //  final interAndroidSkipBtn = ref.read(adsDataProvider.notifier).interAndroidDeleteBtn;
+              // _interstitialAds.showInterstitialAd(
+              //   ref: ref,
+              //   interAdId: interAndroidSkipBtn,
+              //   context: context,
+              //   onAdDismissedFullScreenContent: (p0) async {
+              //     // Obtain shared preferences.
+              //     final SharedPreferences prefs =
+              //         await SharedPreferences.getInstance();
+              //     // Save an boolean value to 'repeat' key.
+              //     await prefs.setBool('isLogin', true);
+
+              //     context.go(AppRoutesPath.dashboardScreen);
+              //   },
+              //   onAdFailedToShowFullScreenContent: (p0, p1) =>
+              //       context.go(AppRoutesPath.dashboardScreen),
+              // );
+            // }
             // if (intersAd == null) {
             //   print('Warning: attempt to show interstitial before loaded.');
             //   return;

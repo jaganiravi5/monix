@@ -9,12 +9,13 @@ class AdsDataNotifier extends StateNotifier<AdsState> {
   AdsRepository adsRepository;
 
   
-  String adsId = '';
+  bool? isShowAd;
   String ytUrl = '';
   String instaUrl='';
   String wpUrl ='';
-  String interAndroidSkipBtn = '';
+  String interAndroidDeleteBtn = '';
   String interIosSkipBtn = '';
+  String downloadImageRewardAndroidBtn='';
 
   Future<void> adsData(
       // String? jwtToken,
@@ -28,12 +29,14 @@ class AdsDataNotifier extends StateNotifier<AdsState> {
       (data) {
         // print('LoadingData $page ${listAllData.length}');
         // adsId=data.!;
+        isShowAd=data.isShowAd!;
         instaUrl=data.instagramUrl!;
         ytUrl=data.ytUrl!;
         wpUrl=data.wpUrl!;
-        interAndroidSkipBtn=data.interAndroidSkipBtn!;
+        interAndroidDeleteBtn=data.interAndroidSkipBtn!;
         interIosSkipBtn=data.interIosSkipBtn!;
-        print("------>>>>>>ADSDATA<<<<<<<-------$adsId");
+        downloadImageRewardAndroidBtn=data.downloadImageRewardBtn!;
+        // print("------>>>>>>ADSDATA<<<<<<<-------$adsId");
         state = state.copyWith(
             adsModel: data, isLoading: false, isLoadingMore: false);
       },

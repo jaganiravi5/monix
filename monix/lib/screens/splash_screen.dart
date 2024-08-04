@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,11 +36,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      _interstitialAds.createInterstitialAd(ref: ref);
-      getAllImages();
       getAdsData();
+
+      getAllImages();
+
       getAllCategory(ref: ref);
-      _rewardedAds.createRewardAd(ref: ref);
+      // _rewardedAds.createRewardAd(ref: ref,);
       // _nativeAds.loadNativeAds(ref: ref);
     });
     SystemChrome.setSystemUIOverlayStyle(
@@ -57,8 +60,31 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     );
   }
 
-  getAdsData() {
-    ref.read(adsDataProvider.notifier).adsData();
+  getAdsData() async {
+    await ref.read(adsDataProvider.notifier).adsData();
+    final isShowAd = ref.read(adsDataProvider.notifier).isShowAd;
+    if (isShowAd != null && isShowAd) {
+      final interAndroidSkipBtn =
+          ref.read(adsDataProvider.notifier).interAndroidDeleteBtn;
+      final downloadRewardAndroidBtn =
+          ref.read(adsDataProvider.notifier).downloadImageRewardAndroidBtn;
+
+      // if (interAndroidSkipBtn.isNotEmpty) {
+      // _interstitialAds.createInterstitialAd(
+      //     ref: ref, interAdId: interAndroidSkipBtn);
+      // }
+      if (Platform.isAndroid && downloadRewardAndroidBtn.isNotEmpty) {
+        _rewardedAds.createRewardAd(
+            ref: ref,
+            rewardId: ref
+                .read(adsDataProvider.notifier)
+                .downloadImageRewardAndroidBtn);
+      }
+      if (Platform.isAndroid && interAndroidSkipBtn.isNotEmpty) {
+        _interstitialAds.createInterstitialAd(
+            ref: ref, interAdId: interAndroidSkipBtn);
+      }
+    }
     // ref.read(adsDataProvider.notifier).;
   }
 
@@ -72,6 +98,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         // Save an boolean value to 'repeat' key.
         final isLoginStatus = await prefs.getBool('isLogin');
         print("statusLogin$isLoginStatus");
+       
         if (isLoginStatus != null && isLoginStatus) {
           context.go(AppRoutesPath.dashboardScreen);
         } else {

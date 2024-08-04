@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:common/common.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
@@ -48,6 +47,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
       ),
     );
+    return null;
   }
 
   void _onBottomNavItemTap(int index) {

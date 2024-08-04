@@ -128,7 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     print('IMG-LENGTH---->>>>>>>${imagesData!.length}');
     print('HOME CAT---->>>>>>>${homeCategory!.length}');
     print('SUB::::CAT---->>>>>>>${subCat.length}');
-    print("ADSID::::::${ref.watch(adsDataProvider.notifier).adsId}");
+    // print("ADSID::::::${ref.watch(adsDataProvider.notifier).adsId}");
     final isLoading = ref.watch(allImagesDataProvider).isLoading;
     final isLoadingMore = ref.watch(allImagesDataProvider).isLoadingMore;
 
@@ -161,60 +161,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         snackBar: const SnackBar(
           content: Text('Tap back again to leave'),
         ),
-        child: SingleChildScrollView(
-          controller: scrollController,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 22.h,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ///HOME CATEGORY WIDGET
-                    CategoryWidget(
-                      color: color,
-                      ref: ref,
-                      categoryData: categoryData,
-                      homeCategory: homeCategory,
-                    ),
-
-                    SizedBox(
-                      height: 16.w,
-                    ),
-
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: 20.h,
-                        left: 20.h,
+        child: RefreshIndicator(
+          color: color.secondary1,
+          onRefresh: () {
+            return getAllImages(type: isPortraitSelected ? 'reel' : 'post',);
+          },
+          child: SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: 22.h,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ///HOME CATEGORY WIDGET
+                      CategoryWidget(
+                        color: color,
+                        ref: ref,
+                        categoryData: categoryData,
+                        homeCategory: homeCategory,
                       ),
-                      child: AllImagesWidget(
-                        scrollController: scrollController,
-                        isTitle: true,
-                        imagesDataModel: imagesData,
-                        // isLoading: isLoading,
-                        portraitSel: isPortraitSelected,
-                        onPortraitTap: () {
-                          if (isPortraitSelected == false) {
-                            isPortraitSelected = true;
-                            getAllImages(type: StringManager.reel);
-                          }
-                          setState(() {});
-                        },
-                        onSquareTap: () {
-                          if (isPortraitSelected == true) {
-                            isPortraitSelected = false;
-                            getAllImages(type: StringManager.post);
-                          }
-                          setState(() {});
-                        },
+          
+                      SizedBox(
+                        height: 16.w,
                       ),
-                    ),
-                  ],
+          
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: 20.h,
+                          left: 20.h,
+                        ),
+                        child: AllImagesWidget(
+                          scrollController: scrollController,
+                          isTitle: true,
+                          imagesDataModel: imagesData,
+                          // isLoading: isLoading,
+                          portraitSel: isPortraitSelected,
+                          onPortraitTap: () {
+                            if (isPortraitSelected == false) {
+                              isPortraitSelected = true;
+                              getAllImages(type: StringManager.reel);
+                            }
+                            setState(() {});
+                          },
+                          onSquareTap: () {
+                            if (isPortraitSelected == true) {
+                              isPortraitSelected = false;
+                              getAllImages(type: StringManager.post);
+                            }
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

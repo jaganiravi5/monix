@@ -15,6 +15,7 @@ import 'package:monix/screens/images/download_image_screen.dart';
 import 'package:monix/screens/images/low_quality_btn.dart';
 import 'package:monix/screens/images/no_watermark_btn.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:network/ads/provider/ads_provider.dart';
 import 'package:network/network.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -83,45 +84,33 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
 
     print('loader--------${ref.read(watermarkLoadProvider.notifier).state}');
     // ref.read(watermarkLoadProvider.notifier).state = true;
-     orgImgBytes =
+    orgImgBytes =
         (await NetworkAssetBundle(Uri.parse(imageUrl)).load(imageUrl1))
             .buffer
             .asUint8List();
 
     ///IMAGE AS WATERMARK
+    // final ByteData waterImg =
+    // await rootBundle.load(images.waterMarkImg.keyName);
+    // final Uint8List waterImgBytes = waterImg.buffer.asUint8List();
+    // watermarkedImgBytes = await ImageWatermark.addImageWatermark(
+    //   originalImageBytes: orgImgBytes,
 
-    // Uint8List waterImgBytes = (await NetworkAssetBundle(Uri.parse(
-    //             'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
-    //         .load(
-    //             'https://play-lh.googleusercontent.com/aTdXc0XX08__x6TG5duezcB5xaE0a4aTXMKP3mNwYDkq7mf2QtnvoW2L8GLbCLffwMMl=w240-h480-rw'))
-    //     .buffer
-    //     .asUint8List();
-    // print("PATH:::::::${images.splashLogo.path}");
-    final ByteData waterImg = await rootBundle.load(images.waterMarkImg.keyName);
-    final Uint8List waterImgBytes = waterImg.buffer.asUint8List();
-    watermarkedImgBytes = await ImageWatermark.addImageWatermark(
-      originalImageBytes: orgImgBytes,
+    //   waterkmarkImageBytes: waterImgBytes,
 
-      //image bytes
-      waterkmarkImageBytes: waterImgBytes,
-      //watermark img bytes
-      // imgHeight: 100,
-      //watermark img height
-      imgWidth:960,
+    //   imgWidth: 960,
 
-      //watermark img width
-      dstY:isPortrait!=null&&isPortrait!?1300: 840,
-      //watermark position Y
-      dstX: 30, //watermark position X
-    );
+    //   dstY: isPortrait != null && isPortrait! ? 1300 : 840,
+    //   dstX: 30, //watermark position X
+    // );
 
     ///TEXT AS WATERMARK
-    // watermarkedImgBytes = await ImageWatermark.addTextWatermark(
-    //     watermarkText: ' @MONIX_AI_GODS     @MONIX_AI_GODS',
-    //     dstY: 900,
-    //     dstX: 80,
-    //     imgBytes: bytes,
-    //     color: Colors.white.withOpacity(0.5));
+    watermarkedImgBytes = await ImageWatermark.addTextWatermark(
+        watermarkText: ' @MONIX_AI_GODS     @MONIX_AI_GODS',
+        dstY: isPortrait != null && isPortrait! ? 1300 : 840,
+        dstX: 10,
+        imgBytes: orgImgBytes,
+        color: Colors.white.withOpacity(0.5));
     setState(() {});
     ref.read(watermarkLoadProvider.notifier).state = false;
     // showLoadingDialog(context, false);
@@ -260,49 +249,8 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
             child: Column(
               children: [
                 LowQualityBtn(
-                  isLoad: ref.watch(watermarkLoadProvider.notifier).state,
-                  onBtnTap: () {
-                  context.push(
-                    AppRoutesPath.downloadImageScreen,
-                    extra: ImagePreviewArgs(
-                      imageId: imageId,
-                      imageUrl: imageUrl,
-                      isPortrait: isPortrait!,
-                      imageName: imageName,
-                      imageData: watermarkedImgBytes,
-                    ),
-                  );
-                }
-                    // context.push(
-                    //   AppRoutesPath.downloadImageScreen,
-                    // ),
-                    ),
-                SizedBox(
-                  height: 14.w,
-                ),
-                NoWatermarkBtn(
-                  isLoad: ref.watch(watermarkLoadProvider.notifier).state,
-                  onBtnTap: () {
-                  _rewardedAds.showRewardedAd(
-                    ref: ref,
-                    context: context,
-                    onAdDismissedFullScreen: (p0) {
-                      print('RewardAdDismissed');
-                      context.push(
-                        AppRoutesPath.downloadImageScreen,
-                        extra: ImagePreviewArgs(
-                          imageId: imageId,
-                          isAdSeen:false,
-
-                          imageUrl: imageUrl,
-                          isPortrait: isPortrait!,
-                          imageName: imageName,
-                          imageData: orgImgBytes,
-                        ),
-                      );
-                    },
-                    onAdFailedToShowFullScreen: (p0, p1) {
-                      print('RewardAdFailed');
+                    isLoad: ref.watch(watermarkLoadProvider.notifier).state,
+                    onBtnTap: () {
                       context.push(
                         AppRoutesPath.downloadImageScreen,
                         extra: ImagePreviewArgs(
@@ -313,14 +261,85 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
                           imageData: watermarkedImgBytes,
                         ),
                       );
-                    },
-                    
-                  );
-                }
+                    }
                     // context.push(
                     //   AppRoutesPath.downloadImageScreen,
                     // ),
-                    )
+                    ),
+                SizedBox(
+                  height: 14.w,
+                ),
+                NoWatermarkBtn(
+                    isLoad: ref.watch(watermarkLoadProvider.notifier).state,
+                    onBtnTap: () {
+                      final rewardId = ref
+                          .read(adsDataProvider.notifier)
+                          .downloadImageRewardAndroidBtn;
+
+                      if (Platform.isAndroid && rewardId.isNotEmpty) {
+                        if (ref.watch(rewardAdsProvider.notifier).state ==
+                            null) {
+                          print(
+                              'Warning: attempt to show reward before loaded.');
+                          context.push(
+                            AppRoutesPath.downloadImageScreen,
+                            extra: ImagePreviewArgs(
+                              imageId: imageId,
+                              isAdSeen: false,
+                              imageUrl: imageUrl,
+                              isPortrait: isPortrait!,
+                              imageName: imageName,
+                              imageData: orgImgBytes,
+                            ),
+                          );
+                        }
+                        _rewardedAds.showRewardedAd(
+                          ref: ref,
+                          context: context,
+                          rewardId: ref
+                              .read(adsDataProvider.notifier)
+                              .downloadImageRewardAndroidBtn,
+                          onAdDismissedFullScreen: (p0) {
+                            print('RewardAdDismissed');
+                            context.push(
+                              AppRoutesPath.downloadImageScreen,
+                              extra: ImagePreviewArgs(
+                                imageId: imageId,
+                                // isAdSeen: false,
+                                imageUrl: imageUrl,
+                                isPortrait: isPortrait!,
+                                imageName: imageName,
+                                imageData: orgImgBytes,
+                              ),
+                            );
+                          },
+                          onAdFailedToShowFullScreen: (p0, p1) {
+                            print('RewardAdFailed');
+                            context.push(
+                              AppRoutesPath.downloadImageScreen,
+                              extra: ImagePreviewArgs(
+                                imageId: imageId,
+                                imageUrl: imageUrl,
+                                isPortrait: isPortrait!,
+                                imageName: imageName,
+                                imageData: orgImgBytes,
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        context.push(
+                          AppRoutesPath.downloadImageScreen,
+                          extra: ImagePreviewArgs(
+                            imageId: imageId,
+                            imageUrl: imageUrl,
+                            isPortrait: isPortrait!,
+                            imageName: imageName,
+                            imageData: orgImgBytes,
+                          ),
+                        );
+                      }
+                    })
               ],
             ),
           )
@@ -416,28 +435,30 @@ class ImagePreviewAppBar extends StatelessWidget {
               ),
             ],
           ),
-       isSuffixIcon?   SizedBox(
-            width: 88.w,
-            child: CommonSolidButton(
-              title: StringManager.share,
-              onButtonClick: () => onSuffixClick(),
-              isBorder: true,
-              borderRadius: BorderRadius.circular(40.r),
-              borderColor: color.white.withOpacity(0.18),
-              borderWidth: 1.w,
-              fillColor: color.white.withOpacity(0.2),
-              icon: Icon(
-                Icons.share,
-                size: 16.w,
-                color: color.white,
-              ),
-              textStyle: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: color.white),
-              padding: EdgeInsets.symmetric(vertical: 8.w),
-            ),
-          ):SizedBox.shrink()
+          isSuffixIcon
+              ? SizedBox(
+                  width: 88.w,
+                  child: CommonSolidButton(
+                    title: StringManager.share,
+                    onButtonClick: () => onSuffixClick(),
+                    isBorder: true,
+                    borderRadius: BorderRadius.circular(40.r),
+                    borderColor: color.white.withOpacity(0.18),
+                    borderWidth: 1.w,
+                    fillColor: color.white.withOpacity(0.2),
+                    icon: Icon(
+                      Icons.share,
+                      size: 16.w,
+                      color: color.white,
+                    ),
+                    textStyle: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: color.white),
+                    padding: EdgeInsets.symmetric(vertical: 8.w),
+                  ),
+                )
+              : SizedBox.shrink()
         ],
       ),
     );

@@ -48,7 +48,6 @@ class _DownloadImageScreenState extends ConsumerState<DownloadImageScreen> {
   bool? isPortrait;
   String imageName = '';
   String imageId = '';
-
   String shareUrl = '';
 
   @override

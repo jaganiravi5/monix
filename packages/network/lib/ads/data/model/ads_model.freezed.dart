@@ -20,6 +20,8 @@ AdsModel _$AdsModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AdsModel {
+  @JsonKey(name: 'is_show_ad')
+  bool? get isShowAd => throw _privateConstructorUsedError;
   @JsonKey(name: 'instagram_url')
   String? get instagramUrl => throw _privateConstructorUsedError;
   @JsonKey(name: 'youtube_url')
@@ -30,6 +32,8 @@ mixin _$AdsModel {
   String? get interAndroidSkipBtn => throw _privateConstructorUsedError;
   @JsonKey(name: 'inter_ios_skip_btn')
   String? get interIosSkipBtn => throw _privateConstructorUsedError;
+  @JsonKey(name: 'download_image_reward_android_btn')
+  String? get downloadImageRewardBtn => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,11 +47,14 @@ abstract class $AdsModelCopyWith<$Res> {
       _$AdsModelCopyWithImpl<$Res, AdsModel>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'instagram_url') String? instagramUrl,
+      {@JsonKey(name: 'is_show_ad') bool? isShowAd,
+      @JsonKey(name: 'instagram_url') String? instagramUrl,
       @JsonKey(name: 'youtube_url') String? ytUrl,
       @JsonKey(name: 'wp_url') String? wpUrl,
       @JsonKey(name: 'inter_android_skip_btn') String? interAndroidSkipBtn,
-      @JsonKey(name: 'inter_ios_skip_btn') String? interIosSkipBtn});
+      @JsonKey(name: 'inter_ios_skip_btn') String? interIosSkipBtn,
+      @JsonKey(name: 'download_image_reward_android_btn')
+      String? downloadImageRewardBtn});
 }
 
 /// @nodoc
@@ -63,13 +70,19 @@ class _$AdsModelCopyWithImpl<$Res, $Val extends AdsModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? isShowAd = freezed,
     Object? instagramUrl = freezed,
     Object? ytUrl = freezed,
     Object? wpUrl = freezed,
     Object? interAndroidSkipBtn = freezed,
     Object? interIosSkipBtn = freezed,
+    Object? downloadImageRewardBtn = freezed,
   }) {
     return _then(_value.copyWith(
+      isShowAd: freezed == isShowAd
+          ? _value.isShowAd
+          : isShowAd // ignore: cast_nullable_to_non_nullable
+              as bool?,
       instagramUrl: freezed == instagramUrl
           ? _value.instagramUrl
           : instagramUrl // ignore: cast_nullable_to_non_nullable
@@ -89,6 +102,10 @@ class _$AdsModelCopyWithImpl<$Res, $Val extends AdsModel>
       interIosSkipBtn: freezed == interIosSkipBtn
           ? _value.interIosSkipBtn
           : interIosSkipBtn // ignore: cast_nullable_to_non_nullable
+              as String?,
+      downloadImageRewardBtn: freezed == downloadImageRewardBtn
+          ? _value.downloadImageRewardBtn
+          : downloadImageRewardBtn // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -103,11 +120,14 @@ abstract class _$$AdsModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'instagram_url') String? instagramUrl,
+      {@JsonKey(name: 'is_show_ad') bool? isShowAd,
+      @JsonKey(name: 'instagram_url') String? instagramUrl,
       @JsonKey(name: 'youtube_url') String? ytUrl,
       @JsonKey(name: 'wp_url') String? wpUrl,
       @JsonKey(name: 'inter_android_skip_btn') String? interAndroidSkipBtn,
-      @JsonKey(name: 'inter_ios_skip_btn') String? interIosSkipBtn});
+      @JsonKey(name: 'inter_ios_skip_btn') String? interIosSkipBtn,
+      @JsonKey(name: 'download_image_reward_android_btn')
+      String? downloadImageRewardBtn});
 }
 
 /// @nodoc
@@ -121,13 +141,19 @@ class __$$AdsModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? isShowAd = freezed,
     Object? instagramUrl = freezed,
     Object? ytUrl = freezed,
     Object? wpUrl = freezed,
     Object? interAndroidSkipBtn = freezed,
     Object? interIosSkipBtn = freezed,
+    Object? downloadImageRewardBtn = freezed,
   }) {
     return _then(_$AdsModelImpl(
+      isShowAd: freezed == isShowAd
+          ? _value.isShowAd
+          : isShowAd // ignore: cast_nullable_to_non_nullable
+              as bool?,
       instagramUrl: freezed == instagramUrl
           ? _value.instagramUrl
           : instagramUrl // ignore: cast_nullable_to_non_nullable
@@ -148,6 +174,10 @@ class __$$AdsModelImplCopyWithImpl<$Res>
           ? _value.interIosSkipBtn
           : interIosSkipBtn // ignore: cast_nullable_to_non_nullable
               as String?,
+      downloadImageRewardBtn: freezed == downloadImageRewardBtn
+          ? _value.downloadImageRewardBtn
+          : downloadImageRewardBtn // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -156,15 +186,21 @@ class __$$AdsModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AdsModelImpl implements _AdsModel {
   const _$AdsModelImpl(
-      {@JsonKey(name: 'instagram_url') this.instagramUrl,
+      {@JsonKey(name: 'is_show_ad') this.isShowAd,
+      @JsonKey(name: 'instagram_url') this.instagramUrl,
       @JsonKey(name: 'youtube_url') this.ytUrl,
       @JsonKey(name: 'wp_url') this.wpUrl,
       @JsonKey(name: 'inter_android_skip_btn') this.interAndroidSkipBtn,
-      @JsonKey(name: 'inter_ios_skip_btn') this.interIosSkipBtn});
+      @JsonKey(name: 'inter_ios_skip_btn') this.interIosSkipBtn,
+      @JsonKey(name: 'download_image_reward_android_btn')
+      this.downloadImageRewardBtn});
 
   factory _$AdsModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$AdsModelImplFromJson(json);
 
+  @override
+  @JsonKey(name: 'is_show_ad')
+  final bool? isShowAd;
   @override
   @JsonKey(name: 'instagram_url')
   final String? instagramUrl;
@@ -180,10 +216,13 @@ class _$AdsModelImpl implements _AdsModel {
   @override
   @JsonKey(name: 'inter_ios_skip_btn')
   final String? interIosSkipBtn;
+  @override
+  @JsonKey(name: 'download_image_reward_android_btn')
+  final String? downloadImageRewardBtn;
 
   @override
   String toString() {
-    return 'AdsModel(instagramUrl: $instagramUrl, ytUrl: $ytUrl, wpUrl: $wpUrl, interAndroidSkipBtn: $interAndroidSkipBtn, interIosSkipBtn: $interIosSkipBtn)';
+    return 'AdsModel(isShowAd: $isShowAd, instagramUrl: $instagramUrl, ytUrl: $ytUrl, wpUrl: $wpUrl, interAndroidSkipBtn: $interAndroidSkipBtn, interIosSkipBtn: $interIosSkipBtn, downloadImageRewardBtn: $downloadImageRewardBtn)';
   }
 
   @override
@@ -191,6 +230,8 @@ class _$AdsModelImpl implements _AdsModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$AdsModelImpl &&
+            (identical(other.isShowAd, isShowAd) ||
+                other.isShowAd == isShowAd) &&
             (identical(other.instagramUrl, instagramUrl) ||
                 other.instagramUrl == instagramUrl) &&
             (identical(other.ytUrl, ytUrl) || other.ytUrl == ytUrl) &&
@@ -198,13 +239,15 @@ class _$AdsModelImpl implements _AdsModel {
             (identical(other.interAndroidSkipBtn, interAndroidSkipBtn) ||
                 other.interAndroidSkipBtn == interAndroidSkipBtn) &&
             (identical(other.interIosSkipBtn, interIosSkipBtn) ||
-                other.interIosSkipBtn == interIosSkipBtn));
+                other.interIosSkipBtn == interIosSkipBtn) &&
+            (identical(other.downloadImageRewardBtn, downloadImageRewardBtn) ||
+                other.downloadImageRewardBtn == downloadImageRewardBtn));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, instagramUrl, ytUrl, wpUrl,
-      interAndroidSkipBtn, interIosSkipBtn);
+  int get hashCode => Object.hash(runtimeType, isShowAd, instagramUrl, ytUrl,
+      wpUrl, interAndroidSkipBtn, interIosSkipBtn, downloadImageRewardBtn);
 
   @JsonKey(ignore: true)
   @override
@@ -222,17 +265,22 @@ class _$AdsModelImpl implements _AdsModel {
 
 abstract class _AdsModel implements AdsModel {
   const factory _AdsModel(
-          {@JsonKey(name: 'instagram_url') final String? instagramUrl,
-          @JsonKey(name: 'youtube_url') final String? ytUrl,
-          @JsonKey(name: 'wp_url') final String? wpUrl,
-          @JsonKey(name: 'inter_android_skip_btn')
-          final String? interAndroidSkipBtn,
-          @JsonKey(name: 'inter_ios_skip_btn') final String? interIosSkipBtn}) =
-      _$AdsModelImpl;
+      {@JsonKey(name: 'is_show_ad') final bool? isShowAd,
+      @JsonKey(name: 'instagram_url') final String? instagramUrl,
+      @JsonKey(name: 'youtube_url') final String? ytUrl,
+      @JsonKey(name: 'wp_url') final String? wpUrl,
+      @JsonKey(name: 'inter_android_skip_btn')
+      final String? interAndroidSkipBtn,
+      @JsonKey(name: 'inter_ios_skip_btn') final String? interIosSkipBtn,
+      @JsonKey(name: 'download_image_reward_android_btn')
+      final String? downloadImageRewardBtn}) = _$AdsModelImpl;
 
   factory _AdsModel.fromJson(Map<String, dynamic> json) =
       _$AdsModelImpl.fromJson;
 
+  @override
+  @JsonKey(name: 'is_show_ad')
+  bool? get isShowAd;
   @override
   @JsonKey(name: 'instagram_url')
   String? get instagramUrl;
@@ -248,6 +296,9 @@ abstract class _AdsModel implements AdsModel {
   @override
   @JsonKey(name: 'inter_ios_skip_btn')
   String? get interIosSkipBtn;
+  @override
+  @JsonKey(name: 'download_image_reward_android_btn')
+  String? get downloadImageRewardBtn;
   @override
   @JsonKey(ignore: true)
   _$$AdsModelImplCopyWith<_$AdsModelImpl> get copyWith =>

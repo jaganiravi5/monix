@@ -1,28 +1,14 @@
 import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:common/common.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_watermark/image_watermark.dart';
 import 'package:monix/admob_ads/interstitial_ads.dart';
-import 'package:monix/router/routes_name.dart';
-import 'package:monix/screens/images/down_image_shimmer.dart';
 import 'package:monix/screens/images/image_preview_screen.dart';
-import 'package:monix_assets/gen/assets.gen.dart';
-import 'package:monix_assets/monix_assets.dart';
-import 'package:network/download_count/provider/provider.dart';
-import 'package:network/images/provider/all_images_provider.dart';
+import 'package:network/ads/provider/provider.dart';
 import 'package:network/network.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../router/custom_page_transition.dart';
 
 class DeleteImageScreen extends ConsumerStatefulWidget {
@@ -173,21 +159,42 @@ class _DownloadImageScreenState extends ConsumerState<DeleteImageScreen> {
                       ),
                     ),
                     onButtonClick: () async {
-                      if (ref.read(interAdsProvider.notifier).state == null) {
-                        print(
-                            'Warning: attempt to show interstitial before loaded.');
-                            await _onDeleteTap(context);
-                      } else {
-                        _interstitialAds.showInterstitialAd(
-                          ref: ref,
-                          context: context,
-                          onAdDismissedFullScreenContent: (p0) async => await _onDeleteTap(context),
-                          onAdFailedToShowFullScreenContent: (p0, p1) async =>
-                               await _onDeleteTap(context),
-                        );
+                      if (Platform.isAndroid &&
+                          ref
+                              .watch(adsDataProvider.notifier)
+                              .interAndroidDeleteBtn
+                              .isNotEmpty) {
+                        if (ref.read(interAdsProvider.notifier).state == null) {
+                          print(
+                              'Warning: attempt to show interstitial before loaded.');
+                          final interAndroidSkipBtn = ref
+                              .watch(adsDataProvider.notifier)
+                              .interAndroidDeleteBtn;
+                          _interstitialAds.showInterstitialAd(
+                            ref: ref,
+                            interAdId: interAndroidSkipBtn,
+                            context: context,
+                            onAdDismissedFullScreenContent: (p0) async =>
+                                await _onDeleteTap(context),
+                            onAdFailedToShowFullScreenContent: (p0, p1) async =>
+                                await _onDeleteTap(context),
+                          );
+                          await _onDeleteTap(context);
+                        } else {
+                          final interAndroidSkipBtn = ref
+                              .watch(adsDataProvider.notifier)
+                              .interAndroidDeleteBtn;
+                          _interstitialAds.showInterstitialAd(
+                            ref: ref,
+                            interAdId: interAndroidSkipBtn,
+                            context: context,
+                            onAdDismissedFullScreenContent: (p0) async =>
+                                await _onDeleteTap(context),
+                            onAdFailedToShowFullScreenContent: (p0, p1) async =>
+                                await _onDeleteTap(context),
+                          );
+                        }
                       }
-
-                     
                     },
                     textStyle: TextStyle(
                       fontSize: 20.sp,
@@ -206,15 +213,32 @@ class _DownloadImageScreenState extends ConsumerState<DeleteImageScreen> {
   }
 
   Future<void> _onDeleteTap(BuildContext context) async {
+  try {
     showLoadingDialog(context, true);
-    await widget.deleteScreenArgs.filePath.delete();
-    showLoadingDialog(context, false);
+    
+    final file = File(widget.deleteScreenArgs.filePath.path);
+    if (await file.exists()) {
+      await file.delete();
+      showToast(
+        msg: "Deleted Successfully!",
+        success: true,
+      );
+      context.pop(true);
+    } else {
+      showToast(
+        msg: "File not found",
+        success: false,
+      );
+    }
+  } catch (e) {
     showToast(
-      msg: "Deleted Successfully!",
-      success: true,
+      msg: "Error deleting file: ${e.toString()}",
+      success: false,
     );
-    context.pop(true);
+  } finally {
+    showLoadingDialog(context, false);
   }
+}
 }
 
 final watermarkLoadProvider = StateProvider<bool>(

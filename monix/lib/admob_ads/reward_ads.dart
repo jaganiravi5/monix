@@ -7,9 +7,9 @@ import 'package:network/network.dart';
 import 'ad_helper.dart';
 
 class RewardedAds {
-  void createRewardAd({required WidgetRef ref}) {
+  void createRewardAd({required WidgetRef ref,required String rewardId}) {
     RewardedAd.load(
-      adUnitId: AdHelper.rewardAdUnitId,
+      adUnitId: rewardId,
       request: AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {
@@ -19,7 +19,7 @@ class RewardedAds {
           ref.read(rewardAdsProvider.notifier).state?.setImmersiveMode(true);
         },
         onAdFailedToLoad: (LoadAdError error) {
-          print('InterstitialAd failed to load: $error.');
+          print('RewaedAd failed to load: $error.');
           // _numInterstitialLoadAttempts += 1;
           ref.read(rewardAdsProvider.notifier).state = null;
           // if (_numInterstitialLoadAttempts < maxFailedLoadAttempts) {
@@ -35,11 +35,12 @@ class RewardedAds {
     required BuildContext context,
     required Function(RewardedAd) onAdDismissedFullScreen,
     required Function(RewardedAd, AdError) onAdFailedToShowFullScreen,
+    required String rewardId
   }) {
-    if (ref.watch(rewardAdsProvider.notifier).state == null) {
-      print('Warning: attempt to show interstitial before loaded.');
-      return;
-    }
+    // if (ref.watch(rewardAdsProvider.notifier).state == null) {
+    //   print('Warning: attempt to show reward before loaded.');
+    //   return;
+    // }
     ref.read(rewardAdsProvider.notifier).state?.fullScreenContentCallback =
         FullScreenContentCallback(
       onAdShowedFullScreenContent: (RewardedAd ad) =>
@@ -49,13 +50,13 @@ class RewardedAds {
 
         ad.dispose();
         onAdDismissedFullScreen(ad);
-        createRewardAd(ref: ref);
+        createRewardAd(ref: ref,rewardId: rewardId);
       },
       onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
         print('$ad onAdFailedToShowFullScreenContent: $error');
         ad.dispose();
         onAdFailedToShowFullScreen(ad, error);
-        createRewardAd(ref: ref);
+        createRewardAd(ref: ref,rewardId: rewardId);
       },
     );
     ref.read(rewardAdsProvider.notifier).state?.show(

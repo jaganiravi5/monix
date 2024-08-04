@@ -11,6 +11,7 @@ import 'package:monix/screens/saved/delete_image_screen.dart';
 import 'package:monix/screens/search/search.dart';
 import 'package:monix/utils/common_fun.dart';
 import 'package:monix_assets/monix_assets.dart';
+import 'package:network/ads/provider/ads_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -82,7 +83,6 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   }
 
   Future<void> deleteAllImagesInMonixFolder() async {
-
     // Request storage permission
     if (isPermissionGiven != null && isPermissionGiven!) {
       try {
@@ -135,6 +135,8 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   void showRewardAd() {
     _rewardedAds.showRewardedAd(
       ref: ref,
+      rewardId:
+          ref.read(adsDataProvider.notifier).downloadImageRewardAndroidBtn,
       context: context,
       onAdDismissedFullScreen: (p0) {
         deleteAllImagesInMonixFolder();
@@ -235,10 +237,23 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
                             showAnimatedDialog(
                               context,
                               WarningPopup(
-                                color: color,
-                                onRightTap: () =>
-                                    showRewardAd(),
-                              ),
+                                  color: color,
+                                  onRightTap: () {
+                                    if (Platform.isAndroid &&
+                                        ref
+                                            .read(adsDataProvider.notifier)
+                                            .downloadImageRewardAndroidBtn
+                                            .isNotEmpty) {
+                                      if (ref
+                                              .watch(rewardAdsProvider.notifier)
+                                              .state ==
+                                          null) {
+                                        deleteAllImagesInMonixFolder();
+                                      } else {
+                                        showRewardAd();
+                                      }
+                                    }
+                                  }),
                             );
                           },
                           child: Text(
@@ -438,6 +453,9 @@ class _DownloadedImgWidgetState extends State<DownloadedImgWidget> {
                             );
                             if (isPop != null) {
                               widget.onDelete();
+                              setState(() {});
+                            }else{
+                               widget.onDelete();
                               setState(() {});
                             }
                           },

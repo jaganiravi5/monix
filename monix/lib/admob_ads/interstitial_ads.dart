@@ -10,9 +10,10 @@ class InterstitialAds {
   int maxFailedLoadAttempts = 5;
   int _numInterstitialLoadAttempts = 0;
 
-  void createInterstitialAd({required WidgetRef ref}) {
+  void createInterstitialAd({required WidgetRef ref, required String interAdId}) {
     InterstitialAd.load(
-        adUnitId: AdHelper.interstitialAdUnitId,
+        // adUnitId: AdHelper.interstitialAdUnitId,
+        adUnitId: interAdId,
         request: const AdRequest(),
         adLoadCallback: InterstitialAdLoadCallback(
           onAdLoaded: (InterstitialAd ad) {
@@ -26,7 +27,7 @@ class InterstitialAds {
             _numInterstitialLoadAttempts += 1;
             ref.read(interAdsProvider.notifier).state = null;
             if (_numInterstitialLoadAttempts < maxFailedLoadAttempts) {
-              createInterstitialAd(ref: ref);
+              createInterstitialAd(ref: ref,interAdId: interAdId);
             }
           },
         ));
@@ -37,7 +38,8 @@ class InterstitialAds {
     required BuildContext context,
     required Function(InterstitialAd) onAdDismissedFullScreenContent,
     required Function(InterstitialAd, AdError) onAdFailedToShowFullScreenContent,
-  }) {
+    required String interAdId
+,  }) {
     if (ref.watch(interAdsProvider.notifier).state == null) {
       print('Warning: attempt to show interstitial before loaded.');
       return;
@@ -52,13 +54,13 @@ class InterstitialAds {
 
         ad.dispose();
 
-        createInterstitialAd(ref: ref);
+        createInterstitialAd(ref: ref,interAdId: interAdId.toString());
         // showLoadingDialog(context, false);
       },
       onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
         print('$ad onAdFailedToShowFullScreenContent: $error');
         ad.dispose();
-        createInterstitialAd(ref: ref);
+        createInterstitialAd(ref: ref,interAdId: interAdId.toString());
         onAdFailedToShowFullScreenContent(ad,error);
       },
     );

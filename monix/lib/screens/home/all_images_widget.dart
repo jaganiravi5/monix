@@ -40,44 +40,7 @@ class AllImagesWidget extends ConsumerStatefulWidget {
 }
 
 class _AllImagesWidgetState extends ConsumerState<AllImagesWidget> {
-  // final _onGoingScrollController = ScrollController();
-  // late final ScrollController _scrollController = ScrollController()
-  //   ..addListener(
-  //     () async {
-  //       if (ref.read(allImagesDataProvider.notifier).isPagination) {
-  //         final page = ref.watch(pageProvider);
-  //         final pageSize = ref.watch(pageSizeProvider);
-  //         final total = ref.watch(allImagesDataProvider).allImages.total;
-  //         if (((page) * pageSize) < (total ?? 0) &&
-  //             _scrollController.offset >=
-  //                 _scrollController.position.maxScrollExtent &&
-  //             !_scrollController.position.outOfRange) {
-  //           ref.read(allImagesDataProvider.notifier).state =
-  //               ref.read(allImagesDataProvider).copyWith(isLoadingMore: true);
-  //           ref.read(allImagesDataProvider.notifier).fetchNextBatch(
-  //                 type: widget.portraitSel ? 'reel' : 'post',
-  //                 page: page,
-  //                 limit: 18,
-  //               );
-  //         }
-  //       }
-  //     },
-  //   );
-
-  // Future<void> _onGoingScrollListener() async {
-  //   final page = ref.read(getOnGoingAppointmentListDataProvider.notifier).page;
-  //   final totalCount = ref.read(getOnGoingAppointmentListDataProvider.notifier).totalCount;
-
-  //   // Check if more items are available to load
-  //   if (((page) * 10) < (totalCount) &&
-  //       _onGoingScrollController.offset >= _onGoingScrollController.position.maxScrollExtent &&
-  //       !_onGoingScrollController.position.outOfRange) {
-  //     final dropDownProvider = ref.watch(doctorLocationStateProvider);
-  //     await ref.read(allImagesDataProvider.notifier).getOnGoingAppointmentList(
-  //           locationID: dropDownProvider.mainDropDownValue?.id ?? '',
-  //         );
-  //   }
-  // }
+  
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
