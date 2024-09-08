@@ -64,40 +64,43 @@ class _NoWatermarkBtnState extends State<NoWatermarkBtn> {
                       ),
                     ],
                   ),
-            widget.ref
-                              .read(adsDataProvider.notifier)
-                              .downloadImageRewardAndroidBtn.isNotEmpty?    SizedBox(
-                    width: 104.w,
-                    height: 30.w,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(7.r),
-                        color: theme.white,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.play_circle_fill_rounded,
-                            color: theme.black,
-                          ),
-                          SizedBox(
-                            width: 2.w,
-                          ),
-                          Text(
-                            StringManager.watchAd,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
+                  SizedBox(
+                          width: 104.w,
+                          height: 30.w,
+                          child: widget.ref
+                          .read(adsDataProvider.notifier)
+                          .downloadImageRewardAndroidBtn
+                          .isNotEmpty
+                      ? Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(7.r),
+                              color: theme.white,
                             ),
-                          ),
-                          SizedBox(
-                            width: 4.w,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ):SizedBox.shrink(),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.play_circle_fill_rounded,
+                                  color: theme.black,
+                                ),
+                                SizedBox(
+                                  width: 2.w,
+                                ),
+                                Text(
+                                  StringManager.watchAd,
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 4.w,
+                                ),
+                              ],
+                            ),
+                          ):SizedBox.shrink()
+                        )
+                   ,
                 ],
               ),
             ),

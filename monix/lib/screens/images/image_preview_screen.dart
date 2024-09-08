@@ -187,7 +187,7 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
             color: color,
             name: imageName,
             onSuffixClick: () {
-              _shareImg(url: shareUrl, imgData: watermarkedImgBytes);
+              _shareImg(url: shareUrl, imgData: watermarkedImgBytes ,ref: ref,);
               //TODO : share on What'sapp
             },
           ),
@@ -349,44 +349,65 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
     );
   }
 
-  Future<void> _shareImg(
-      {required String url, required Uint8List imgData}) async {
-    // final res = await Share.share('check out this stunning god image $url',);
+  // Future<void> _shareImg(
+  //     {required String url, required Uint8List imgData}) async {
+  //   // final res = await Share.share('check out this stunning god image $url',);
+
+  //   // Get the temporary directory
+  //   final directory = await getTemporaryDirectory();
+
+  //   // Create a file in the temporary directory
+  //   final file = File('${directory.path}/${DateTime.now().millisecond}.jpg');
+
+  //   // Write the bytes to the file
+  //   await file.writeAsBytes(imgData);
+  //   final res = await Share.shareXFiles([XFile(file.path)],
+  //       text:
+  //           'Check out this awesome image from Monix AI Gods Gallery! 📸 $url');
+  //   if (res.status == ShareResultStatus.success) {
+  //     print('Thank you for sharing Our App!');
+  //   }
+
+  // }
+  Future<void> _shareImg({
+    required String url,
+    required Uint8List imgData,
+    required WidgetRef ref,
+  }) async {
+    final ytUrl = ref.watch(adsDataProvider.notifier).ytUrl;
+    final instaUrl = ref.watch(adsDataProvider.notifier).instaUrl;
+    final wpUrl = ref.watch(adsDataProvider.notifier).wpUrl;
 
     // Get the temporary directory
     final directory = await getTemporaryDirectory();
 
     // Create a file in the temporary directory
-    final file = File('${directory.path}/${DateTime.now().millisecond}.jpg');
+    final file = File('${directory.path}/temp.jpg');
 
     // Write the bytes to the file
     await file.writeAsBytes(imgData);
+// Construct the share message
+    String message =
+        'Check out this awesome image from Monix AI Gods Gallery! 📸 $url';
+
+    if (ytUrl.isNotEmpty) {
+      message += '\n\nYouTube: $ytUrl\n';
+    }
+    if (instaUrl.isNotEmpty) {
+      message += '\nInstagram: $instaUrl\n';
+    }
+    if (wpUrl.isNotEmpty) {
+      message += '\nWhatsApp: $wpUrl';
+    }
+
     final res = await Share.shareXFiles([XFile(file.path)],
         text:
-            'Check out this awesome image from Monix AI Gods Gallery! 📸 $url');
+           message);
     if (res.status == ShareResultStatus.success) {
       print('Thank you for sharing Our App!');
     }
-
-    // showLoadingDialog(context, true);
-    // Directory dir = await getTemporaryDirectory();
-    // // final result = await DownloadMediaRepository().download(
-    // //   url ?? '',
-    // //   "${dir.path}/${url.split("/").last}",
-    // // );
-    // //if (result != null) {
-    // //   showLoadingDialog(context, false);
-    //   File tempFile = File('${dir.path}/${url.split("/").last}');
-    //   // await tempFile.writeAsBytes(data);
-    //   final XFile file = XFile(tempFile.path);
-    //   final result = await Share.shareXFiles([file], text: 'Great Docs');
-    //   if (result.status == ShareResultStatus.success) {
-    //     print('Thank you for sharing the picture!');
-    //   }
-    // //} else {
-    //   showLoadingDialog(context, false);
-    // //}
   }
+
 }
 
 class ImagePreviewAppBar extends StatelessWidget {
@@ -410,31 +431,38 @@ class ImagePreviewAppBar extends StatelessWidget {
       top: 50.w,
       right: 18.w,
       child: Row(
+        
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              InkWell(
-                onTap: () => context.pop(),
-                child: Icon(
-                  Icons.arrow_back_rounded,
-                  color: color.white,
-                  size: 24.w,
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: () => context.pop(),
+                  child: Icon(
+                    Icons.arrow_back_rounded,
+                    color: color.white,
+                    size: 24.w,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 16.w,
-              ),
-              Text(
-                name ?? 'Image',
-                style: TextStyle(
-                  color: color.white,
-                  fontSize: 21.sp,
-                  fontWeight: FontWeight.w500,
+                SizedBox(
+                  width: 16.w,
                 ),
-              ),
-            ],
+                Flexible(
+                  flex: 2,
+                  child: Text(
+                    name ?? 'Image',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: color.white,
+                      fontSize: 21.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           isSuffixIcon
               ? SizedBox(

@@ -33,10 +33,11 @@ class AdsDataNotifier extends StateNotifier<AdsState> {
         instaUrl=data.instagramUrl!;
         ytUrl=data.ytUrl!;
         wpUrl=data.wpUrl!;
-        interAndroidDeleteBtn=data.interAndroidSkipBtn!;
-        interIosSkipBtn=data.interIosSkipBtn!;
         downloadImageRewardAndroidBtn=data.downloadImageRewardBtn!;
-        // print("------>>>>>>ADSDATA<<<<<<<-------$adsId");
+        // interAndroidDeleteBtn=data.interAndroidSkipBtn!;
+        // interIosSkipBtn=data.interIosSkipBtn!;
+        
+        print("------>>>>>>ADSDATA<<<<<<<-------$downloadImageRewardAndroidBtn");
         state = state.copyWith(
             adsModel: data, isLoading: false, isLoadingMore: false);
       },
