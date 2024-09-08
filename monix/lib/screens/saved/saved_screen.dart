@@ -42,6 +42,10 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
   bool? isPermissionGiven;
   final RewardedAds _rewardedAds = RewardedAds();
 
+  DateTime? currentBackPressTime;
+bool canPopNow = false;
+int requiredSeconds = 2;
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -155,7 +159,7 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
     print(":::::LENGTH:::LOCAL::::${_imageFiles?.length}");
     return Scaffold(
       backgroundColor: color.bgColor,
-      appBar: CommonAppBar(
+      appBar: CommonAppBar( 
         color: color,
         onSuffixBtnClick: () => context.push(AppRoutesPath.ideaScreen),
         title: StringManager.monixAi,
@@ -177,104 +181,136 @@ class _SavedScreenState extends ConsumerState<SavedScreen> {
           fit: BoxFit.contain,
         ),
       ),
-      body: Stack(
-        children: [
-          isPermissionGiven != null && isPermissionGiven!
-              ? _imageFiles.isEmpty
-                  ? NoImageWidget(color: color)
-                  : SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          top: 70.w,
-                          left: 20.w,
-                          right: 20.w,
-                        ),
-                        child: DownloadedImgWidget(
-                          onDelete: () {
-                            _fetchImages();
-                            setState(() {});
-                          },
-                          imageFiles: _imageFiles,
-                          portraitSel: isPortraitSel,
-                          isLoading:
-                              ref.watch(tempLoadingProvider.notifier).state,
-                          onPortraitTap: () {
-                            isPortraitSel = !isPortraitSel;
-                            setState(() {});
-                          },
-                          onSquareTap: () {
-                            isPortraitSel = !isPortraitSel;
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    )
-              : NoImageWidget(
-                  color: color,
-                  isPermissionGiven: isPermissionGiven,
-                ),
-          _imageFiles.isNotEmpty
-              ? Positioned(
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 45.w,
-                    color: color.bgSolidColor,
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          StringManager.allDownloadImg,
-                          style: TextStyle(
-                            color: color.grey500,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
+      body: PopScope(
+        canPop: canPopNow,
+        onPopInvoked:(didPop) {
+          print("onDidPop-$didPop");
+         onPopInvoked(didPop,currentBackPressTime);
+          
+        },
+        child: Stack(
+          children: [
+            isPermissionGiven != null && isPermissionGiven!
+                ? _imageFiles.isEmpty
+                    ? NoImageWidget(color: color)
+                    : SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            top: 70.w,
+                            left: 20.w,
+                            right: 20.w,
+                          ),
+                          child: DownloadedImgWidget(
+                            onDelete: () {
+                              _fetchImages();
+                              setState(() {});
+                            },
+                            imageFiles: _imageFiles,
+                            portraitSel: isPortraitSel,
+                            isLoading:
+                                ref.watch(tempLoadingProvider.notifier).state,
+                            onPortraitTap: () {
+                              isPortraitSel = !isPortraitSel;
+                              setState(() {});
+                            },
+                            onSquareTap: () {
+                              isPortraitSel = !isPortraitSel;
+                              setState(() {});
+                            },
                           ),
                         ),
-                        InkWell(
-                          onTap: () {
-                            showAnimatedDialog(
-                              context,
-                              WarningPopup(
-                                  color: color,
-                                  onRightTap: () {
-                                    if (Platform.isAndroid &&
-                                        ref
-                                            .read(adsDataProvider.notifier)
-                                            .downloadImageRewardAndroidBtn
-                                            .isNotEmpty) {
-                                      if (ref
-                                              .watch(rewardAdsProvider.notifier)
-                                              .state ==
-                                          null) {
-                                        deleteAllImagesInMonixFolder();
-                                      } else {
-                                        showRewardAd();
-                                      }
-                                    }
-                                  }),
-                            );
-                          },
-                          child: Text(
-                            StringManager.deleteAll,
+                      )
+                : NoImageWidget(
+                    color: color,
+                    isPermissionGiven: isPermissionGiven,
+                  ),
+            _imageFiles.isNotEmpty
+                ? Positioned(
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 45.w,
+                      color: color.bgSolidColor,
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            StringManager.allDownloadImg,
                             style: TextStyle(
-                              color: color.secondary1,
+                              color: color.grey500,
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
-                        )
-                      ],
+                          InkWell(
+                            onTap: () {
+                              showAnimatedDialog(
+                                context,
+                                WarningPopup(
+                                    color: color,
+                                    onRightTap: () {
+                                      if (Platform.isAndroid &&
+                                          ref
+                                              .read(adsDataProvider.notifier)
+                                              .downloadImageRewardAndroidBtn
+                                              .isNotEmpty) {
+                                        if (ref
+                                                .watch(rewardAdsProvider.notifier)
+                                                .state ==
+                                            null) {
+                                          deleteAllImagesInMonixFolder();
+                                        } else {
+                                          showRewardAd();
+                                        }
+                                      }
+                                    }),
+                              );
+                            },
+                            child: Text(
+                              StringManager.deleteAll,
+                              style: TextStyle(
+                                color: color.secondary1,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              : SizedBox.shrink()
-        ],
+                  )
+                : SizedBox.shrink()
+          ],
+        ),
       ),
     );
   }
+  
+  void onPopInvoked(bool didPop, DateTime? currentBackPressTime) {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null || 
+        now.difference(currentBackPressTime) > Duration(seconds: requiredSeconds)) {
+      currentBackPressTime = now;
+      showToast(msg: 'Exit Warning');
+      // Fluttertoast.showToast(msg: 'exit_warning');
+      Future.delayed(
+        Duration(seconds: requiredSeconds),
+        () {
+          // Disable pop invoke and close the toast after 2s timeout
+          setState(() {
+            canPopNow = false;
+          });
+          // Fluttertoast.cancel();
+        },
+      );
+      // Ok, let user exit app on the next back press
+      setState(() {
+        canPopNow = true;
+      });
+        }}
 }
+
 
 class WarningPopup extends StatelessWidget {
   const WarningPopup({

@@ -3,7 +3,7 @@
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+<!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/> -->
 <uses-permission android:name="android.permission.READ_MEDIA_*"/>
 <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
 
@@ -33,7 +33,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="monixai.in" />
+                <data android:host="monixai.in" />
                 <data android:scheme="https" />
             </intent-filter>
             <intent-filter>

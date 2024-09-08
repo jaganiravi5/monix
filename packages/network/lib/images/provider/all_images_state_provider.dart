@@ -13,6 +13,7 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
   // int page = 1;
   // int limit = 18;
   List<ImagesDataModel> listAllImages = [];
+  List<ImagesDataModel> listInsideImages = [];
   List<ImagesDataModel> listAllSearchData = [];
   bool isPagination = true;
 
@@ -24,6 +25,7 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
     required int limit,
     String? subCateId,
     String? searchText,
+    bool? isFromSubCategory,
   }) async {
     state = state.copyWith(isLoading: true);
 
@@ -36,9 +38,19 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
               'search': searchText,
             }
           : subCateId != null && subCateId.isNotEmpty
-              ? {'page': page, 'limit': limit, 'type': type, 'subcategory': subCateId}
+              ? {
+                  'page': page,
+                  'limit': limit,
+                  'type': type,
+                  'subcategory': subCateId
+                }
               : isTrending != null && isTrending
-                  ? {'page': page, 'limit': limit, 'type': type, 'trending': isTrending}
+                  ? {
+                      'page': page,
+                      'limit': limit,
+                      'type': type,
+                      'trending': isTrending
+                    }
                   : {
                       'page': page,
                       'limit': limit,
@@ -51,12 +63,18 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
           listAllSearchData.clear();
           listAllSearchData.addAll(data.imagess!);
         } else {
-          listAllImages.clear();
-          listAllImages.addAll(data.imagess!);
+          if (isFromSubCategory != null && isFromSubCategory) {
+            listInsideImages.clear();
+            listInsideImages.addAll(data.imagess!);
+          } else {
+            listAllImages.clear();
+            listAllImages.addAll(data.imagess!);
+          }
         }
 
         print('LoadingData $page ${listAllImages.length}');
-        state = state.copyWith(allImages: data, isLoading: false, isLoadingMore: false);
+        state = state.copyWith(
+            allImages: data, isLoading: false, isLoadingMore: false);
       },
     ).onError(
       (error, stackTrace) {},
@@ -66,7 +84,9 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
   List<ImagesDataModel> getAllImages() {
     return listAllImages;
   }
-
+List<ImagesDataModel> getAllSubCatImages() {
+    return listInsideImages;
+  }
   List<ImagesDataModel> getSearchsubCat() {
     Set<String> subCategorySet = {};
     List<ImagesDataModel> uniqueImagesList = [];
@@ -123,7 +143,8 @@ class AllImagesDataNotifier extends StateNotifier<AllImagesState> {
         listAllImages.addAll(data.imagess!);
 
         print('LoadingData:::::::IMG $page ${listAllImages.length}');
-        state = state.copyWith(allImages: data, isLoading: false, isLoadingMore: false);
+        state = state.copyWith(
+            allImages: data, isLoading: false, isLoadingMore: false);
       },
     ).onError(
       (error, stackTrace) {},

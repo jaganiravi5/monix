@@ -23,6 +23,7 @@ class AllImagesWidget extends ConsumerStatefulWidget {
     // required this.onImageTap,
     // required this.isLoading,
     this.imagesDataModel,
+    this.isFromSubCategory,
   });
 
   final bool isTitle;
@@ -31,6 +32,7 @@ class AllImagesWidget extends ConsumerStatefulWidget {
   final void Function() onPortraitTap;
   final void Function() onSquareTap;
   final ScrollController scrollController;
+  final bool? isFromSubCategory;
   // final void Function() onImageTap;
   // final bool isLoading;
   List<ImagesDataModel>? imagesDataModel;
@@ -40,13 +42,14 @@ class AllImagesWidget extends ConsumerStatefulWidget {
 }
 
 class _AllImagesWidgetState extends ConsumerState<AllImagesWidget> {
-  
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
-      final isLoadingMore = ref.watch(allImagesDataProvider).isLoadingMore;
+    final isLoadingMore = ref.watch(allImagesDataProvider).isLoadingMore;
     widget.imagesDataModel =
-        ref.watch(allImagesDataProvider.notifier).getAllImages();
+        widget.isFromSubCategory != null && widget.isFromSubCategory!
+            ? ref.watch(allImagesDataProvider.notifier).getAllSubCatImages()
+            : ref.watch(allImagesDataProvider.notifier).getAllImages();
     print(":::::::::DATAA:::::::::::::");
     print(
         ':::PAGINATION-----------Length:::::::::::${widget.imagesDataModel?.length}');
@@ -93,15 +96,19 @@ class _AllImagesWidgetState extends ConsumerState<AllImagesWidget> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
-                    itemCount: isLoadingMore?(widget.imagesDataModel?.length??0)+1:widget.imagesDataModel?.length,
+                    itemCount: isLoadingMore
+                        ? (widget.imagesDataModel?.length ?? 0) + 1
+                        : widget.imagesDataModel?.length,
                     padding: EdgeInsets.only(bottom: 90.w),
                     primary: false,
                     itemBuilder: (BuildContext context, int index) {
                       final String imageUrl = StringManager.imageUrl;
-                      final totalCount = ref.watch(allImagesDataProvider).allImages.total;
-                    
+                      final totalCount =
+                          ref.watch(allImagesDataProvider).allImages.total;
+
                       if (index == totalCount ||
-                          (index == widget.imagesDataModel?.length && !isLoadingMore)) {
+                          (index == widget.imagesDataModel?.length &&
+                              !isLoadingMore)) {
                         return const SizedBox.shrink();
                       } else if (index == widget.imagesDataModel?.length) {
                         print("ISLOADDDDDDDDDD::::::::::::::::");
@@ -109,18 +116,20 @@ class _AllImagesWidgetState extends ConsumerState<AllImagesWidget> {
                       } else {
                         return InkWell(
                           onTap: () {
-                            ref.read(watermarkLoadProvider.notifier).state=true;
+                            ref.read(watermarkLoadProvider.notifier).state =
+                                true;
                             context.push(
-                            AppRoutesPath.imagePreviewScreen,
-                            extra: ImagePreviewArgs(
-                              imageUrl:
-                                  widget.imagesDataModel![index].image ?? '',
-                                  imageId: widget.imagesDataModel?[index].id??'',
-                              imageName:
-                                  widget.imagesDataModel![index].name ?? '',
-                              isPortrait: widget.portraitSel,
-                            ),
-                          );
+                              AppRoutesPath.imagePreviewScreen,
+                              extra: ImagePreviewArgs(
+                                imageUrl:
+                                    widget.imagesDataModel![index].image ?? '',
+                                imageId:
+                                    widget.imagesDataModel?[index].id ?? '',
+                                imageName:
+                                    widget.imagesDataModel![index].name ?? '',
+                                isPortrait: widget.portraitSel,
+                              ),
+                            );
                           },
                           child: Card(
                             color: color.bgSolidColor,
@@ -131,7 +140,6 @@ class _AllImagesWidgetState extends ConsumerState<AllImagesWidget> {
                                 imageUrl:
                                     "${imageUrl}${widget.imagesDataModel![index].image}",
                                 fit: BoxFit.cover,
-                                
                                 errorWidget: (context, url, error) {
                                   return Container();
                                 },
@@ -169,10 +177,8 @@ class _AllImagesWidgetState extends ConsumerState<AllImagesWidget> {
                 itemBuilder: (BuildContext context, int index) {
                   final String imageUrl = StringManager.imageUrl;
 
-                  return
-                      PrimaryShimmerEffect(shimmerHeight: 50.w);
-                      
-                      
+                  return PrimaryShimmerEffect(shimmerHeight: 50.w);
+
                   // : PrimaryShimmerEffect(shimmerHeight: 50.w);
                 },
               )

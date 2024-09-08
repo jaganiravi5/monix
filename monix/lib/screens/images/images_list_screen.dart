@@ -69,8 +69,8 @@ class _ImageListScreenState extends ConsumerState<ImageListScreen> {
         isSearch: false,
         searchText: '',
         page: page,
+        isFromSubCategory: true,
         limit: 18,
-
         type: type,
         subCateId: widget.subCategoryId.toString());
   }
@@ -78,7 +78,7 @@ class _ImageListScreenState extends ConsumerState<ImageListScreen> {
   @override
   Widget build(BuildContext context) {
     final color = Theme.of(context).monixColors;
-    final imageData = ref.watch(allImagesDataProvider.notifier).getAllImages();
+    final imageData = ref.watch(allImagesDataProvider.notifier).getAllSubCatImages();
     return Scaffold(
       appBar: CommonAppBar(
         color: color,
@@ -123,6 +123,7 @@ class _ImageListScreenState extends ConsumerState<ImageListScreen> {
               ),
               child: AllImagesWidget(
                 isTitle: false,
+                isFromSubCategory: true,
                 scrollController: scrollController,
                 imagesDataModel: imageData,
                 // isLoading: ref.watch(tempLoadingProvider.notifier).state,

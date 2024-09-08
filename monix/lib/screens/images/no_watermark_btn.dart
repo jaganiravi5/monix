@@ -1,22 +1,31 @@
 import 'package:common/common.dart';
 import 'package:common/widget/mobile_widget/common_utills/common_utills.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:network/ads/provider/ads_provider.dart';
 
-class NoWatermarkBtn extends StatelessWidget {
+class NoWatermarkBtn extends StatefulWidget {
   const NoWatermarkBtn({
     super.key,
     required this.onBtnTap,
+    required this.ref,
     required this.isLoad,
   });
 
   final void Function() onBtnTap;
   final bool isLoad;
+  final WidgetRef ref;
 
+  @override
+  State<NoWatermarkBtn> createState() => _NoWatermarkBtnState();
+}
+
+class _NoWatermarkBtnState extends State<NoWatermarkBtn> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).monixColors;
     return Opacity(
-      opacity: isLoad ? 0.4 : 1,
+      opacity: widget.isLoad ? 0.4 : 1,
       child: InkWell(
         onTap: () {},
         child: Stack(
@@ -55,7 +64,9 @@ class NoWatermarkBtn extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(
+            widget.ref
+                              .read(adsDataProvider.notifier)
+                              .downloadImageRewardAndroidBtn.isNotEmpty?    SizedBox(
                     width: 104.w,
                     height: 30.w,
                     child: Container(
@@ -86,12 +97,12 @@ class NoWatermarkBtn extends StatelessWidget {
                         ],
                       ),
                     ),
-                  ),
+                  ):SizedBox.shrink(),
                 ],
               ),
             ),
             InkWell(
-              onTap: () => isLoad ? () {} : onBtnTap(),
+              onTap: () => widget.isLoad ? () {} : widget.onBtnTap(),
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(14.w),

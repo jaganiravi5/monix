@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'common_utills/common_utills.dart';
 
 class CommonButton extends StatelessWidget {
-  const CommonButton({
+  const CommonButton( {
     super.key,
     this.padding,
     required this.title,

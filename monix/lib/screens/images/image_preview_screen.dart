@@ -270,6 +270,7 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
                   height: 14.w,
                 ),
                 NoWatermarkBtn(
+                    ref: ref,
                     isLoad: ref.watch(watermarkLoadProvider.notifier).state,
                     onBtnTap: () {
                       final rewardId = ref

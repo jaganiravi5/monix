@@ -33,6 +33,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     SavedScreen(),
   ];
   int selectedIndex = 0;
+  DateTime? currentBackPressTime;
+bool canPopNow = false;
+int requiredSeconds = 2;
 
   Future<bool> Function()? onBackPressed({required BuildContext context}) {
     final theme = Theme.of(context).monixColors;
@@ -55,6 +58,28 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       selectedIndex = index;
     });
   }
+ void onPopInvoked(bool didPop, DateTime? currentBackPressTime) {
+    DateTime now = DateTime.now();
+    if (currentBackPressTime == null || 
+        now.difference(currentBackPressTime) > Duration(seconds: requiredSeconds)) {
+      currentBackPressTime = now;
+      showToast(msg: 'Exit Warning');
+      // Fluttertoast.showToast(msg: 'exit_warning');
+      Future.delayed(
+        Duration(seconds: requiredSeconds),
+        () {
+          // Disable pop invoke and close the toast after 2s timeout
+          setState(() {
+            canPopNow = false;
+          });
+          // Fluttertoast.cancel();
+        },
+      );
+      // Ok, let user exit app on the next back press
+      setState(() {
+        canPopNow = true;
+      });
+        }}
 
   Future<void> getAllImages() async {
     // ref.read(allImagesDataProvider.notifier).page = 1;
@@ -77,9 +102,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       // drawer: PrimaryDrawer(scaffoldKey: _scaffoldKey),
       resizeToAvoidBottomInset: false,
       body: DoubleBackToCloseApp(
-        snackBar: const SnackBar(
-          content: Text('Tap back again to leave'),
-        ),
+        snackBar: SnackBar(content: Text('ff')),
         child: Stack(
           children: [
             _screens[selectedIndex],
