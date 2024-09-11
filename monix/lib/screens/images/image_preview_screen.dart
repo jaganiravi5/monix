@@ -16,6 +16,7 @@ import 'package:monix/screens/images/low_quality_btn.dart';
 import 'package:monix/screens/images/no_watermark_btn.dart';
 import 'package:monix_assets/monix_assets.dart';
 import 'package:network/ads/provider/ads_provider.dart';
+import 'package:network/download_count/provider/download_count_provider.dart';
 import 'package:network/network.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -79,11 +80,11 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
   }
 
   Future<void> getWatermarkImg() async {
-    // showLoadingDialog(context, true);
+   
     final String imageUrl1 = "${StringManager.imageUrl}${imageUrl}";
 
     print('loader--------${ref.read(watermarkLoadProvider.notifier).state}');
-    // ref.read(watermarkLoadProvider.notifier).state = true;
+   
     orgImgBytes =
         (await NetworkAssetBundle(Uri.parse(imageUrl)).load(imageUrl1))
             .buffer
@@ -95,22 +96,22 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
     // final Uint8List waterImgBytes = waterImg.buffer.asUint8List();
     // watermarkedImgBytes = await ImageWatermark.addImageWatermark(
     //   originalImageBytes: orgImgBytes,
-
     //   waterkmarkImageBytes: waterImgBytes,
-
     //   imgWidth: 960,
-
     //   dstY: isPortrait != null && isPortrait! ? 1300 : 840,
     //   dstX: 30, //watermark position X
     // );
 
+    //temp solution for hide watermark 
+    watermarkedImgBytes = orgImgBytes;
+
     ///TEXT AS WATERMARK
-    watermarkedImgBytes = await ImageWatermark.addTextWatermark(
-        watermarkText: ' @MONIX_AI_GODS     @MONIX_AI_GODS',
-        dstY: isPortrait != null && isPortrait! ? 1300 : 840,
-        dstX: 10,
-        imgBytes: orgImgBytes,
-        color: Colors.white.withOpacity(0.5));
+    // watermarkedImgBytes = await ImageWatermark.addTextWatermark(
+    //     watermarkText: ' @MONIX_AI_GODS     @MONIX_AI_GODS',
+    //     dstY: isPortrait != null && isPortrait! ? 1300 : 840,
+    //     dstX: 10,
+    //     imgBytes: orgImgBytes,
+    //     color: Colors.white.withOpacity(0.5));
     setState(() {});
     ref.read(watermarkLoadProvider.notifier).state = false;
     // showLoadingDialog(context, false);
@@ -240,110 +241,149 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
                   ),
                 )
               : SizedBox.shrink(),
+              ///DOWNLOAD BUTTON
+          Positioned(
+              bottom: 35.w,
+              left: 20.w,
+              right: 20.w,
+              child: Column(
+                children: [
+                  CommonButton(
+                    title: StringManager.downloadImg,
+                    icon: Padding(
+                      padding: EdgeInsets.only(right: 5.w),
+                      child: Icon(
+                        Icons.file_download_outlined,
+                        color: color.white,
+                        size: 24.w,
+                      ),
+                    ),
+                    onButtonClick: () async {
+                      _downloadCountApi(imageId: imageId);
+                      _downloadMedia(
+                        bytes: watermarkedImgBytes,
+                        url: imageAwsUrl,
+                      );
+                    },
+                    textStyle: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w500,
+                      color: color.white,
+                    ),
+                  )
+                  // LowQualityBtn(),
+                  // SizedBox(height: 14.w,),
+                  // NoWatermarkBtn()
+                ],
+              )),
+       
 
           ///BUTTON
-          Positioned(
-            bottom: 35.w,
-            left: 20.w,
-            right: 20.w,
-            child: Column(
-              children: [
-                LowQualityBtn(
-                    isLoad: ref.watch(watermarkLoadProvider.notifier).state,
-                    onBtnTap: () {
-                      context.push(
-                        AppRoutesPath.downloadImageScreen,
-                        extra: ImagePreviewArgs(
-                          imageId: imageId,
-                          imageUrl: imageUrl,
-                          isPortrait: isPortrait!,
-                          imageName: imageName,
-                          imageData: watermarkedImgBytes,
-                        ),
-                      );
-                    }
-                    // context.push(
-                    //   AppRoutesPath.downloadImageScreen,
-                    // ),
-                    ),
-                SizedBox(
-                  height: 14.w,
-                ),
-                NoWatermarkBtn(
-                    ref: ref,
-                    isLoad: ref.watch(watermarkLoadProvider.notifier).state,
-                    onBtnTap: () {
-                      final rewardId = ref
-                          .read(adsDataProvider.notifier)
-                          .downloadImageRewardAndroidBtn;
+          //TODO Uncomment while ads work and watermark
+          // Positioned(
+          //   bottom: 35.w,
+          //   left: 20.w,
+          //   right: 20.w,
+          //   child: Column(
+          //     children: [
+          //       ///LOW QUALITY BUTTON
+          //       LowQualityBtn(
+          //           isLoad: ref.watch(watermarkLoadProvider.notifier).state,
+          //           onBtnTap: () {
+          //             context.push(
+          //               AppRoutesPath.downloadImageScreen,
+          //               extra: ImagePreviewArgs(
+          //                 imageId: imageId,
+          //                 imageUrl: imageUrl,
+          //                 isPortrait: isPortrait!,
+          //                 imageName: imageName,
+          //                 imageData: watermarkedImgBytes,
+          //               ),
+          //             );
+          //           }
+          //           // context.push(
+          //           //   AppRoutesPath.downloadImageScreen,
+          //           // ),
+          //           ),
+          //       SizedBox(
+          //         height: 14.w,
+          //       ),
+          //       ///NO WATERMARK BUTTON
+          //       NoWatermarkBtn(
+          //           ref: ref,
+          //           isLoad: ref.watch(watermarkLoadProvider.notifier).state,
+          //           onBtnTap: () {
+          //             final rewardId = ref
+          //                 .read(adsDataProvider.notifier)
+          //                 .downloadImageRewardAndroidBtn;
 
-                      if (Platform.isAndroid && rewardId.isNotEmpty) {
-                        if (ref.watch(rewardAdsProvider.notifier).state ==
-                            null) {
-                          print(
-                              'Warning: attempt to show reward before loaded.');
-                          context.push(
-                            AppRoutesPath.downloadImageScreen,
-                            extra: ImagePreviewArgs(
-                              imageId: imageId,
-                              isAdSeen: false,
-                              imageUrl: imageUrl,
-                              isPortrait: isPortrait!,
-                              imageName: imageName,
-                              imageData: orgImgBytes,
-                            ),
-                          );
-                        }
-                        _rewardedAds.showRewardedAd(
-                          ref: ref,
-                          context: context,
-                          rewardId: ref
-                              .read(adsDataProvider.notifier)
-                              .downloadImageRewardAndroidBtn,
-                          onAdDismissedFullScreen: (p0) {
-                            print('RewardAdDismissed');
-                            context.push(
-                              AppRoutesPath.downloadImageScreen,
-                              extra: ImagePreviewArgs(
-                                imageId: imageId,
-                                // isAdSeen: false,
-                                imageUrl: imageUrl,
-                                isPortrait: isPortrait!,
-                                imageName: imageName,
-                                imageData: orgImgBytes,
-                              ),
-                            );
-                          },
-                          onAdFailedToShowFullScreen: (p0, p1) {
-                            print('RewardAdFailed');
-                            context.push(
-                              AppRoutesPath.downloadImageScreen,
-                              extra: ImagePreviewArgs(
-                                imageId: imageId,
-                                imageUrl: imageUrl,
-                                isPortrait: isPortrait!,
-                                imageName: imageName,
-                                imageData: orgImgBytes,
-                              ),
-                            );
-                          },
-                        );
-                      } else {
-                        context.push(
-                          AppRoutesPath.downloadImageScreen,
-                          extra: ImagePreviewArgs(
-                            imageId: imageId,
-                            imageUrl: imageUrl,
-                            isPortrait: isPortrait!,
-                            imageName: imageName,
-                            imageData: orgImgBytes,
-                          ),
-                        );
-                      }
-                    })
-              ],
-            ),
-          )
+          //             if (Platform.isAndroid && rewardId.isNotEmpty) {
+          //               if (ref.watch(rewardAdsProvider.notifier).state ==
+          //                   null) {
+          //                 print(
+          //                     'Warning: attempt to show reward before loaded.');
+          //                 context.push(
+          //                   AppRoutesPath.downloadImageScreen,
+          //                   extra: ImagePreviewArgs(
+          //                     imageId: imageId,
+          //                     isAdSeen: false,
+          //                     imageUrl: imageUrl,
+          //                     isPortrait: isPortrait!,
+          //                     imageName: imageName,
+          //                     imageData: orgImgBytes,
+          //                   ),
+          //                 );
+          //               }
+          //               _rewardedAds.showRewardedAd(
+          //                 ref: ref,
+          //                 context: context,
+          //                 rewardId: ref
+          //                     .read(adsDataProvider.notifier)
+          //                     .downloadImageRewardAndroidBtn,
+          //                 onAdDismissedFullScreen: (p0) {
+          //                   print('RewardAdDismissed');
+          //                   context.push(
+          //                     AppRoutesPath.downloadImageScreen,
+          //                     extra: ImagePreviewArgs(
+          //                       imageId: imageId,
+          //                       // isAdSeen: false,
+          //                       imageUrl: imageUrl,
+          //                       isPortrait: isPortrait!,
+          //                       imageName: imageName,
+          //                       imageData: orgImgBytes,
+          //                     ),
+          //                   );
+          //                 },
+          //                 onAdFailedToShowFullScreen: (p0, p1) {
+          //                   print('RewardAdFailed');
+          //                   context.push(
+          //                     AppRoutesPath.downloadImageScreen,
+          //                     extra: ImagePreviewArgs(
+          //                       imageId: imageId,
+          //                       imageUrl: imageUrl,
+          //                       isPortrait: isPortrait!,
+          //                       imageName: imageName,
+          //                       imageData: orgImgBytes,
+          //                     ),
+          //                   );
+          //                 },
+          //               );
+          //             } else {
+          //               context.push(
+          //                 AppRoutesPath.downloadImageScreen,
+          //                 extra: ImagePreviewArgs(
+          //                   imageId: imageId,
+          //                   imageUrl: imageUrl,
+          //                   isPortrait: isPortrait!,
+          //                   imageName: imageName,
+          //                   imageData: orgImgBytes,
+          //                 ),
+          //               );
+          //             }
+          //           })
+          //     ],
+          //   ),
+          // )
         ],
       ),
     );
@@ -369,6 +409,66 @@ class _ImagePreviewScreenState extends ConsumerState<ImagePreviewScreen> {
   //   }
 
   // }
+   Future<bool> _downloadCountApi({required String imageId}) async {
+    showLoadingDialog(context, true);
+    await ref
+        .read(downloadCountDataProvider.notifier)
+        .downloadCount(imgId: imageId);
+
+    final data = await ref.read(downloadCountDataProvider).downloadCountModel;
+    if (data != null) {
+      //  Fluttertoast.showToast(msg: "Submitted Successfully! !");
+
+      showLoadingDialog(context, false);
+      // mediaUrl = data[0].url ?? '';
+      return true;
+    } else {
+      showLoadingDialog(context, false);
+      // showPrimarySnackbar(context: context, text: "${error?.message}");
+      return false;
+    }
+  }
+
+  void _downloadMedia({required Uint8List bytes, required String url}) async {
+    showLoadingDialog(context, true);
+    Directory? dir;
+    final imgName = url.split('/').last;
+    print("imgName $imgName");
+    // final Uint8List list = bytes.buffer.asUint8List();
+    if (Platform.isAndroid) {
+      dir = Directory('/storage/emulated/0/Download/monix');
+    } else {
+      final tempDir = await getApplicationDocumentsDirectory();
+      dir = Directory('${tempDir.path}/monix');
+    }
+    if (!(await dir.exists())) {
+      await dir.create(recursive: true);
+    }
+
+    final fileShape = isPortrait ?? false ? 'portrait' : 'square';
+    final file = await File(
+            '${dir.path}/${fileShape}_${DateTime.now().millisecond}_$imgName')
+        .create();
+    final res = file.writeAsBytesSync(bytes);
+
+    showLoadingDialog(context, false);
+    showToast(
+      msg: "Download Successfully!",
+      success: true,
+    );
+    // final result = await DownloadMediaRepository().download(
+    //   url ?? '',
+    //   "${dir.path}/${url.split("/").last}",
+    // );
+
+    //if (result != null) {
+    // showPrimarySnackbar(context: context, text: "Download successfully!");
+    //} else {
+    //showPrimarySnackbar(context: context, text: "couldn't load invoice");
+    //}
+    //showPrimaryLoading(context, false);
+  }
+
   Future<void> _shareImg({
     required String url,
     required Uint8List imgData,
